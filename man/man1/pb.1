@@ -1,0 +1,364 @@
+'\" t
+.\"     Title: pb
+.\"    Author: [see the "AUTHORS" section]
+.\" Generator: Asciidoctor 1.5.5
+.\"      Date: 2019-05-22
+.\"    Manual: Arista Pastebin
+.\"    Source: \ \&
+.\"  Language: English
+.\"
+.TH "PB" "1" "2019-05-22" "\ \&" "Arista Pastebin"
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.ss \n[.ss] 0
+.nh
+.ad l
+.de URL
+\\$2 \(laURL: \\$1 \(ra\\$3
+..
+.if \n[.g] .mso www.tmac
+.LINKSTYLE blue R < >
+.SH "NAME"
+pb \- create a paste from any input at http://pb/
+.SH "SYNOPSIS"
+.sp
+\fIpb\fP [<options>] [\-\-] [<file>...]
+.SH "DESCRIPTION"
+.sp
+pb is a pastebin service hosted on the Arista Software Infrastructure, originally forked from \c
+.URL "http://ptpb.pw" "" "."
+.sp
+All files provided to the command as parameters will be fed to the service, and an unique
+url will be produced for each. The special file \fI\-\fP can be used to signify stdin.
+.SH "OPTIONS"
+.sp
+\-q, \-\-quiet
+.RS 4
+Quiet, only print the paste URL.
+.RE
+.sp
+\-e, \-\-expires <date>
+.RS 4
+Make the paste expire at the given <date>. The <date> parameter is passed verbatim to \fBdate\fP(1).
+.RE
+.sp
+\-p, \-\-private
+.RS 4
+Make the paste "private" by only generating a long identifier.
+.RE
+.sp
+\-l, \-\-label <name>
+.RS 4
+Create the paste with a vanity name, at \fI<host>/~<name>\fP.
+.RE
+.sp
+\-c, \-\-clip
+.RS 4
+Copy the paste URL to the system clipboard.
+.RE
+.sp
+\-u, \-\-url
+.RS 4
+Url\-shortening mode. All files will be expected to contain an URL,
+and the produced pastes will automatically redirect to it.
+.RE
+.sp
+\-\-host <hostname>
+.RS 4
+Send paste data to <hostname>, instead of \c
+.URL "http://pb/" "" "."
+.RE
+.SH "TERMINOLOGY"
+.SS "sunset"
+.sp
+time in seconds that the paste should persist before being
+automatically deleted
+.SS "shortid"
+.sp
+base64\-encoded last 3 bytes of sha1 digest
+.SS "longid"
+.sp
+base64\-encoded sha1 digest, left\-zero\-padded to 21 bytes
+.SS "id"
+.sp
+One of:
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+a {short,long}id
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+a {short,long}id, followed by a period\-delimiter and a mimetype
+extension
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+a 40 character sha1 hexdigest
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+a 40 character sha1 hexdigest, followed by a period\-delimiter and a
+mimetype extension
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+a \fIvanity\fP label
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+a \fIvanity\fP label, followed by a period\-delimiter and a mimetype
+extension
+.RE
+.sp
+A mimetype extension, when specified, is first matched with a matching
+mimetype known to the system, then returned in the HTTP response
+headers.
+.SS "vanity"
+.sp
+The character \fI~\fP followed by any number of unicode characters,
+excluding \fI/\fP and \fI.\fP
+.SS "lexer"
+.sp
+A \fIlexer\fP is an alias of a pygments lexer; used for syntax
+highlighting.
+.SS "uuid"
+.sp
+The string representation of a RFC 4122 UUID. These are used as a weak
+form of \fIshared secret\fP that, if known, allow the user to modify the
+pastes.
+.SS "handler"
+.sp
+A one\-character handler identifier.
+.SH "API"
+.SS "Data Format"
+.sp
+In addition to \fImultipart/form\-data\fP and \fIapplication/x\-www\-form\-urlencoded\fP, paste data can be provided in the following alternative formats:
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+json
+.sp
+If Content\-Type: application/json is present, pb will json\-decode the entire request body. The c and filename keys are then evaluated if present.
+.RE
+.sp
+Where complex data structures are present in responses, the default output format is yaml. Alternative output formats are also supported:
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+json
+.sp
+If Accept: application/json is present, pb will provide a json representation of the complex response in the response body.
+.RE
+.SS "DELETE /<uuid>"
+.sp
+Deletes the paste that matches the provided UUID.
+.SS "GET /man.1"
+.sp
+Get this manpage.
+.SS "GET /sh"
+.sp
+Get the pb.sh script.
+.SS "GET /l"
+.sp
+Get a list of available lexers, newline\-delimited, with space\-delimited aliases.
+.SS "GET /ls"
+.sp
+Get a list of available styles, newline\-delimited.
+.SS "GET /lf"
+.sp
+Get a list of available formatters, newline\-delimited, with space\-delimited aliases.
+.SS "GET /s"
+.sp
+Get paste statistics; currently paste count and total size.
+.SS "GET /<id>"
+.sp
+Retrieves paste or url redirect.
+If a paste: returns the matching paste, verbatim and unmolested.
+If a url redirect: returns HTTP code 301 with the location of the redirect.
+.SS "GET /<id>/lexer"
+.sp
+Like the above, but decodes and applies syntax highlighting to pastes via HTML/CSS.
+Line numbering and fragments are included, and can be used to link to individual lines within the paste.
+.SS "GET /<id>/<lexer>/<formatter>"
+.sp
+Like the above, but uses the specified \fIformatter\fP (a special case of \fIhtml\fP is used when not specified).
+.SS "GET /<handler>/<id>"
+.sp
+Like the above, but paste content is mangled by said handler before being returned.
+.SS "POST /"
+.sp
+Creates a new paste; returns GET URL and secret UUID.
+.sp
+Only multipart/form\-data is supported; other content types are not tested.
+.sp
+At least one \fIname\fP disposition extension parameter must be present, and its value must be \fIc\fP.
+.sp
+Unless the \fIfilename\fP disposition extension parameter is specified, the form data is decoded. The value of the \fIfilename\fP parameter is split by period\-delimited extension, and appended to the location in the response.
+.sp
+Form Parameters:
+.RS 4
+.sp
+c (mandatory)
+.RS 4
+Content of the paste.
+.RE
+.sp
+p (optional)
+.RS 4
+If the value of this field evaluates to true, the paste will be a private paste where the paste can only be retrieved by knowledge of its sha1 hexdigest.
+.RE
+.sp
+s, sunset (optional)
+.RS 4
+The paste will be deleted after the given amount of time has passed.
+The value of this field must be a positive integer and represents the number of seconds (after having been pasted) that the paste should survive before being automatically deleted.
+.RE
+.RE
+.SS "POST /<handler>"
+.sp
+Run the request body through the handler and return the mangled output in the response body.
+.SS "POST /<vanity>"
+.sp
+Same as \fBPOST /\fP, except the paste is a \fIvanity\fP paste, where the GET URL path is identical to the POST path.
+.SS "POST /u"
+.sp
+Creates a new url redirect (short url).
+.sp
+The form content will be decoded, and truncated at the first newline or EOF, whichever comes first. The result of that is then returned in a HTTP 301 response with the form content in the Location header.
+.SS "PUT /<uuid>"
+.sp
+Replaces the content of the paste that matches the provided UUID.
+.sp
+Form submission is otherwise identical to POST.
+.SH "EXAMPLES"
+.sp
+.B Example 1. Creating a paste from the output of \fBdmesg\fP(1)
+.br
+.RS 4
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+$ dmesg | pb
+long: AGhkV6JANmmQRVssSUzFWa_0VNyq
+sha1: 686457a240366990455b2c494cc559aff454dcaa
+short: riqS
+url: http://pb/riqS
+uuid: 17c5829d\-81a0\-4eb6\-8681\-ba72f83ffbf3
+.fi
+.if n \{\
+.RE
+.\}
+.sp
+or, if you only care about getting the URL back:
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+$ dmesg | pb \-q
+http://pb/riqS
+.fi
+.if n \{\
+.RE
+.\}
+.RE
+.sp
+.B Example 2. Creating a paste from a file\(cqs content, and copy the URL to the clipboard:
+.br
+.RS 4
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+$ pb file.txt \-\-clip
+long: AGhkV6JANmmQRVssSUzFWa_0VNyq
+sha1: 686457a240366990455b2c494cc559aff454dcaa
+short: riqS
+url: http://pb/riqS
+uuid: 17c5829d\-81a0\-4eb6\-8681\-ba72f83ffbf3
+.fi
+.if n \{\
+.RE
+.\}
+.RE
+.sp
+.B Example 3. Create a paste with a 1 minute sunset:
+.br
+.RS 4
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+$ pb file1.txt \-e \(aq1 minute\(aq
+date: 2017\-03\-03T15:37:02.096331+00:00
+digest: 371798e194c2298fa31689872554c0181d745c25
+long: ADcXmOGUwimPoxaJhyVUwBgddFwl
+short: riqS
+size: 33
+status: created
+sunset: 2017\-03\-03T15:38:02.094757+00:00
+url: http://pb/riqS
+uuid: 8b25b47c\-ad8d\-4d3c\-b09b\-3175b575faa2
+.fi
+.if n \{\
+.RE
+.\}
+.RE

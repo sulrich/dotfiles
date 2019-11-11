@@ -1,0 +1,2 @@
+setenv('GNUTERM','x11') % or 'x11', or 'aqua'
+# PS1(">>")

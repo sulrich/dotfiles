@@ -1,0 +1,14 @@
+# overview
+
+this is an attempt to make the shell appropriately morph to the environment that
+it's being run.  host and platform specific elements should be loaded
+approrpriately depending on the platform this is being run on. 
+
+
+# os x
+
+i disable the use of path_helper in /etc/zprofile and construct the $PATH
+specifically it seems to _pre_ - pend itself to the $PATH which messes a lot of
+stuff up. 
+
+

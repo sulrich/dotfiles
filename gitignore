@@ -1,0 +1,11 @@
+*~
+*.gpg
+.DS_Store
+*.graffle
+*.ppt
+*.xls
+*.doc
+*.vsd
+*.pyc
+*.elc
+*.swp

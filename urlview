@@ -1,0 +1,13 @@
+###############################################################################
+# Urlview configuration file.
+# man urlview  <Man page>
+#
+# The defaults are shown here:
+#
+#COMMAND url_handler.sh '%s'
+#
+# iwe specific config elements
+# REGEXP  (((https?|ftp|gopher)://|(mailto|file|news):)[^' \t<>"]+|(iwe)\.[-a-z0-9.]+)[^' \t.,;<>"\):]
+REGEXP  (((https?|ftp|gopher|cifs)://|(mailto|file|news):)[^' \t<>"]+|(www|web|w3)\.[-a-z0-9.]+)[^' \t.,;<>"\):]
+COMMAND open `wstrim %s`
+#COMMAND open %s

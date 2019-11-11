@@ -1,0 +1,96 @@
+[user]
+  name = steve ulrich
+  email = sulrich@botwerks.org
+
+[credential]
+  helper = osxkeychain
+  helper = store --file ~/.credentials/git-creds.txt
+  helper = cache --timeout 30000
+
+[github]
+  user = sulrich
+
+[difftool "Kaleidoscope"]
+  cmd = ksdiff --partial-changeset --relative-path \"$MERGED\" -- \"$LOCAL\" \"$REMOTE\"
+
+[difftool]
+  prompt = false
+
+[diff]
+  tool = Kaleidoscope
+
+[core]
+  excludesfile = /Users/sulrich/.gitignore
+  autocrlf = input
+  quotepath = false
+  pager = less -r
+  fileMode = false
+  # safecrlf = true
+  # quotepath = false
+
+[alias]
+  co = checkout
+  ci = commit
+  st = status
+  br = branch
+  hist = log --pretty=format:\"%h %ad | %s%d [%an]\" --graph --date=short
+  type = cat-file -t
+  dump = cat-file -p
+  open = !vim `git-open.sh`
+
+
+[merge]
+  tool = Kaleidoscope
+
+[mergetool "Kaleidoscope"]
+  cmd = ksdiff --merge --output \"$MERGED\" --base \"$BASE\" -- \"$LOCAL\" --snapshot \"$REMOTE\" --snapshot
+  trustExitCode = true
+
+[mergetool]
+  prompt = false
+  keepBackup = true
+
+[log]
+  decorate = full
+
+[push]
+  default = matching
+
+# experiments in color
+#[color]
+#  ui = auto
+
+[color "branch"]
+  current = yellow reverse
+  local = yellow
+  remote = green
+
+[color "status"]
+  added = yellow
+  changed = green
+  untracked = cyan
+
+[filter "media"]
+  required = true
+  clean = git media clean %f
+  smudge = git media smudge %f
+
+[filter "hawser"]
+  clean = git hawser clean %f
+  smudge = git hawser smudge %f
+  required = true
+
+[filter "lfs"]
+  clean = git lfs clean %f
+  smudge = git lfs smudge %f
+  required = true
+  process = git-lfs filter-process
+
+# this seems to be a useful bit of functionality to fix github urls. it does
+# seem to trip some things up in brew.  use with caution.  
+[url "git@github.com:"]
+  insteadOf = https://github.com/
+
+[http]
+  cookiefile = ~/.credentials/gitcookies
+

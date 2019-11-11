@@ -1,0 +1,16 @@
+# mutt: the following mailcap entry will only be called from the attachments menu
+text/html                     ; mutt-open.sh %s     ; nametemplate=%s.html
+# mutt: the following mailcap entry will be used in the event of auto-view
+text/html                     ; links -dump %s ; nametemplate=%s.html ; copiousoutput
+
+image/*                       ; qlmanage -p 2>/dev/null %s ; copiousoutput
+audio/*                       ; qlmanage -p 2>/dev/null %s ; copiousoutput
+video/*                       ; qlmanage -p 2>/dev/null %s ; copiousoutput
+application/ms-excel          ; open %s
+application/msword            ; open %s
+application/vnd.ms-powerpoint ; open %s
+application/*                 ; qlmanage -p 2>/dev/null %s ; copiousoutput
+
+text/plain                    ; less
+text/open                     ; open %s
+text/calendar                 ; open -a "Microsoft Outlook" %s

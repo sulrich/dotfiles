@@ -1,0 +1,17 @@
+## .perltidyrc --- configuration for perltidy per the Perl Best Practices (PBP)
+# note i've modified this to indent levels of 2 cols
+-l=78   # max line width is 78 cols
+-i=2    # indent level is 4 cols - (sulrich 2 cols)
+-ci=2   # continuation indent is 4 cols - (sulrich 2 cols)
+-st     # output to STDOUT
+-se     # errors to STDERR
+-vt=2   # maximal vertical tightness
+-cti=0  # no extra indentation for closing brackets
+-pt=1   # medium parenthesis tightness
+-bt=1   # medium brace tightness
+-sbt=1  # medium square bracket tightness
+-bbt=1  # medium block brace tightness
+-nsfs   # no space before semicolons
+-nolq   # don't outdent long quoted strings
+# break before all operators
+-wbb="% + - * / x != == >= <= =~ !~ < > | & >= < = **= += *= &= <<= &&= -= /= |= >>= ||= .= %= ^= x="

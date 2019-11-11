@@ -1,0 +1,13 @@
+# IMAP only operation
+set spoolfile="imaps://outlook.office365.com:993/INBOX"
+set folder="imaps://outlook.office365.com:993/INBOX"
+set mbox="+INBOX"
+set mbox="imaps://outlook.office365.com:993/INBOX"
+set record="imaps://outlook.office365.com:993/Sent Items"
+set trash="imaps://outlook.office365.com:993/Deleted Items"
+set postponed="imaps://outlook.office365.com:993/Drafts"
+set imap_check_subscribed
+set net_inc=5
+unset imap_passive
+set timeout=60  #check for mail every minute - not req'd w/IDLE in 1.5.11+
+set mail_check=60

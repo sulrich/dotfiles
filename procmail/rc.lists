@@ -1,0 +1,130 @@
+# -*- mode: sh; fill-column: 78; comment-column: 50; tab-width: 2 -*-
+#
+# misc. notes
+#
+# remember: "^TOwordhere" searches for the occurrence of the given word in the
+# relevant To: headers.  use of "^TO_address_here" searches for the occurrence
+# of the given address in the relevant To: headers.
+#
+# 20150504 - added a number of placeholder filters to address the mailing list
+# consolidation that's currently underway.  these are marked with XXX_TEMP
+# remove when the consolidation is complete.
+#
+
+
+## temporary
+:0 H
+* ^TO_93attendees@ietf.org
+$MAILDIR/juniper/ietf/
+
+# juniper rules ----------------------------------------------------------------
+
+:0 H
+* ^TO_mx-interest@juniper.net
+$MAILDIR/juniper/mx-interest/
+
+:0 H
+* ^TO_ptx-interest@juniper.net
+$MAILDIR/juniper/ptx-interest/
+
+:0 H
+* ^TO_macosx-users@juniper.net
+$MAILDIR/juniper/mac-trolls/
+
+:0 H
+* ^TOsvpod1-vmm-users
+$MAILDIR/juniper/vmm/
+
+:0 H
+* ^TOscript-hackers
+$MAILDIR/juniper/script-hackers/
+
+:0 H
+* ^TObug-sw-python
+$MAILDIR/juniper/python/
+
+:0 H
+* ^TOask-contrail
+$MAILDIR/juniper/sdn-interest/
+
+:0 H
+* ^TO_junosphere_community@juniper.net
+$MAILDIR/juniper/junosphere/
+
+# misc. routing aliases --------------------------------------------------------
+### consolidated routing alias
+:0 H
+* ^TOrouting-tech-talk
+$MAILDIR/juniper/routing-tt/
+
+# XXX_TEMP
+:0 H
+* ^TO_(tt-enterprise-routers|tt-wan)@juniper.net
+$MAILDIR/juniper/routing-tt/
+
+# XXX_TEMP
+:0 H
+* ^TO_(t|mcast-vpn|servicepic|qos|access-aggr|bras|vpn)-interest@juniper.net
+$MAILDIR/juniper/routing-tt/
+
+# misc. security aliases -------------------------------------------------------
+### consolidated security alias
+:0 H
+* ^TO_security-tech-talk@juniper.net
+$MAILDIR/juniper/security-tt/
+
+# XXX_TEMP
+:0 H
+* ^TO_(tt-secureanalytics|tt-junos-ddos-secure|tt-fwvpn|tt-space-sd|tt-strm-askq1|tt-strm|tt-secure-routers|tt-uac|tt-sslvpn|security-products-question-for-rohs-team)@juniper.net
+$MAILDIR/juniper/switching-tt/
+
+# misc. switching aliases ------------------------------------------------------
+### consolidated switching alias
+:0 H
+* ^TO_switching-tech-talk@juniper.net
+$MAILDIR/juniper/switching-tt/
+
+# XXX_TEMP
+:0 H
+* ^TO_switching-products-question-for-rohs-team@juniper.net
+$MAILDIR/juniper/switching-tt/
+
+# XXX_TEMP
+:0 H
+* ^TO_(tt-qfx|qfx-interest|tt-ethernet-switching|tt-switching|ex-interest|tt-network-director)@juniper.net
+$MAILDIR/juniper/switching-tt/
+
+
+# misc mailing lists -----------------------------------------------------------
+# spring-dev gnats (gnats messages sent to spring-dev)
+:0 H
+* ^TOspring-dev
+* ^X-GNATS-Notification
+$MAILDIR/juniper/spring-gnats/
+
+:0 H
+* ^TOspring-dev
+$MAILDIR/juniper/spring-dev/
+
+# google specific rules --------------------------------------------------------
+:0 H
+* ^TO_ext-notify-google-critical@juniper.net
+$MAILDIR/google/jtac-corp/
+
+:0 H
+* ^From.*support@juniper.net.*
+* ^X-Mailer.*netweaver.*
+$MAILDIR/google/jtac-corp/
+
+:0 H
+* ^TO_google-prod-p2-notify@juniper.net
+$MAILDIR/google/jtac-prod/
+
+:0 H
+* ^TO_google-re@juniper.net
+$MAILDIR/google/re/
+
+# filter meeting notices -------------------------------------------------------
+:0 H
+* ^Content-class:.*calendarmessage*
+$MAILDIR/juniper/meetings/

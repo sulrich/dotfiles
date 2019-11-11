@@ -1,0 +1,51 @@
+# -*- mode: sh; fill-column: 78; comment-column: 50; tab-width: 2 -*-
+#
+# this is for items which are sent directly to sulrich@juniper.net but require
+# additional processing so as to not get put into my INBOX
+#
+# google gnats, etc rules - look for google-ler in the attribute field of a
+# gnats report, etc.
+#
+# deal with the header then look for something in the body that will need more
+# extensive searching
+#
+#:0 H
+#* (^Sender|^From)*cdetsprod*@
+#{
+#  :0 B
+#  * Attribute:.*(|-goog).*
+#  $MAILDIR/google/csim/
+#}
+
+# google-corp case open notifications
+:0 H
+* ^From:*support@juniper*
+* ^To:.*ext-notify-google-critical*
+* ^Subject:.*opened by GOOGLE CORP.*
+$MAILDIR/google/jtac-corp/
+
+# CSIM automailer notifications
+:0 H
+* ^From:*automailer-for*
+* ^Subject:.*automailer:.*
+$MAILDIR/google/csim/
+
+# annoying stuff coming from cron
+:0 H
+* ^Subject:.*getmail/do-not-run.*
+$MAILDIR/juniper/cron/
+
+# filter out messages sourced from gnats, but appearing to be from other folks.
+:0 H
+* ^X-GNATS-Notification: (audited-change|appended-email-response)
+$MAILDIR/juniper/gnats/
+
+# filter out messages sourced from gnats, which are just updates
+:0 H
+* ^X-Gnats-Db: gnats
+$MAILDIR/juniper/gnats/
+
+# add a label for messages sent to me which have calendar attachments
+:0 Bf
+* ^Content-Type:.*(calendar|ics).*
+| formail -I "X-Label: calendar"

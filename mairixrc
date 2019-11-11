@@ -1,0 +1,5 @@
+base=~/mail
+mfolder=search
+database=~/.mairixdb
+maildir=*:$HOME/Documents/archives/mail...
+omit=search

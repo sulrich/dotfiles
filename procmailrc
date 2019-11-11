@@ -1,0 +1,57 @@
+# -*- mode: sh; fill-column: 78; comment-column: 50; tab-width: 2 -*-
+MAILDIR=/Users/sulrich/mail
+LOGFILE=$MAILDIR/logs/procmail.log
+DEFAULT=$MAILDIR/inbox/
+SHELL=/bin/sh
+SENDMAIL=/usr/sbin/sendmail
+COMSAT=8008
+#VERBOSE=YES
+
+#-------------------------------------------------------------------------------
+# the following lines grok incoming messages for various and sundry reasons.
+#
+
+# add a "Content-Type: application/pgp" header so mutt will know the
+# mail is encrypted.
+:0 fBw
+* ^-----BEGIN PGP MESSAGE-----
+| formail -a "Content-Type: application/pgp; format=text; x-action=encryptsign"
+
+# add a "Content-Type: application/pgp" header so Mutt will know the mail is
+# signed.
+:0 fBw
+* ^-----BEGIN PGP SIGNED MESSAGE-----
+| formail -a "Content-Type: application/pgp; format=text; x-action=sign"
+
+
+#-------------------------------------------------------------------------------
+# make sure that stuff sent explicity to me is handled
+#
+:0 H
+* ^TO_sulrich@juniper.net
+{
+
+  # stuff that kathy sends directly to me @ juniper should go in my INBOX
+  :0:
+  * ^From:.*tuzinski*
+  $DEFAULT
+
+  # explicit filters for stuff that's sent directly to me but requires
+  # additional filtration. of particular note here are automailer
+  # notifications, etc.
+  INCLUDERC="$HOME/.procmail/rc.specials"
+
+  # the remaining mail should be put in my INBOX.  if it passes all of the
+  # above tests
+  :0:
+  * ^TO_sulrich@juniper.net
+  $DEFAULT
+}
+
+#-------------------------------------------------------------------------------
+# include the file that contains our list processing stuff here.
+INCLUDERC="$HOME/.procmail/rc.lists"
+
+# all other mail gets put in the inbox
+:0
+$DEFAULT

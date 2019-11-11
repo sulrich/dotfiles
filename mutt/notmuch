@@ -1,0 +1,132 @@
+# Example NeoMutt config file for the notmuch feature.
+
+# --------------------------------------------------------------------------
+# VARIABLES - shown with their default values
+# --------------------------------------------------------------------------
+# This variable specifies notmuch query limit.
+set nm_db_limit = 0
+# This variable specifies the default Notmuch database in format:
+# notmuch://<absolute path>
+set nm_default_uri = "notmuch:///Users/sulrich/mail"
+# the messages tagged with these tags are excluded and not loaded
+# from notmuch db to mutt unless specified explicitly.
+set nm_exclude_tags = ""
+# This variable specifies private notmuch tags which should not be printed
+# on screen (index, pager).
+set nm_hidden_tags = "unread,draft,flagged,passed,replied,attachment,signed,encrypted"
+# This option specifies timeout for Notmuch database. Default is 5 seconds.
+set nm_open_timeout = 5
+# This variable specifies notmuch query type, supported types: 'threads' and
+# 'messages'.
+set nm_query_type = messages
+# Add messages stored to the mutt record (see $record in the mutt docs) also
+# to notmuch DB. If you reply to an email then the new email inherits tags
+# from the original email.
+
+set nm_record = no
+# Tags that should be removed or added to the to the messages stored in the
+# mutt record.
+
+# example:
+#set record = "~/outbox"
+set nm_record = yes
+set nm_record_tags = "-inbox,archive,me"
+
+set nm_record_tags = ""
+# This variable specifies notmuch tag which is used for unread messages.
+set nm_unread_tag = unread
+# This variable allows you to customize the file browser display for virtual
+# folders to your personal taste.
+# %C   current folder number
+# %f   folder name (description)
+# %m   number of messages in the mailbox *
+# %n   number of unread messages in the mailbox *
+# %N   N if mailbox has new mail, blank otherwise
+# %>X  right justify the rest of the string and pad with character ``X''
+# %|X  pad to the end of the line with character ``X''
+# %*X  soft-fill with character ``X'' as pad
+
+set vfolder_format = "%6n(%6N) %f"
+# When set, mutt will use the first virtual mailbox (see virtual-mailboxes)
+# as a spoolfile.
+set virtual_spoolfile = no
+# setup time window preferences
+# first setup the duration, and then the time unit of that duration
+# when set to 0 (the default) the search window feature is disabled
+set nm_query_window_duration=2
+set nm_query_window_timebase="week" # or "hour", "day", "week", "month", "year"
+
+# --------------------------------------------------------------------------
+# FUNCTIONS - shown with an example mapping
+# --------------------------------------------------------------------------
+# open a different virtual folder
+bind index,pager X change-vfolder
+# read entire thread of the current message
+bind index,pager + entire-thread
+# modify (notmuch) tags
+bind index,pager \` modify-labels
+# modify (notmuch) tag non-interactively.
+#macro index,pager !T "<modify-labels>!todo\n" "toggle the todo tag"
+# generate virtual folder from query
+bind index,pager \eX vfolder-from-query
+# generate virtual folder from query with time window
+#bind index,pager < vfolder-window-backward
+#bind index,pager > vfolder-window-forward
+# modify labels and then hide message
+bind index,pager \eA modify-labels-then-hide
+# toggle between mailboxes and virtual mailboxes
+# bind index,pager ??? sidebar-toggle-virtual
+
+# --------------------------------------------------------------------------
+# COMMANDS - shown with an example
+# --------------------------------------------------------------------------
+#virtual-mailboxes \
+#        "v-inbox"     "notmuch://?query=tag:inbox AND NOT tag:archive" \
+#        "v-unread"    "notmuch://?query=tag:unread"                    \
+#        "v-sent"      "notmuch://?query=tag:sent"        # sets up queries for virtual folders
+
+
+# virtual-mailboxes description notmuch-URI { description notmuch-URI ...}
+# virtual-mailboxes "Climbing" "notmuch://?query=climbing"
+# unvirtual-mailboxes { * | mailbox ...}
+# Replace some tags with icons
+# tag-transforms tag transformed-string { tag transformed-string ...}
+#tag-transforms "inbox"   "i"   \
+#               "unread"  "u"   \
+#               "replied" "↻ "  \
+#               "sent"    "➥ "  \
+#               "todo"    "T"   \
+#               "deleted" "DEL" \
+#               "invites" "CAL"
+
+# The formats must start with 'G' and the entire sequence is case sensitive.
+# tag-formats tag format-string { tag format-string ...}
+#tag-formats "inbox"   "GI"  \
+#             "unread"  "GU" \
+#             "replied" "GR" \
+#             "sent"    "GS" \
+#             "todo"    "Gt" \
+#             "deleted" "GD" \
+#             "invites" "Gi"
+
+# Now instead of using '%g' in your $index_format, which lists all tags
+# in a non-deterministic order, you can something like the following which puts
+# a transformed tag name in a specific spot on the index line:
+# set index_format='%4C %S %[%y.%m.%d] %-18.18n %?GU?%GU& ? %?GR?%GR& ? %?GI?%GI& ? %s'
+
+# The %G formatting sequence may display all tags including tags hidden by
+# nm_hidden_tags.
+#
+# --------------------------------------------------------------------------
+# COLORS - some unpleasant examples are given
+# --------------------------------------------------------------------------
+# These symbols are added to the index-color feature:
+# an individual message tag, %G, uses tag name
+# this symbol uses a pattern
+color index_tag red white "inbox"
+# the transformed message tags, %g
+# this symbol does not use a pattern
+color index_tags green default
+# --------------------------------------------------------------------------
+# vim: syntax=muttrc
+

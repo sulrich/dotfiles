@@ -1,0 +1,211 @@
+# juniper offlineimap configuration.
+[general]
+accounts = jnpr_o365
+# enables us to load passwords, etc. via gnupg21
+pythonfile = ~/bin/offlineimap-helper.py
+ui = Quiet
+
+[Account jnpr_o365]
+# status_backend = sqlite
+localrepository = jnpr_local
+remoterepository = jnpr_remote
+# beware postsynchooks
+# postsynchook = mairix
+# postsynchook = notmuch new
+# autorefresh = 5
+
+[Repository jnpr_local]
+type = Maildir
+localfolders = ~/mail
+
+nametrans = lambda folder: {
+    'inbox':               'INBOX',
+    'drafts':              'Drafts',
+    'outbox':              'Sent Items',
+    'administravia':       'INBOX/administravia',
+    'amazon':              'INBOX/amazon',
+    'apple':               'INBOX/apple',
+    'architects':          'INBOX/architects',
+    'automation-tt':       'INBOX/automation-tt',
+    'aws':                 'INBOX/aws',
+    'azure':               'INBOX/azure',
+    'cloudcpe-tt':         'INBOX/cloudcpe-tt',
+    'contrail':            'INBOX/contrail',
+    'cp-vertical':         'INBOX/cp-vertical',
+    'doc-review':          'INBOX/doc-review',
+    'field-notices':       'INBOX/field-notices',
+    'gitlab':              'INBOX/gitlab',
+    'google':              'INBOX/google',
+    'google-access':       'INBOX/google-access',
+    'google-arch':         'INBOX/google-arch',
+    'google-bugtracker':   'INBOX/google-bugtracker',
+    'google-corp':         'INBOX/google-corp',
+    'google-eng':          'INBOX/google-eng',
+    'google-gcp':          'INBOX/google-gcp',
+    'google-jtac':         'INBOX/google-jtac',
+    'google-oc-telemetry': 'INBOX/google-oc-telemetry',
+    'google-p4':           'INBOX/google-p4',
+    'google-re':           'INBOX/google-re',
+    'google-sr':           'INBOX/google-sr',
+    'gribi':               'INBOX/gribi',
+    'ietf':                'INBOX/ietf',
+    'jnpr-misc':           'INBOX/jnpr-misc',
+    'nanog':               'INBOX/nanog',
+    'nok-core':            'INBOX/nok-core',
+    'nok-dc':              'INBOX/nok-dc',
+    'nok-edge':            'INBOX/nok-edge',
+    'nok-security':        'INBOX/nok-security',
+    'nok-win':             'INBOX/nok-win',
+    'northstar':           'INBOX/northstar',
+    'meeting-info':        'meeting-info',
+    'oif':                 'INBOX/oif',
+    'openconfig':          'INBOX/openconfig',
+    'osx-users':           'INBOX/osx-users',
+    'read-mail':           'INBOX/read-mail',
+    'routing-tt':          'INBOX/routing-tt',
+    'rpd-at':              'INBOX/rpd-at',
+    'se-misc':             'INBOX/se-misc',
+    'security-tt':         'INBOX/security-tt',
+    'spring':              'INBOX/spring',
+    'switching-tt':        'INBOX/switching-tt',
+    'travel':              'INBOX/travel',
+    'training':            'INBOX/training',
+    'uber':                'INBOX/uber',
+    'vmx':                 'INBOX/vmx'}.get(folder, folder)
+
+[Repository jnpr_remote]
+# locally created folders will not be propagated to the server
+createfolders = False
+type = IMAP
+ssl = yes
+sslcacertfile=/usr/local/etc/openssl/cert.pem
+maxconnections = 3
+remotehost = outlook.office365.com
+remoteuser = sulrich@juniper.net
+ipv6 = False
+# use the helper function to the the decrypted passwd via gpg
+remotepasseval = mailpasswd()
+auth_mechanisms = GSSAPI, CRAM-MD5, PLAIN, LOGIN
+
+nametrans = lambda folder: {
+    'INBOX':                     'inbox',
+    'Drafts':                    'drafts',
+    'Sent Items':                'outbox',
+    'INBOX/administravia':       'administravia',
+    'INBOX/amazon':              'amazon',
+    'INBOX/apple':               'apple',
+    'INBOX/architects':          'architects',
+    'INBOX/automation-tt':       'automation-tt',
+    'INBOX/aws':                 'aws',
+    'INBOX/azure':               'azure',
+    'INBOX/cloudcpe-tt':         'cloudcpe-tt',
+    'INBOX/contrail':            'contrail',
+    'INBOX/cp-vertical':         'cp-vertical',
+    'INBOX/doc-review':          'doc-review',
+    'INBOX/field-notices':       'field-notices',
+    'INBOX/gitlab':              'gitlab',
+    'INBOX/google':              'google',
+    'INBOX/google-access':       'google-access',
+    'INBOX/google-arch':         'google-arch',
+    'INBOX/google-bugtracker':   'google-bugtracker',
+    'INBOX/google-corp':         'google-corp',
+    'INBOX/google-eng':          'google-eng',
+    'INBOX/google-gcp':          'google-gcp',
+    'INBOX/google-jtac':         'google-jtac',
+    'INBOX/google-oc-telemetry': 'google-oc-telemetry',
+    'INBOX/google-p4':           'google-p4',
+    'INBOX/google-re':           'google-re',
+    'INBOX/google-sr':           'google-sr',
+    'INBOX/gribi':               'gribi',
+    'INBOX/ietf':                'ietf',
+    'INBOX/jnpr-misc':           'jnpr-misc',
+    'INBOX/nanog':               'nanog',
+    'INBOX/nok-core':            'nok-core',
+    'INBOX/nok-dc':              'nok-dc',
+    'INBOX/nok-edge':            'nok-edge',
+    'INBOX/nok-security':        'nok-security',
+    'INBOX/nok-win':             'nok-win',
+    'INBOX/northstar':           'northstar',
+    'meeting-info':              'meeting-info',
+    'INBOX/oif':                 'oif',
+    'INBOX/openconfig':          'openconfig',
+    'INBOX/osx-users':           'osx-users',
+    'INBOX/read-mail':           'read-mail',
+    'INBOX/routing-tt':          'routing-tt',
+    'INBOX/rpd-at':              'rpd-at',
+    'INBOX/se-misc':             'se-misc',
+    'INBOX/security-tt':         'security-tt',
+    'INBOX/spring':              'spring',
+    'INBOX/switching-tt':        'switching-tt',
+    'INBOX/travel':              'travel',
+    'INBOX/training':            'training',
+    'INBOX/uber':                'uber',
+    'INBOX/vmx':                 'vmx'}.get(folder, folder)
+
+
+folderfilter = lambda folder: folder in  \
+         ['INBOX',
+          'Drafts',
+          'Sent Items',
+          'INBOX/administravia',
+          'INBOX/architects',
+          'INBOX/amazon',
+          'INBOX/apple',
+          'INBOX/automation-tt',
+          'INBOX/aws',
+          'INBOX/azure',
+          'INBOX/cloudcpe-tt',
+          'INBOX/contrail',
+          'INBOX/cp-vertical',
+          'INBOX/doc-review',
+          'INBOX/field-notices',
+          'INBOX/gitlab',
+          'INBOX/google',
+          'INBOX/google-access',
+          'INBOX/google-arch',
+          'INBOX/google-bugtracker',
+          'INBOX/google-corp',
+          'INBOX/google-eng',
+          'INBOX/google-gcp',
+          'INBOX/google-jtac',
+          'INBOX/google-oc-telemetry',
+          'INBOX/google-p4',
+          'INBOX/google-re',
+          'INBOX/google-sr',
+          'INBOX/gribi',
+          'INBOX/ietf',
+          'INBOX/jnpr-misc',
+          'INBOX/nanog',
+          'INBOX/nok-core',
+          'INBOX/nok-dc',
+          'INBOX/nok-edge',
+          'INBOX/nok-security',
+          'INBOX/nok-win',
+          'INBOX/northstar',
+          'meeting-info',
+          'INBOX/oif',
+          'INBOX/openconfig',
+          'INBOX/osx-users',
+          'INBOX/read-mail',
+          'INBOX/routing-tt',
+          'INBOX/rpd-at',
+          'INBOX/se-misc',
+          'INBOX/security-tt',
+          'INBOX/switching-tt',
+          'INBOX/spring',
+          'INBOX/travel',
+          'INBOX/training',
+          'INBOX/uber',
+         'INBOX/vmx'         ]
+
+# uncomment the following section to generate the full list of local mailboxes
+# which are pulled into mutt.  put inbox at the front of the list.  this will
+# make sidebar happy.
+#[mbnames]
+#enabled = yes
+#filename = ~/.mutt/mailboxes
+#header = "mailboxes "
+#footer = "\n"
+#peritem = =%(foldername)s
+#sep = " "
+#read-mailter = "\n"

@@ -1,0 +1,8 @@
+mailboxes =inbox =administravia =amazon =apple =architects =automation-tt =aws  \
+=azure =cloudcpe-tt =contrail =cp-vertical =doc-review =drafts =field-notices   \
+=gitlab =google =google-access =google-arch =google-bugtracker =google-corp     \
+=google-eng =google-gcp =google-jtac =google-oc-telemetry =google-p4 =google-re \
+=google-sr =gribi =ietf =jnpr-misc =meeting-info =nok-core =nok-dc =nok-edge    \
+=nok-security =nok-win =northstar =oif =openconfig =osx-users =outbox           \
+=read-mail =routing-tt =rpd-at =se-misc =security-tt =spring =switching-tt      \
+=training =travel =uber =vmx

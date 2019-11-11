@@ -1,0 +1,214 @@
+#-------------------------------------------------------------------------------
+#
+# steve ulrich's .muttrc (Mutt 0.85) <sulrich@(botwerks.*|juniper.net)>
+#
+# the format of this file is one command per line.  everything after a pound
+# sign (#) is a comment, unless a backward slash (\) precedes it
+#
+#-------------------------------------------------------------------------------
+
+#-------------------------------------------------------------------------------
+# macros
+#
+
+# misc macros
+# reload the configuration file(s)
+macro index <F5> "<enter-command>source ~/.muttrc<enter>" "reload muttrc"
+#macro index <esc>g "<limit> ~h \"(google-re)\"<enter>"
+# save attachments to the Desktop attachments folder
+macro attach W <save-entry><kill-line>/Users/sulrich/Desktop/_attach/
+
+# traceroute for mail - should be platform independent
+macro pager <esc>t "|mailhops|less -c\n" "show trace of mail routing"
+# send this to my tracker
+macro pager <esc>O "|mail_ofocus.rb\n" "send to omnifocus"
+# rot13 the message
+macro pager <esc>R \
+ "<pipe-message>formail -I ''|tr a-zA-Z n-za-mN-ZA-M|less -c<enter>" "rot13"
+
+
+set query_command = '/usr/local/bin/contacts -HlS -f"%fn %ln <%e>" %s' 
+# set query_command = "contacts -Sf '%eTOKEN%n' '%s' | sed -e 's/TOKEN/\t/g'"
+#bind editor <Tab> complete-query
+#bind editor ^T    complete
+
+# some folks have their character set incorrectly but it's really english
+# use the charset-hook to render appropriately
+charset-hook ks_c_5601-1987 UTF-8
+
+#-------------------------------------------------------------------------------
+# boolean vars
+#
+# set allow_8bit      # never do Q-P encoding on legal 8-bit chars
+# set askbcc
+# set autoedit	      # go to the editor right away when composing
+# set auto_tag	      # always operate on tagged messages
+# set confirmcreate  	# prompt for confirmation when creating new files
+# set fast_reply      # skip initial prompts when replying
+# set fcc_attach      # Include attachments in copies of sent messages?
+# set force_name      # fcc by recipient, create if mailbox doesn't exist
+# set header          # include message header when replying
+# set nohold	        # move read message to $mbox
+# set arrow_cursor    # use -> instead of hiliting the whole line
+
+set text_flowed 
+#set mbox_type=maildir
+set ascii_chars      # use ASCII chars instead of ACS chars for threads
+set meta_key         # lets us use the meta key like we really want to
+set askcc
+set noconfirmappend  # don't ask me if i want to append to mailboxes
+set edit_headers     # let me edit the message header when composing
+set help             # show the help lines
+set include	     # always include messages when replying
+set nomark_old	     # i don't care about whether a message is old
+set noprompt_after   # ask me for a command after the external pager exits
+set reverse_alias    # attempt to look up my names for people
+set nosave_empty     # remove files when no messages are left
+set tilde	           # use virtual lines to pad blank lines in the pager
+set date_format="%A, %b %d, %Y"
+set mime_forward=ask-yes  # ask if we want to foward mime-encoded attachments
+set mime_forward_decode=no
+set ts_enabled=yes
+
+# set metoo	          # don't remove my address when replying
+# set mime_forward        # use message/rfc822 type to forward messages
+# set pgp_strict_enc  # use quoted-printable encoding when needed for PGP
+# set recall	        # when there are postponed messages, ask me to resume
+# set resolve	        # move to the next message when an action is performed
+# set save_name	      # save outgoing messages by recipient, if the
+# set status_on_top   # some people prefer the status bar on top
+# set strict_threads  # don't thread by subject
+# set nowait_key      # don't prompt when a pipe returns normal status
+
+#-------------------------------------------------------------------------------
+# string vars
+#
+# set forward_format="[%a: %s]"	  # subject to use when forwarding messages
+# set charset="iso-8859-1"      # character set for your terminal
+# set attribution="on %d, \n %n used their secret decoder ring to generate:"
+# set locale="C"                # locale to use for printing time
+# set to_chars=" +TCF"
+# set url_regexp="((ftp|http)://|mailto:)[^ ]*[^., \n\t>\"]"
+
+set quote_regexp="^ *[a-zA-Z]*[>:#}]"       # how to catch quoted text
+set attribution="%n wrote:"
+
+set indent_string="> "		# how to quote replied text
+set reply_regexp="^re:[ \t]*"	# how to identify replies in the subject:
+
+
+#------------------------------------------------------------------------------
+# path vars
+#
+# note: $folder should be set _before_ any other path vars where `+' or `='
+# is used because paths are expanded when parsed
+#
+# common path elements
+set mailcap_path="~/.mailcap"
+set shell="/bin/zsh"        # program to use for shell escapes
+set tmpdir="/tmp"     # where to store temp files
+
+#---------------------------------------------------------------------
+# quadoption vars (yes / ask-yes / no / ask-no)
+#
+# set abort_unmodified=yes	# automatically abort replies if i don't change the message
+# set delete=yes            # purge deleted messages without asking
+# set edit_forward=ask-no   # prompt for edit when forwarding messages?
+# set include=yes	          # always include the message in replies
+# set move=yes		          # don't ask about moving messages, just do it
+# set print=ask-yes	        # ask me if I really want to print messages
+# set verify_sig=yes	      # don't automatically verify message signatures
+set copy=yes                # always save a copy of outgoing messages
+set reply_to                # always use reply-to if present
+
+#---------------------------------------------------------------------
+# number vars
+#
+# set history=20	# number of lines of history to remember
+# set timeout=0		# how long to wait before autochecking for new mail
+set read_inc=25		# show progress when reading a mailbox
+set write_inc=25	# show progress while writing mailboxes
+
+#---------------------------------------------------------------------
+# pager options (only used if $pager == "internal")
+#
+# set pager_format="-%S- %-20.20f %s"	# format of the pager status bar
+# set pager=less			  # some people prefer an external pager
+# set pager_context=3		# no. of lines of context to give when scrolling
+# set pager_stop        # don't move to the next message on next-page
+# set smart_wrap        # defaults to yes
+
+set markers=yes    # to be used in conjunction with smart_wrap
+set reflow_wrap=-4 # see the manual on this, but it has the wrap as 4 chars to
+                   # the left of the right margin. i happen to like this.
+
+set pager_index_lines=8        	# how many index lines to show in the pager
+
+
+#-------------------------------------------------------------------------------
+# i subscribe to a lot of mailing lists, so this is _very_ useful.  This
+# groups messages on the same subject to make it easier to follow a
+# discussion.  Mutt will draw a nice tree showing how the discussion flows.
+#
+set sort=threads			# primary sorting method
+#set sort_aux=reverse-date-received	# how to sort subthreads
+set sort_browser=reverse-date		# how to sort files in the dir browser
+
+#-------------------------------------------------------------------------------
+#
+# header fields i don't normally want to see
+ignore *		# ignore all lines by default
+# now turn on what i want to see
+unignore	from: subject: to: cc: date: x-mailer: x-url: user-agent: \
+   message-id: keywords: x-mozilla-keys: x-keywords: x-label:
+hdr_order	from: subject: to: cc: message-id: date: x-mailer: x-url: \
+   user-agent: keywords: x-mozilla-keys: x-keywords: x-label:
+
+#-------------------------------------------------------------------------------
+# attachment cruft
+#
+
+#set implicit_autoview=yes
+auto_view         text/html
+
+# misc. additional note - when operating under tmux there's some oddities with
+# the operation of opening html files in quickview (ala qlmanage) this has been
+# addressed through the use of a wrapper script.  when text/html files are
+# opened in the attachments viewer they will use the mailcap entry which calls
+# this wrapper script. (20140309 - sulrich)
+#
+# the following line helps to deal with multi-part emails where the sending
+# client included both a plain text and html version of their email.
+alternative_order  text/html text/enhanced text/plain
+
+# mime_lookup application/octet-stream
+# auto_view         text/x-vcard
+# auto_view         application/ms-tnef
+
+# the following triggers the use of the appropriate mailcap entry
+bind attach <return>    view-mailcap
+
+
+#-------------------------------------------------------------------------------
+#
+# key bindings
+#
+#	maps:
+#		attach		attachment menu
+#		browser		directory browser
+#		compose		compose menu
+#		editor		line editor
+#		index		message index
+#		pager		text viewer
+#		postpone	postponed message recall menu
+#		url		url menu
+
+bind index "\e<" first-entry  # emacs-like bindings for mutt
+bind index "\e>" last-entry   # emacs-like bindings for mutt
+# bind index "\ei" ignore-thread
+unset crypt_autosign
+unset crypt_autoencrypt
+
+set crypt_replysign
+set pgp_verify_sig=yes
+set pgp_timeout=60

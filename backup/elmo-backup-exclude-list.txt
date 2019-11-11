@@ -1,0 +1,6 @@
+Box
+Documents/Virtual Machines.localized
+Dropbox
+Library
+.vagrant.d
+Downloads/eos-images
