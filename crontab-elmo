@@ -1,0 +1,21 @@
+# Output of the crontab jobs (including errors) is sent through
+# email to the user the crontab file belongs to (unless redirected).
+#
+# For example, you can run a backup of all your user accounts
+# at 5 a.m every week with:
+# 0 5 * * 1 tar -zcf /var/backups/home.tgz /home/
+#
+# For more information see the manual pages of crontab(5) and cron(8)
+#
+# m h  dom mon dow   command
+# m h  dom mon dow   command
+# field         allowed values
+# -----         --------------
+# minute        0-59
+# hour          0-23
+# day of month  1-31
+# month         1-12 (or names, see below)
+# day of week   0-7 (0 or 7 is Sun, or use names)
+
+3 0 * * mon    $HOME/bin/weekly-log.sh
+3 0 1 * *     $HOME/bin/fresh-month.sh
