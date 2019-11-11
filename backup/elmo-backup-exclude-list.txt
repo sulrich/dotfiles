@@ -1,6 +1,10 @@
+.vagrant.d
 Box
 Documents/Virtual Machines.localized
+Downloads/eos-images
 Dropbox
 Library
-.vagrant.d
-Downloads/eos-images
+Library/Application Support/Google/Chrome/
+Library/Application Support/Google/DriveFS/
+Library/Caches/Google
+Library/Containers/com.docker.docker/Data/vms
