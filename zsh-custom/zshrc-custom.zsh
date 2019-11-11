@@ -31,7 +31,7 @@ setaliases() {
   alias -g L="|less"            #  L after a command to page through the output.
   alias -g NUL="> /dev/null 2>&1"
   alias -g TL="| tail -20"
-  alias ago="ssh -l admin"
+  alias ago="ssh -l admin -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null"
   alias e="emacsclient"
   alias gitdiff-lastone="git diff HEAD^^ $1"
   alias gitlog-lastone="git log -p -n 1 $1"
