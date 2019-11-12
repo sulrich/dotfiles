@@ -88,9 +88,9 @@
 
 # this seems to be a useful bit of functionality to fix github urls. it does
 # seem to trip some things up in brew.  use with caution.  
-[url "git@github.com:"]
-  insteadOf = https://github.com/
-
+# [url "git@github.com:"]
+#   insteadOf = https://github.com/
+# 
 [http]
   cookiefile = ~/.credentials/gitcookies
 
