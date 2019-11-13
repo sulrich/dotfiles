@@ -67,6 +67,13 @@ function setpath () {
 
   LOCAL_PATH="/usr/local/bin:/usr/local/sbin:${GOPATH}/bin"
 
+  # handle cases where we need to shim the go binaries into the path due to a
+  # non-default installation of golang
+  if [[ -d "/usr/local/go/bin" ]];
+  then
+    LOCAL_PATH="/usr/local/go/bin:${LOCAL_PATH}"
+  fi
+
   # we should be running pyenv for all our python needs interactively
   if (( ${+PYENV_ROOT} )); 
   then
