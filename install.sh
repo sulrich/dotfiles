@@ -1,15 +1,38 @@
 #!/bin/bash
 
-# create the framework of dotfiles, etc that i use on a standard unix system.
-# this presumes that i'm setting up shop on a new machine / laptop.  
-
+# create the framework of dotfiles and supporting software, etc that i
+# use on a standard unix system.  this presumes that i'm setting up
+# shop on a new machine / laptop.
+# 
 # make sure that direnv is installed 
 
 # installation script to pull down the necessary configuration files for me to
 # bootstrap a machine.
 
-# Xdefaults ansible.cfg cloginrc flake8 gitconfig gitignore gnupg gvimrc mailcap
-# octaverc pb.sh screenrc sqliterc tmux.conf urlview vimrc
+declare -a DOTFILES=( Xdefaults ansible.cfg cloginrc flake8 gitconfig
+ gitignore gnupg gvimrc mailcap octaverc pb.sh screenrc sqliterc
+ tmux.conf urlview vimrc)
+
+
+ARCH=""
+case $(uname -m) in
+    i386)   ARCH="386" ;;
+    i686)   ARCH="386" ;;
+    x86_64) ARCH="amd64" ;;
+    arm)    dpkg --print-architecture | grep -q "arm64" && ARCH="arm64" || ARCH="arm" ;;
+esac
+
+
+install_go() {
+  echo "installing go"
+  mkdir -p "${HOME}/go"
+  local GO_VERSION=$(curl -s "https://golang.org/VERSION?m=text")
+  local GO_OS=$(uname -s | tr "[:upper:]" "[:lower:]"n)
+  local FILENAME="${GO_VERSION}.${GO_OS}-${ARCH}.tar.gz"
+  echo "downloading: https://dl.google.com/go/${GO_VERSION}.${GO_OS}-${ARCH}.tar.gz" 
+  curl -s "https://dl.google.com/go/${GO_VERSION}.${GO_OS}-${ARCH}.tar.gz" -o "${FILENAME}"
+  # sudo tar -C /usr/local -xzf "${FILENAME}"
+}
 
 # pull down oh-my-zsh
 install_omz() {
@@ -29,9 +52,9 @@ install_snmp_mibs() {
 install_vim_modules() {
   echo "installing vim customizations"
   git clone https://github.com/sulrich/vim.git "${HOME}/.vim"
-  cd "${HOME}/.vim"
+  cd "${HOME}/.vim" || return
   git submodule update --init
-  cd "${HOME}"
+  cd "${HOME}" || return
 }
 
 # pull down pyenv
@@ -42,13 +65,21 @@ install_pyenv(){
 
 make_symlinks() {
   echo "making dotfile symlinks" 
+  ln -s "${HOME}/.home/zsh-custom/zlogin" "${HOME}/.zlogin"
+  ln -s "${HOME}/.home/zsh-custom/zshenv" "${HOME}/.zshenv"
+  
+  for DOTFILE in "${DOTFILES[@]}"
+  do
+    echo  "- ${DOTFILE}"
+    ln -s "${HOME}/.home/${DOTFILE}" "${HOME}/.${DOTFILE}"
+  done
 
+  
 }
 
 install_personal_bin() {
-  echo "installing personal scripts/binaries ..."
-
-
+  echo "installing personal scripts/binaries into home directory ..."
+  git clone https://github.com/sulrich/home-bin.git "${HOME}/bin"
 }
 
 # after having built pyenv end the necessary python - install powerline to make
@@ -64,7 +95,80 @@ install_personal_bin() {
 # copy my authorized ssh public key 
 sync_public_ssh_keys() {
   mkdir -p "${HOME}/.ssh"
-  curl -s https://github.com/sulrich.keys >> "${HOME}/.ssh/authorize_keys"
+  chmod 0700 "${HOME}/.ssh"
+  curl -s https://github.com/sulrich.keys >> "${HOME}/.ssh/authorized_keys"
 }
 
 
+install_go() {
+  echo "installing go"
+  mkdir -p "${HOME}/go"
+  local GO_VERSION="latest"
+  local GO_ARCH=$(uname -i)
+  local GO_OS=$(uname -s)  
+  echo "https://dl.google.com/go/${GO_VERSION}.${GO_OS}-${GO_ARCH}.tar.gz"
+  
+}
+
+
+print_usage() {
+
+  cat << EOF
+
+$0 command
+
+available commands
+
+command: bootstrap
+
+downloads the baseline repos and binaries to make a reasonably useful
+working environment.  makes dotfile symlinks, downloads the ~/bin
+collection and takes a swing at getting pyenv in working order.
+
+command: install-snmp
+
+downloads the preferred collection of SNMP mibs
+
+command: make-symlinks
+
+deletes existing dotfiles or copies the dotfile to ~/dotfiles-backup
+and regenerates symlinks based on the current state of the DOTFILES
+list in this script.
+
+command: sync-public-keys
+
+updates my authorized_keys from the public keys posted to github.
+
+EOF
+ 
+}
+
+
+while [[ $# -gt 0 ]];
+do
+  KEY="$1"
+
+  case "${KEY}" in
+  install-snmp)
+    echo "installing SNMP mibs"
+    shift
+    ;;
+  make-symlinks)
+    echo "regenerating symlinks"
+    # backup_dotfiles
+    # make_symlinks
+    shift
+    ;;
+  sync-public-keys)
+    echo "regenerating symlinks"
+    # backup_dotfiles
+    # make_symlinks
+    shift
+    ;;
+  *)  # no options specified
+    print_usage
+    exit 
+    ;;
+  esac
+  shift
+done
