@@ -64,7 +64,7 @@ install_personal_bin() {
 # copy my authorized ssh public key 
 sync_public_ssh_keys() {
   mkdir -p "${HOME}/.ssh"
-  curl -s https://github.com/sulrich.keys >> "${HOME}/.ssh/authorize_keys"
+  curl -s https://github.com/sulrich.keys >> "${HOME}/.ssh/authorized_keys"
 }
 
 
