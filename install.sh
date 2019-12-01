@@ -26,11 +26,11 @@ esac
 install_go() {
   echo "installing go"
   mkdir -p "${HOME}/go"
-  local GO_VERSION=$(curl -s "https://golang.org/VERSION?m=text")
-  local GO_OS=$(uname -s | tr "[:upper:]" "[:lower:]"n)
-  local FILENAME="${GO_VERSION}.${GO_OS}-${ARCH}.tar.gz"
-  echo "downloading: https://dl.google.com/go/${GO_VERSION}.${GO_OS}-${ARCH}.tar.gz" 
-  curl -s "https://dl.google.com/go/${GO_VERSION}.${GO_OS}-${ARCH}.tar.gz" -o "${FILENAME}"
+  GO_VERSION=$(curl -s "https://golang.org/VERSION?m=text")
+  GO_OS=$(uname -s | tr "[:upper:]" "[:lower:]"n)
+  FILENAME="${GO_VERSION}.${GO_OS}-${ARCH}.tar.gz"
+  echo "downloading: https://dl.google.com/go/${GO_VERSION}.${GO_OS}-${ARCH}.tar.gz to ${FILENAME}" 
+  # curl -s "https://dl.google.com/go/${GO_VERSION}.${GO_OS}-${ARCH}.tar.gz" -o "${FILENAME}"
   # sudo tar -C /usr/local -xzf "${FILENAME}"
 }
 
@@ -100,15 +100,6 @@ sync_public_ssh_keys() {
 }
 
 
-install_go() {
-  echo "installing go"
-  mkdir -p "${HOME}/go"
-  local GO_VERSION="latest"
-  local GO_ARCH=$(uname -i)
-  local GO_OS=$(uname -s)  
-  echo "https://dl.google.com/go/${GO_VERSION}.${GO_OS}-${GO_ARCH}.tar.gz"
-  
-}
 
 
 print_usage() {
@@ -144,11 +135,20 @@ EOF
 }
 
 
-while [[ $# -gt 0 ]];
-do
-  KEY="$1"
+# check to see if there's been an action specified 
+if [ $# -eq 0 ];
+then
+  echo "no options specified"
+  print_usage
+  exit 1
+fi
 
-  case "${KEY}" in
+# parse command line args
+PARAMS=""
+
+while (( "$#" )); 
+do
+  case "$1" in
   install-snmp)
     echo "installing SNMP mibs"
     shift
@@ -165,10 +165,28 @@ do
     # make_symlinks
     shift
     ;;
-  *)  # no options specified
+  install-go)
+    echo "installing go-lang"
+    install_go
+    shift
+    ;;
+  -h)  # end of args parsing
     print_usage
+    shift
+    break
+    ;;
+  --)  # end of args parsing
+    shift
+    break
+    ;;
+  *)  # preserve positional arguments
+    print_usage
+    PARAMS="$PARAMS $1"
+    shift
     exit 
     ;;
   esac
-  shift
 done
+
+# set positional arguments in their proper place
+eval set -- "$PARAMS"
