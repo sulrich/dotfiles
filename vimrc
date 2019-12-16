@@ -54,7 +54,7 @@ set ttimeoutlen=100
 " per file type specifications
 " this triggers the right defaults in programming lang modes
 filetype on
-" filetype indent on
+filetype indent on
 filetype plugin on
 syntax enable
 
