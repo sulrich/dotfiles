@@ -19,19 +19,21 @@ case $(uname -m) in
     i386)   ARCH="386" ;;
     i686)   ARCH="386" ;;
     x86_64) ARCH="amd64" ;;
-    arm)    dpkg --print-architecture | grep -q "arm64" && ARCH="arm64" || ARCH="arm" ;;
+    arm*)   dpkg --print-architecture | grep -q "arm64" && ARCH="arm64" || ARCH="armv6l" ;;
 esac
 
 
 install_go() {
   echo "installing go"
   mkdir -p "${HOME}/go"
-  GO_VERSION=$(curl -s "https://golang.org/VERSION?m=text")
-  GO_OS=$(uname -s | tr "[:upper:]" "[:lower:]"n)
-  FILENAME="${GO_VERSION}.${GO_OS}-${ARCH}.tar.gz"
+  local GO_VERSION=$(curl -s "https://golang.org/VERSION?m=text")
+  local GO_OS=$(uname -s | tr "[:upper:]" "[:lower:]"n)
+  local FILENAME="${GO_VERSION}.${GO_OS}-${ARCH}.tar.gz"
+  # echo ${ARCH}
   echo "downloading: https://dl.google.com/go/${GO_VERSION}.${GO_OS}-${ARCH}.tar.gz to ${FILENAME}" 
-  # curl -s "https://dl.google.com/go/${GO_VERSION}.${GO_OS}-${ARCH}.tar.gz" -o "${FILENAME}"
-  # sudo tar -C /usr/local -xzf "${FILENAME}"
+  curl -s           "https://dl.google.com/go/${GO_VERSION}.${GO_OS}-${ARCH}.tar.gz" -o "${FILENAME}"
+  sudo tar -C /usr/local -xzf "${FILENAME}"
+  rm -i "${FILENAME}
 }
 
 # pull down oh-my-zsh
@@ -112,23 +114,23 @@ available commands
 
 command: bootstrap
 
-downloads the baseline repos and binaries to make a reasonably useful
-working environment.  makes dotfile symlinks, downloads the ~/bin
-collection and takes a swing at getting pyenv in working order.
+  downloads the baseline repos and binaries to make a reasonably useful working
+  environment.  makes dotfile symlinks, downloads the ~/bin collection and
+  takes a swing at getting pyenv in working order.
 
 command: install-snmp
 
-downloads the preferred collection of SNMP mibs
+  downloads the preferred collection of SNMP mibs
 
 command: make-symlinks
 
-deletes existing dotfiles or copies the dotfile to ~/dotfiles-backup
-and regenerates symlinks based on the current state of the DOTFILES
-list in this script.
+  deletes existing dotfiles or copies the dotfile to ~/dotfiles-backup and
+  regenerates symlinks based on the current state of the DOTFILES list in this
+  script.
 
 command: sync-public-keys
 
-updates my authorized_keys from the public keys posted to github.
+  updates my authorized_keys from the public keys posted to github.
 
 EOF
  
@@ -161,13 +163,28 @@ do
     ;;
   sync-public-keys)
     echo "regenerating symlinks"
-    # backup_dotfiles
-    # make_symlinks
+    sync_public_ssh_keys
     shift
     ;;
   install-go)
     echo "installing go-lang"
     install_go
+    shift
+    ;;
+  install-omz)
+    echo "installing oh-my-zsh"
+    install_omz
+    shift
+    ;;
+  install-bin)
+    echo "installing personal scripts"
+    install_personal_bin
+    shift
+    ;;
+  install-vim)
+    echo "installing vim"
+    sudo apt install vim-nox
+    install_vim_modules
     shift
     ;;
   -h)  # end of args parsing
