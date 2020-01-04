@@ -33,7 +33,7 @@ install_go() {
   echo "downloading: https://dl.google.com/go/${GO_VERSION}.${GO_OS}-${ARCH}.tar.gz to ${FILENAME}" 
   curl -s           "https://dl.google.com/go/${GO_VERSION}.${GO_OS}-${ARCH}.tar.gz" -o "${FILENAME}"
   sudo tar -C /usr/local -xzf "${FILENAME}"
-  rm -i "${FILENAME}
+  rm -i "${FILENAME}"
 }
 
 # pull down oh-my-zsh
@@ -61,7 +61,7 @@ install_vim_modules() {
 
 # pull down pyenv
 install_pyenv(){
-  echo "downloading various SNMP mibs"
+  echo "cloning pyenv"
   git clone https://github.com/pyenv/pyenv.git "${HOME}/.pyenv"
 }
 
@@ -75,8 +75,6 @@ make_symlinks() {
     echo  "- ${DOTFILE}"
     ln -s "${HOME}/.home/${DOTFILE}" "${HOME}/.${DOTFILE}"
   done
-
-  
 }
 
 install_personal_bin() {
@@ -102,6 +100,14 @@ sync_public_ssh_keys() {
 }
 
 
+install_minimum_packages() {
+  # install the minimum set of bootstrap tools for a host
+   sudo apt install                                                             \
+     build-essential curl direnv fzf git libbz2-dev libffi-dev liblzma-dev      \
+     libncurses5-dev libncursesw5-dev libreadline-dev libsqlite3-dev libssl-dev \
+     llvm make python3-dev python3-pip python-openssl ripgrep tmux vim-nox      \
+     wget xz-utils zlib1g-dev zsh
+}
 
 
 print_usage() {
@@ -110,17 +116,23 @@ print_usage() {
 
 $0 command
 
-available commands
+available commands:
+
+  install-bin - downloads and installs my collection of ${HOME}/bin scripts
+  install-go - downloads and installs the latest version of go
+  install-min-packages - (ubuntu/debian) installs my minimum set of tools
+  install-omz - downloads and installs the latest version of oh-my-zsh
+  install-pyenv - downloads pyenv
+  install-snmp - downloads a collection of snmp mibs
+  install-vim - installs vim-nox and my collection of modules.
+  make-symlinks - generates the necessary dotfiles in ${HOME}
+  sync-public-keys - downloads my public keys from github
 
 command: bootstrap
 
   downloads the baseline repos and binaries to make a reasonably useful working
   environment.  makes dotfile symlinks, downloads the ~/bin collection and
   takes a swing at getting pyenv in working order.
-
-command: install-snmp
-
-  downloads the preferred collection of SNMP mibs
 
 command: make-symlinks
 
@@ -130,7 +142,7 @@ command: make-symlinks
 
 command: sync-public-keys
 
-  updates my authorized_keys from the public keys posted to github.
+  updates authorized_keys from the public keys posted to github.
 
 EOF
  
@@ -179,6 +191,16 @@ do
   install-bin)
     echo "installing personal scripts"
     install_personal_bin
+    shift
+    ;;
+  install-pyenv)
+    echo "installing pyenv"
+    install_pyenv
+    shift
+    ;;
+  install-min-packages)
+    echo "installing essentials"
+    install_minimum_packages
     shift
     ;;
   install-vim)
