@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# note that the minimum bash version for this script is 4.0 to support
+# the associative arrays
+
 # create the framework of dotfiles and supporting software, etc that i
 # use on a standard unix system.  this presumes that i'm setting up
 # shop on a new machine / laptop.
@@ -8,10 +11,6 @@
 
 # installation script to pull down the necessary configuration files for me to
 # bootstrap a machine.
-
-declare -a DOTFILES=( Xdefaults ansible.cfg cloginrc flake8 gitconfig
- gitignore gnupg gvimrc mailcap octaverc pb.sh screenrc sqliterc
- tmux.conf urlview vimrc)
 
 
 ARCH=""
@@ -66,14 +65,38 @@ install_pyenv(){
 }
 
 make_symlinks() {
+  if [ "${BASH_VERSINFO:-0}" -lt 4 ]
+  then
+    echo "error: bash version too low (${BASH_VERSION})"
+    exit 1
+  fi
+
+  declare -A DOTFILES
+  DOTFILES=(
+    ['Xdefaults']=".Xdefaults"
+    ['ansible.cfg']=".ansible.cfg"
+    ['cloginrc']=".cloginrc"
+    ['flake8']=".flake8"
+    ['gitconfig']=".gitconfig"
+    ['gitignore']=".gitignore"
+    ['gvimrc']=".gvimrc"
+    ['mailcap']=".mailcap"
+    ['octaverc']=".octaverc"
+    ['screenrc']=".screenrc"
+    ['sqliterc']=".sqliterc"
+    ['tmux.conf']=".tmux.conf"
+    ['urlview']=".urlview"
+    ['vimrc']=".vimrc"
+  )
+
   echo "making dotfile symlinks" 
   ln -s "${HOME}/.home/zsh-custom/zlogin" "${HOME}/.zlogin"
   ln -s "${HOME}/.home/zsh-custom/zshenv" "${HOME}/.zshenv"
   
-  for DOTFILE in "${DOTFILES[@]}"
+  for DFILE in "${!DOTFILES[@]}";
   do
-    echo  "- ${DOTFILE}"
-    ln -s "${HOME}/.home/${DOTFILE}" "${HOME}/.${DOTFILE}"
+    echo  "- ${DFILE} -> ${DOTFILES[$DFILE]}"
+    ln -s "${HOME}/.home/${DFILE}" "${HOME}/${DOTFILES[$DFILE]}"
   done
 }
 
@@ -168,9 +191,9 @@ do
     shift
     ;;
   make-symlinks)
-    echo "regenerating symlinks"
+    # echo "regenerating symlinks"
     # backup_dotfiles
-    # make_symlinks
+    make_symlinks
     shift
     ;;
   sync-public-keys)
