@@ -45,6 +45,10 @@ setaliases() {
   alias vi="vim"
   # overrides to prevent craziness from oh-my-zsh
   unalias grep
+  # mess with escaping jq stuff at your own risk
+  alias json2path="jq '[leaf_paths as \$p | {'key': \$p | join(\"/\"), 'value': getpath(\$p)}] | from_entries'"
+  # the following requires imagemagick to be installed
+  alias mkwebp="convert $1 -quality 100 -define webp-:lossless=true $2"
 }
 
 # misc. completions experiments and command line editing options
