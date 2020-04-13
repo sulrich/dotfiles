@@ -40,7 +40,7 @@ setaliases() {
   alias ll="ls -lh"
   alias lld="ls -ld -- */"
   alias ls="ls -CF"
-  alias quickhttp="python -m SimpleHTTPServer 4000"
+  alias quickhttp="python2 -m SimpleHTTPServer 4000"
   alias rm="rm -f"
   alias vi="vim"
   # overrides to prevent craziness from oh-my-zsh
