@@ -28,7 +28,7 @@ HISTSIZE=100
 # aliases
 #
 setaliases() {
-  alias -g L="|less"            #  L after a command to page through the output.
+  alias -g L=" 2>&1|less"  #  page through the output, inluding STDERR
   alias -g NUL="> /dev/null 2>&1"
   alias -g TL="| tail -20"
   alias ago="ssh -l admin -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null"
@@ -40,7 +40,7 @@ setaliases() {
   alias ll="ls -lh"
   alias lld="ls -ld -- */"
   alias ls="ls -CF"
-  alias quickhttp="python -m SimpleHTTPServer 4000"
+  alias quickhttp="python2 -m SimpleHTTPServer 4000"
   alias rm="rm -f"
   alias vi="vim"
   # overrides to prevent craziness from oh-my-zsh
