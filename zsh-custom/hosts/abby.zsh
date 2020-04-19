@@ -3,7 +3,7 @@
 #
 
 
-# this should really only be run on bert.botwerks.net - it provides a means to
+# this should really only be run on abby.botwerks.net - it provides a means to
 # archive pictures based on date/time info into a prescribed hierarchy.
 function arch-photos () {
     local PHOTO_ARCH="/mnt/snuffles/media/GCP-MediaBackup/photo-archive"
