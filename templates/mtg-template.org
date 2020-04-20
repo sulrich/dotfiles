@@ -1,0 +1,15 @@
+* %<%Y%m%d (%H:%M:%S - %Z)> - %?
+*attendees:*
+-
+-
+*location:*
+-
+
+** notes
+
+%i
+%^C
+
+** action items / next steps
+
+-- %U

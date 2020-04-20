@@ -1,0 +1,21 @@
+# -*- mode: makefile; fill-column: 78; comment-column: 50; tab-width: 2 -*-
+
+# get the rood directory of the Makefile
+ROOT_DIR:=$(shell dirname $(realpath $(lastword $(MAKEFILE_LIST))))
+
+
+.PHONY all
+all: 
+## all: create the final build product
+
+clean:
+## clean: whack all targets
+	rm $(CSS_TARGETS) $(SCSS_TARGETS)
+
+
+
+.PHONY: help
+help:
+## help: prints this help message
+	@echo "usage: \n"
+	@sed -n 's/^##//p' ${MAKEFILE_LIST} | column -t -s ':' |  sed -e 's/^/ /'

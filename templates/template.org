@@ -1,0 +1,18 @@
+# -*- mode: org; mode:visual-line; tab-width: 2 -*-
+#+DRAWERS: BGINFO
+#+STARTUP: indent nofninline
+#+EXPORT_FILE_NAME: XXX
+#+AUTHOR: steve ulrich
+#+EMAIL: sulrich@
+#+TITLE: XXXX
+#+OPTIONS: H:4 num:nil toc:nil author:nil *:nil email:nil
+
+* document history
+
+version: -00
+
+|  ver | author  | date     | description                                        |
+| <r4> | <l>     | <l8>     | <l50>                                              |
+|------+---------+----------+----------------------------------------------------|
+|  -00 | sulrich | YYYYMMDD | initial notes                                      |
+|------+---------+----------+----------------------------------------------------|
