@@ -24,7 +24,9 @@ esac
 
 install_go() {
   echo "installing go"
-  mkdir -p "${HOME}/go"
+  mkdir -p "${HOME}/go/bin"
+  mkdir -p "${HOME}/go/src"
+  mkdir -p "${HOME}/go/pkg"
   local GO_VERSION=$(curl -s "https://golang.org/VERSION?m=text")
   local GO_OS=$(uname -s | tr "[:upper:]" "[:lower:]"n)
   local FILENAME="${GO_VERSION}.${GO_OS}-${ARCH}.tar.gz"
@@ -60,8 +62,13 @@ install_vim_modules() {
 
 # pull down pyenv
 install_pyenv(){
+  echo "pulling down some key utilities for vim first. note, these will be"
+  echo "installed locally via the --user flag"
+  pip3 install black --user
+  pip3 install websockets --user
   echo "cloning pyenv"
   git clone https://github.com/pyenv/pyenv.git "${HOME}/.pyenv"
+  echo "you'll need to re-init your shell to pick up pyenv"
 }
 
 make_symlinks() {
@@ -92,6 +99,10 @@ make_symlinks() {
   echo "making dotfile symlinks" 
   ln -s "${HOME}/.home/zsh-custom/zlogin" "${HOME}/.zlogin"
   ln -s "${HOME}/.home/zsh-custom/zshenv" "${HOME}/.zshenv"
+
+  echo "making local ~/.credentials cache"
+  mkdir -p "${HOME}/.credentials"
+  chmod 0700 "${HOME}/.credentials"
   
   for DFILE in "${!DOTFILES[@]}";
   do
@@ -197,7 +208,7 @@ do
     shift
     ;;
   sync-public-keys)
-    echo "regenerating symlinks"
+    echo "pulling down public ssh keys"
     sync_public_ssh_keys
     shift
     ;;
