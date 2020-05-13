@@ -43,6 +43,7 @@ setaliases() {
   alias quickhttp="python2 -m SimpleHTTPServer 4000"
   alias rm="rm -f"
   alias vi="vim"
+  alias mutt="neomutt"   # mutt is dead, long live mutt.
   # overrides to prevent craziness from oh-my-zsh
   unalias grep
   # mess with escaping jq stuff at your own risk
