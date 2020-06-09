@@ -89,3 +89,5 @@
 [http]
   cookiefile = ~/.credentials/gitcookies
 
+[pull]
+	rebase = false
