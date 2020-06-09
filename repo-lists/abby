@@ -1,0 +1,7 @@
+declare -a REPO_LIST=(
+  # picobrew repos
+  "${HOME}/src/picobrew-server"
+  "${HOME}/src/picobrew_pico"
+)
+
+
