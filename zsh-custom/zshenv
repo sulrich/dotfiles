@@ -1,16 +1,18 @@
 # -*- Mode: shell-script; tab-width: 2 -*- *
 # 
 
+export HOSTNAME=$(hostname)
+export PLATFORM=$(uname)
 # pull in platform specific environment variables, etc.  
-if [ -e "${HOME}/.home/zsh-custom/platform/$(uname)-env.zsh" ]
+if [ -e "${HOME}/.home/zsh-custom/platform/${PLATFORM}-env.zsh" ]
 then
-  source "${HOME}/.home/zsh-custom/platform/$(uname)-env.zsh"
+  source "${HOME}/.home/zsh-custom/platform/${PLATFORM}-env.zsh"
 fi
 
 # pull in host specific environment variables, etc.
-if [ -e  "${HOME}/.home/zsh-custom/hosts/$(hostname)-env.zsh" ]
+if [ -e  "${HOME}/.home/zsh-custom/hosts/${HOSTNAME}-env.zsh" ]
 then
-  source "${HOME}/.home/zsh-custom/hosts/$(hostname)-env.zsh"
+  source "${HOME}/.home/zsh-custom/hosts/${HOSTNAME}-env.zsh"
 fi
 
 #---------------------------------------------------------------------
