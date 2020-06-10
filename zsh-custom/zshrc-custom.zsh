@@ -50,6 +50,8 @@ setaliases() {
   alias json2path="jq '[leaf_paths as \$p | {'key': \$p | join(\"/\"), 'value': getpath(\$p)}] | from_entries'"
   # the following requires imagemagick to be installed
   alias mkwebp="convert $1 -quality 100 -define webp-:lossless=true $2"
+  # get rid of those annoying git filemode issues
+  alias gitfilemode="git config core.filemode false"
 }
 
 # misc. completions experiments and command line editing options
