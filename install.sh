@@ -60,6 +60,13 @@ install_vim_modules() {
   cd "${HOME}" || return
 }
 
+# after having built pyenv end the necessary python - install
+# powerline to make things look cool - this will likely have some
+# local font dependencies if this is run on an actual
+# workstation. (read: Mac OS)
+# 
+# pip install powerline-status
+
 # pull down pyenv
 install_pyenv(){
   echo "pulling down some key utilities for vim first. note, these will be"
@@ -116,15 +123,6 @@ install_personal_bin() {
   git clone https://github.com/sulrich/home-bin.git "${HOME}/bin"
 }
 
-# after having built pyenv end the necessary python - install powerline to make
-# things look cool
-# pip install powerline-status
-# 
-# we should also install black to make python formatting work. depending on the
-# version of vim installed, we may need to override the pip3 version to be the
-# system version of python.  e.g.: `pyenv shell system`, we'll also need to make
-# sure that the right version of pip is installed `apt install python3-pip` and
-# be sure to install black to the user location (`pip3 install black ---user`)
 
 # copy my authorized ssh public key 
 sync_public_ssh_keys() {
