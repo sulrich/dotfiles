@@ -11,12 +11,6 @@ declare -a REPO_LIST=(
   "${HOME}/src/openconfig/ygot"
   "${HOME}/src/yang"
 
-  # P4 repos
-  "${HOME}/src/p4/tutorials"
-  "${HOME}/src/p4/PI"
-  "${HOME}/src/p4/p4-applications"
-  "${HOME}/src/p4/p4-spec"
-
   # arista repos - these have been deprecated for g* protocol work
   # "${HOME}/src/arista/gnmitest_common"
   # "${HOME}/src/arista/gnmitest_arista"
