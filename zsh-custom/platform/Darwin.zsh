@@ -8,7 +8,7 @@ alias flashfind="find ~/Library -name \*sol"
 alias lsusb='system_profiler SPUSBDataType'
 alias fixopenwith='/System/Library/Frameworks/CoreServices.framework/Frameworks/LaunchServices.framework/Support/lsregister -kill -r -domain local -domain system -domain user'
 alias topc="top -o cpu"
-alias vctl="/Applications/VMware Fusion.app/Contents/Public/vctl"
+alias vctl="/Applications/VMware\ Fusion.app/Contents/Public/vctl"
 
 function set_volume() { sudo osascript -e "set Volume $1" }
 function ql () { qlmanage -p "$@" >& /dev/null & }
