@@ -12,10 +12,25 @@ rolloutbox () {
 # kill offlineimap instances and clean up the lock file. 
 koff () {
   pkill -if offlineimap
-  rm "${HOME}/.offlineimap/arista_o365.lock"
+  rm "${HOME}/.offlineimap/arista.lock"
   offlineimap -u basic
 }
 
-# misc. arista specific aliases
 
+ashark() {
+  if [ "$1" = "" ]
+  then
+    cat <<EOF
+usage: ashark <hostname|ip> <remote_interface>
+
+EOF
+
+  else
+    ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null \
+        admin@$1 "bash sudo tcpdump -s 0 -Un -w - -i $2"            \
+      | tshark -i -
+  fi
+}
+
+# misc. arista specific aliases
 source "${HOME}/.home/pb.sh"
