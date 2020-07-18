@@ -21,10 +21,7 @@ pyenv-brew-relink() {
   rm -f "${HOME}/.pyenv/versions/*-brew"
 
   for i in $(brew --cellar python)/*; do
-    ln -s "${i}" "${HOME}/.pyenv/versions/${i##/*/}-brew"
-  done
-
-  for i in $(brew --cellar python@2)/*; do
+    echo "brew version: $i"
     ln -s "${i}" "${HOME}/.pyenv/versions/${i##/*/}-brew"
   done
 }
