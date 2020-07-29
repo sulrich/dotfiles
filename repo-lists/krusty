@@ -14,6 +14,7 @@ declare -a REPO_LIST=(
   # arista repos - these have been deprecated for g* protocol work
   # "${HOME}/src/arista/gnmitest_common"
   # "${HOME}/src/arista/gnmitest_arista"
+  "${HOME}/src/arista/yang"
  
   # google repos
   "${HOME}/src/google/gnxi"
