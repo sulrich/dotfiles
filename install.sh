@@ -129,6 +129,7 @@ sync_public_ssh_keys() {
   mkdir -p "${HOME}/.ssh"
   chmod 0700 "${HOME}/.ssh"
   curl -s https://github.com/sulrich.keys >> "${HOME}/.ssh/authorized_keys"
+  chmod 0755 "${HOME}/.ssh/authorized_keys"
 }
 
 
