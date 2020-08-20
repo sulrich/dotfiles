@@ -156,7 +156,8 @@ install-minimum-packages-centos7() {
     python3-libs vim-minimal wget
 
   # ripgrep
-  sudo yum-config-manager --add-repo=https://copr.fedorainfracloud.org/coprs/carlwgeorge/ripgrep/repo/epel-7/carlwgeorge-ripgrep-epel-7.repo
+  sudo yum-config-manager \
+       --add-repo=https://copr.fedorainfracloud.org/coprs/carlwgeorge/ripgrep/repo/epel-7/carlwgeorge-ripgrep-epel-7.repo
   sudo yum install ripgrep
   # fzf
   # install direnv separately (no rpm available)
@@ -168,7 +169,7 @@ install-minimum-packages-centos7() {
 # anything that has ## at the front of the line will be used as input.
 help() {
   echo "available functions:"
-  sed -n 's/^##//p' $0 | column -t -s ':' | sed -e 's/^/ /'
+  sed -n "s/^##//p" "$0" | column -t -s ":" | sed -e "s/^/ /"
 }
 
 # keep this - it lets you run the various functions in this script
