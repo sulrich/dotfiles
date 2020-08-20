@@ -9,6 +9,7 @@ declare -a REPO_LIST=(
   "${HOME}/src/openconfig/gribi"
   "${HOME}/src/openconfig/reference"
   "${HOME}/src/openconfig/ygot"
+  "${HOME}/src/openconfig/hercules"
   "${HOME}/src/yang"
 
   # arista repos - these have been deprecated for g* protocol work
