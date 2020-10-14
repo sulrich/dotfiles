@@ -1,3 +1,7 @@
+Downloads/*.iso
+Downloads/*.vmdk
+Downloads/*.qcow
+Downloads/*.qcow2
 .vagrant.d
 Box
 Documents/Virtual Machines.localized
