@@ -60,6 +60,10 @@ syntax enable
 
 " notational velocity for vim
 let g:nv_search_paths = ['~/.notes/deft']
+let g:nv_default_extension = '.md'
+let g:nv_create_note_key = 'ctrl-x'
+let g:nv_create_note_window = 'tabedit'
+
 
 " ghost-vim config elements
 " let g:ghost_text_log_file = "~/tmp/ghost_log.txt"
@@ -104,7 +108,7 @@ ab ssig  { snipped - misc .signatures }
 ab sprev { snipped - misc previous correspondence }
 ab x70- ----------------------------------------------------------------------
 ab x70= ======================================================================
-ab ccf comments / corrections / flames appreciated
+ab cca comments/corrections/additions appreciated
 
 " autoclose options
 map <leader>ac :AutoCloseToggle<cr>
