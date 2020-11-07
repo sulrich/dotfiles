@@ -52,6 +52,7 @@ setaliases() {
   alias mkwebp="convert $1 -quality 100 -define webp-:lossless=true $2"
   # get rid of those annoying git filemode issues
   alias gitfilemode="git config core.filemode false"
+
 }
 
 # misc. completions experiments and command line editing options
@@ -114,6 +115,12 @@ gen-mac-addr () {
   printf 'DE:CA:FB:AD:%02X:%02X\n' $((RANDOM%256)) $((RANDOM%256))
 }
 
+# get the difference between to YYYYMMDD formatted dates. note,
+# requires gdate.
+function date-diff() {
+  local DIFF=(`gdate +%s -d $1`-`gdate +%s -d $2`)/86400
+  echo $DIFF
+}
 # get a list of the google netblocks.  not necessarily definitive, but gives
 # you a good idea of what you should be seeing.
 function google-nets () {
@@ -235,3 +242,4 @@ fi
 
 # load the direnv overrides
 eval "$(direnv hook zsh)"
+
