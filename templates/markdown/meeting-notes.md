@@ -1,6 +1,6 @@
 ## attendees
 
-* **juniper:**  @sulrich
+* **arista:**  @sulrich
 * **XXX:**  @sulrich
 * **location:** 
 
