@@ -59,7 +59,7 @@ filetype plugin on
 syntax enable
 
 " notational velocity for vim
-let g:nv_search_paths = ['~/.notes/deft']
+let g:nv_search_paths = ['~/.notes']
 let g:nv_default_extension = '.md'
 let g:nv_create_note_key = 'ctrl-x'
 let g:nv_create_note_window = 'tabedit'
