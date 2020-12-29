@@ -78,11 +78,19 @@ fi
 
 if [[ -n ${INSIDE_EMACS} ]];
 then
-  # this shell runs inside an emacs *shell*/*term* buffer.
-  # zle tends to not be happy inside of emacs shells
-  unsetopt zle
-  unset zle_bracketed_paste
-  PS3='$ '
+  if [[ "$INSIDE_EMACS" != 'vterm' ]];
+  then
+    # this shell runs inside an emacs *shell*/*term* buffer.
+    # zle tends to not be happy inside of emacs shells
+    unsetopt zle
+    unset zle_bracketed_paste
+    PS3='$ '
+  fi
+
+  if [[ "$INSIDE_EMACS" = 'vterm' ]]; 
+  then
+    alias clear='vterm_printf "51;Evterm-clear-scrollback";tput clear'
+  fi
 fi
 
 #---------------------------------------------------------------------
