@@ -4,9 +4,6 @@ published: false
 author: sulrich
 categories: [nerd]
 date: %%TIMESTAMP%%
-tags: 
-- writing
-- blogging
-- productivity 
+tags: [reading, ]
 title: "%%TITLE%%"
 ---
