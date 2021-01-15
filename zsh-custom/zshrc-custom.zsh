@@ -73,7 +73,10 @@ bindkey '^];' spell-word
 if [[ $TERM == "dumb" ]];
 then
   unsetopt zle 
+  unset zle_bracketed_paste
+  PS1='$ '
   PS3='$ '
+  return
 fi
 
 if [[ -n ${INSIDE_EMACS} ]];

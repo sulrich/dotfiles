@@ -1,6 +1,9 @@
 # -*- Mode: shell-script; tab-width: 2 -*- *
 # 
 
+# this should prevent me from sourcing the /etc/z* files
+unsetopt GLOBAL_RCS
+
 export HOSTNAME=$(hostname)
 export PLATFORM=$(uname)
 # pull in platform specific environment variables, etc.  
