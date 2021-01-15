@@ -64,6 +64,9 @@ let g:nv_default_extension = '.md'
 let g:nv_create_note_key = 'ctrl-x'
 let g:nv_create_note_window = 'tabedit'
 
+" polyglot settings
+let g:polyglot_disabled = ['go']
+
 
 " ghost-vim config elements
 " let g:ghost_text_log_file = "~/tmp/ghost_log.txt"
@@ -159,7 +162,8 @@ set termguicolors
 let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
 let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
 set background=dark
-colorscheme solarized8
+"colorscheme solarized8
+colorscheme nord
  
 
 " do the needful for the statusline
@@ -169,7 +173,7 @@ let g:airline#extensions#ale#enabled = 1 " show ale errors on statusline
 " let g:airline_theme='minimalist'
 let g:airline_extensions = [ "ale", "branch", "netrw", "tabline", "virtualenv"  ]
 " this following 2 lines need to be enabled together. 
-let g:airline_theme='solarized'
+let g:airline_theme='nord'
 let g:airline_solarized_bg='dark'
 
 nmap <silent> <C-j> :ALEPrevious<cr>
