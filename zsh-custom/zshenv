@@ -71,6 +71,7 @@ export YANG_PLUGINS="${HOME}/.pyang"
 function setpath () {
 
   LOCAL_PATH="/usr/local/bin:/usr/local/sbin:${GOPATH}/bin"
+  POETRY_DIR="${HOME}/.poetry/bin"
 
   # handle cases where we need to shim the go binaries into the path due to a
   # non-default installation of golang
@@ -79,10 +80,18 @@ function setpath () {
     LOCAL_PATH="/usr/local/go/bin:${LOCAL_PATH}"
   fi
 
+  # inject poetry into the path as appropriate
+  if [[ -d "${POETRY_DIR}" ]];
+  then
+    POETRY_PATH="${POETRY_DIR}:"
+  else
+    POETRY_PATH=""
+  fi
+
   # we should be running pyenv for all our python needs interactively
   if (( ${+PYENV_ROOT} )); 
   then
-    PYENV_PATH="${PYENV_ROOT}/bin"
+    PYENV_PATH="${PYENV_ROOT}/bin:"
   else
     PYENV_PATH=""
   fi
@@ -90,7 +99,7 @@ function setpath () {
   # set path to address OS/arch  specific binaries within home directory
   # OSPATH=`uname -ms | sed 's| |/|g'`
 
-  export PATH="${PYENV_PATH}:${LOCAL_PATH}:${HOME}/bin:${PATH}:."
+  export PATH="${PYENV_PATH}${POETRY_PATH}${LOCAL_PATH}:${HOME}/bin:${PATH}:."
   export MANPATH="/usr/local/man:/usr/man:/usr/share/man:"
   export MANPATH="${MANPATH}:/usr/X11R6/man:/usr/local/man:${HOME}/Library/man:."
   export INFOPATH="/usr/local/share/info:${INFOPATH}"

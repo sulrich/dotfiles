@@ -47,7 +47,6 @@ ZSH_CUSTOM="${HOME}/.home/zsh-custom"
 # Add wisely, as too many plugins slow down shell startup.
 plugins=(git docker virtualenv ssh-agent tmux)
 
-
 # this needs to be added to make ssh-agent forwarding happy
 zstyle :omz:plugins:ssh-agent agent-forwarding on
 

@@ -12,7 +12,6 @@
 # installation script to pull down the necessary configuration files for me to
 # bootstrap a machine.
 
-
 ARCH=""
 case $(uname -m) in
     i386)   ARCH="386" ;;
@@ -79,6 +78,13 @@ install-pyenv(){
   echo "you'll need to re-init your shell to pick up pyenv"
 }
 
+## install-poetr: self-explanatory
+install-poetry() {
+	curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py \
+		> /tmp/get-poetry.py
+	python /tmp/get-poetry.py
+}
+
 ## make-symlinks: make the necessary symlinks
 make-symlinks() {
   if [ "${BASH_VERSINFO:-0}" -lt 4 ]
@@ -126,7 +132,6 @@ install-personal-bin() {
   git clone https://github.com/sulrich/home-bin.git "${HOME}/bin"
 }
 
-
 ## sycn-public-ssh-keys: copy my authorized ssh public keys from github
 sync-public-ssh-keys() {
   mkdir -p "${HOME}/.ssh"
@@ -134,7 +139,6 @@ sync-public-ssh-keys() {
   curl -s https://github.com/sulrich.keys >> "${HOME}/.ssh/authorized_keys"
   chmod 0755 "${HOME}/.ssh/authorized_keys"
 }
-
 
 ## install-min-packages-ubuntu: installs my minimum set of tools (ubuntu)
 install-minimum-packages-ubuntu() {
@@ -144,6 +148,12 @@ install-minimum-packages-ubuntu() {
      libncurses5-dev libncursesw5-dev libreadline-dev libsqlite3-dev libssl-dev \
      llvm make python3-dev python3-pip python-openssl ripgrep tmux vim-nox      \
      wget xz-utils zlib1g-dev zsh
+}
+
+## install-tmux-elements
+install-tmux() {
+	
+
 }
 
 ## install-min-packages-centos7: installs my minimum set of tools (centos)
@@ -164,8 +174,6 @@ install-minimum-packages-centos7() {
   curl -sfL https://direnv.net/install.sh | bash
 }
 
-
-
 # anything that has ## at the front of the line will be used as input.
 help() {
   echo "available functions:"
@@ -174,6 +182,3 @@ help() {
 
 # keep this - it lets you run the various functions in this script
 "$@"
-
-
-
