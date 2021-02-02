@@ -150,7 +150,7 @@ install-minimum-packages-ubuntu() {
      wget xz-utils zlib1g-dev zsh
 }
 
-## install-tmux pllugin manager
+## install-tpm: install tmux plugin manager (TPM)
 install-tpm() {
   echo "cloning TPM ..."
 	git clone https://github.com/tmux-plugins/tpm ${HOME}/.tmux/plugins/tpm
