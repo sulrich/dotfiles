@@ -12,6 +12,10 @@
 # installation script to pull down the necessary configuration files for me to
 # bootstrap a machine.
 
+# this will need to point at something useful, as the per-host brewfile won't
+# exist yet.
+BREWFILE="${HOME}/iCloud/src/configs/brewfile.txt"
+
 ARCH=""
 case $(uname -m) in
     i386)   ARCH="386" ;;
@@ -35,6 +39,16 @@ install-go() {
   sudo tar -C /usr/local -xzf "${FILENAME}"
   rm -i "${FILENAME}"
 }
+
+## isntall-brew: new macs only. do the needful
+install-brew() {
+  /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+}
+
+## install-brew-packages: down all the cool stuff 
+install-brew-packages() {
+  brew bundle --file="${BREWFILE}"
+} 
 
 ## install-omz: install oh-my-zsh
 install-omz() {
