@@ -150,10 +150,11 @@ install-minimum-packages-ubuntu() {
      wget xz-utils zlib1g-dev zsh
 }
 
-## install-tmux-elements
-install-tmux() {
-	
-
+## install-tmux pllugin manager
+install-tpm() {
+  echo "cloning TPM ..."
+	git clone https://github.com/tmux-plugins/tpm ${HOME}/.tmux/plugins/tpm
+  echo 'start tmux, and install using "C-t + I" to install'
 }
 
 ## install-min-packages-centos7: installs my minimum set of tools (centos)
