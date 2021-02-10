@@ -1,6 +1,9 @@
 # -*- Mode: shell-script; tab-width: 2 -*- *
 # OSX specific functions and aliases
 
+# i don't particularly like the placement of the XDG_CONFIG_HOME on mac os
+export XDG_CONFIG_HOME="${HOME}/.config" 
+
 export VAGRANT_DEFAULT_PROVIDER="virtualbox"
 #export VAGRANT_DEFAULT_PROVIDER="vmware_fusion"
 #export VAGRANT_VMWARE_CLONE_DIRECTORY="/Volumes/JetDrive/vagrant-clone"
