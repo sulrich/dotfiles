@@ -131,11 +131,11 @@ add password 30.1.*     {cisco}
 add passprompt 30.1.*   {"assword: "}
 
 # personal arista lab
-add autoenable 192.168.206.*    1
-add method 192.168.206.*        {ssh}
-add user 192.168.206.*          {admin}
-add userpassword 192.168.206.*  {arista}
-add password 192.168.206.*      {arista}
+add autoenable 192.168.1.*    0
+add method 192.168.1.*        {ssh}
+add user 192.168.1.*          {admin}
+add userpassword 192.168.1.*  {arista} {}
+add password 192.168.1.*      {arista} {}
 
 # CRS TME lab
 add autoenable 1.63.*   1
