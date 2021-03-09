@@ -141,7 +141,7 @@ make-symlinks() {
   done
 }
 
-## install-perosnal-bin: install personal binaries into home directory
+## install-personal-bin: install personal binaries into home directory
 install-personal-bin() {
   echo "installing personal scripts/binaries into home directory ..."
   git clone https://github.com/sulrich/home-bin.git "${HOME}/bin"
@@ -156,7 +156,7 @@ sync-public-ssh-keys() {
 }
 
 ## install-min-packages-ubuntu: installs my minimum set of tools (ubuntu)
-install-minimum-packages-ubuntu() {
+install-min-packages-ubuntu() {
   # install the minimum set of bootstrap tools for a host
    sudo apt install                                                             \
      build-essential curl direnv fzf git libbz2-dev libffi-dev liblzma-dev      \
@@ -173,7 +173,7 @@ install-tpm() {
 }
 
 ## install-min-packages-centos7: installs my minimum set of tools (centos)
-install-minimum-packages-centos7() {
+install-min-packages-centos7() {
   # install the minimum set of bootstrap tools for a host
   sudo yum install                                                               \
     @development bzip2 bzip2-devel curl findutils git libffi-devel               \
