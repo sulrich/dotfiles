@@ -117,6 +117,7 @@ make-symlinks() {
     ['gitignore']=".gitignore"
     ['gvimrc']=".gvimrc"
     ['mailcap']=".mailcap"
+    ['markdownlint.yaml']=".markdownlint.yaml"
     ['octaverc']=".octaverc"
     ['screenrc']=".screenrc"
     ['sqliterc']=".sqliterc"
