@@ -73,13 +73,15 @@
   required = true
 
 [filter "lfs"]
-  clean = git lfs clean %f
-  smudge = git lfs smudge %f
-  required = true
-  process = git-lfs filter-process
+	clean = git-lfs clean -- %f
+	smudge = git-lfs smudge -- %f
+	required = true
+	process = git-lfs filter-process
 
 [http]
   cookiefile = ~/.credentials/gitcookies
 
 [pull]
 	rebase = false
+[init]
+	defaultBranch = main
