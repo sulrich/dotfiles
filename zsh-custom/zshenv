@@ -96,10 +96,31 @@ function setpath () {
     PYENV_PATH=""
   fi
 
+  # misc. conda stuff
+  #
+  # 20210321 (sulrich) for now, i'll stick my conda stuff in
+  # ${HOME}/src/anacondaX reference the following stack-exchange article re:
+  # managing pyenv and conda environments.
+  #
+  # https://stackoverflow.com/questions/58044214/installing-anaconda-with-pyenv-unable-to-configure-virtual-environment/58045893
+  #
+  # of note is the guidance to manage these separately and to disable the base
+  # environment by default.
+  if [ -f "${HOME}/src/anaconda3/etc/profile.d/conda.sh" ]; then
+    . "${HOME}/src/anaconda3/etc/profile.d/conda.sh"
+  else
+    if [[ -d "${HOME}/src/anaconda3/bin" ]]; then
+      CONDA_PATH="${HOME}/src/anaconda3/bin"
+    else
+      CONDA_PATH=""
+    fi
+  fi  
+
+  
   # set path to address OS/arch  specific binaries within home directory
   # OSPATH=`uname -ms | sed 's| |/|g'`
 
-  export PATH="${PYENV_PATH}${POETRY_PATH}${LOCAL_PATH}:${HOME}/bin:${PATH}:."
+  export PATH="${PYENV_PATH}${POETRY_PATH}${CONDA_PATH}${LOCAL_PATH}:${HOME}/bin:${PATH}:."
   export MANPATH="/usr/local/man:/usr/man:/usr/share/man:"
   export MANPATH="${MANPATH}:/usr/X11R6/man:/usr/local/man:${HOME}/Library/man:."
   export INFOPATH="/usr/local/share/info:${INFOPATH}"
@@ -148,4 +169,20 @@ fi
 if which pyenv-virtualenv-init > /dev/null; then 
   eval "$(pyenv virtualenv-init -)"; 
 fi
+
+
+# >>> conda initialize >>>
+# !! Contents within this block are managed by 'conda init' !!
+# __conda_setup="$('/Users/sulrich/src/anaconda3/bin/conda' 'shell.zsh' 'hook' 2> /dev/null)"
+# if [ $? -eq 0 ]; then
+#     eval "$__conda_setup"
+# else
+#     if [ -f "${HOME}/src/anaconda3/etc/profile.d/conda.sh" ]; then
+#         . "${HOME}/src/anaconda3/etc/profile.d/conda.sh"
+#     else
+#         export PATH="/Users/sulrich/src/anaconda3/bin:$PATH"
+#     fi
+# fi
+# unset __conda_setup
+# # <<< conda initialize <<<
 
