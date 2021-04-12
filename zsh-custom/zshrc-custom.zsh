@@ -52,6 +52,7 @@ setaliases() {
   alias mkwebp="convert $1 -quality 100 -define webp-:lossless=true $2"
   # get rid of those annoying git filemode issues
   alias gitfilemode="git config core.filemode false"
+  alias findtags="egrep -i '(#{1}[[:alpha:]]{2,}\s)'"
 
 }
 
