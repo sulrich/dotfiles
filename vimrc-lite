@@ -27,7 +27,6 @@ set showmode           " show the mode in the status line
 set showcmd            " show selection infoj
 
 set colorcolumn=80
-colorscheme nord
 
 "set comments=b:#,:%,n:>,fb:[-],fb:- " see, help: comments
 " folding settings
