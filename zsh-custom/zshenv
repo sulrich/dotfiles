@@ -26,6 +26,9 @@ export ANSIBLE_INVENTORY=${HOME}/src/ansible/etc/hosts
 # generic environment variables
 #
 
+export PYENV_VERSION="3.8.10"
+
+export PYENV_ROOT="${HOME}/.pyenv"
 export SSH_KEY_PATH="${HOME}/.ssh/id_rsa"   # i'm tired of fucking with this
 export TTY 
 export PAGER="less"
@@ -38,6 +41,8 @@ export GOPATH=${HOME}/go
 export LESS="$LESS -eFRX -i -x2"
 export GPG_TTY=$(tty)
 
+# this assumes that we're doing something with powerline for tmux
+export POWERLINE_DIR="${HOME}/.pyenv/versions/${PYENV_VERSION}/lib/python3.8/site-packages/powerline"
 # makes gnuplot happy, assumes that gnuplot was built w/qt support, otherwise
 # set this to X11
 export GNUTERM=x11
@@ -169,20 +174,3 @@ fi
 if which pyenv-virtualenv-init > /dev/null; then 
   eval "$(pyenv virtualenv-init -)"; 
 fi
-
-
-# >>> conda initialize >>>
-# !! Contents within this block are managed by 'conda init' !!
-# __conda_setup="$('/Users/sulrich/src/anaconda3/bin/conda' 'shell.zsh' 'hook' 2> /dev/null)"
-# if [ $? -eq 0 ]; then
-#     eval "$__conda_setup"
-# else
-#     if [ -f "${HOME}/src/anaconda3/etc/profile.d/conda.sh" ]; then
-#         . "${HOME}/src/anaconda3/etc/profile.d/conda.sh"
-#     else
-#         export PATH="/Users/sulrich/src/anaconda3/bin:$PATH"
-#     fi
-# fi
-# unset __conda_setup
-# # <<< conda initialize <<<
-

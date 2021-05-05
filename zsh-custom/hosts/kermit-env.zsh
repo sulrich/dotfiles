@@ -4,9 +4,6 @@
 # blog base directory 
 export HUGO_DIR="${HOME}/src/botwerks-site"
 
-# pyenv base location
-export PYENV_ROOT="${HOME}/.pyenv"
-
 # amazon AWS vars
 export AWS_DEFAULT_PROFILE="sulrich@botwerks.org"
 
