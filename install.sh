@@ -24,7 +24,7 @@ case $(uname -m) in
     arm*)   dpkg --print-architecture | grep -q "arm64" && ARCH="arm64" || ARCH="armv6l" ;;
 esac
 
-## install-go: pull down the latest go releas and install 
+## install-go (sudo): pull down the latest go releas and install 
 install-go() {
   echo "installing go"
   mkdir -p "${HOME}/go/bin"
@@ -92,7 +92,7 @@ install-pyenv(){
   echo "you'll need to re-init your shell to pick up pyenv"
 }
 
-## install-poetr: self-explanatory
+## install-poetry: self-explanatory
 install-poetry() {
 	curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py \
 		> /tmp/get-poetry.py
@@ -155,14 +155,14 @@ sync-public-ssh-keys() {
   chmod 0755 "${HOME}/.ssh/authorized_keys"
 }
 
-## install-min-packages-ubuntu: installs my minimum set of tools (ubuntu)
+## install-min-packages-ubuntu (sudo): install minimum set of tools (ubuntu)
 install-min-packages-ubuntu() {
   # install the minimum set of bootstrap tools for a host
    sudo apt install                                                             \
      build-essential curl direnv fzf git libbz2-dev libffi-dev liblzma-dev      \
      libncurses5-dev libncursesw5-dev libreadline-dev libsqlite3-dev libssl-dev \
      llvm make python3-dev python3-pip python-openssl ripgrep tmux vim-nox      \
-     wget xz-utils zlib1g-dev zsh
+     wget xz-utils zlib1g-dev zsh neovim
 }
 
 ## install-tpm: install tmux plugin manager (TPM)
@@ -172,14 +172,14 @@ install-tpm() {
   echo 'start tmux, and install using "C-t + I" to install'
 }
 
-## install-min-packages-centos7: installs my minimum set of tools (centos)
+## install-min-packages-centos7 (sudo) : install minimum set of tools (centos)
 install-min-packages-centos7() {
   # install the minimum set of bootstrap tools for a host
   sudo yum install                                                               \
     @development bzip2 bzip2-devel curl findutils git libffi-devel               \
     ncurses-devel ncurses-libs openssl-devel readline-devel sqlite sqlite-devel  \
     tmux xz xz-devel zlib-devel llvm make zsh python3 python3-devel python3-pip  \
-    python3-libs vim-minimal wget
+    python3-libs vim-minimal wget neovim
 
   # ripgrep
   sudo yum-config-manager \
@@ -192,7 +192,17 @@ install-min-packages-centos7() {
 
 # anything that has ## at the front of the line will be used as input.
 help() {
-  echo "available functions:"
+  cat << EOF
+
+usage install.sh <function>
+
+this provides a mechanism to quickly install and align various personal
+configuration elements.  when used with a fresh system, there are functions
+that install the minimum set of required packages for the distro of interest.
+these commands will require the use of sudo.  plan accordingly. 
+
+available functions:
+EOF
   sed -n "s/^##//p" "$0" | column -t -s ":" | sed -e "s/^/ /"
 }
 
