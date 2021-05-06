@@ -16,6 +16,9 @@
 # exist yet.
 BREWFILE="${HOME}/iCloud/src/configs/brewfile.txt"
 
+PYTHON2_VER="2.7.18"
+PYTHON3_VER="3.8.10"
+
 ARCH=""
 case $(uname -m) in
     i386)   ARCH="386" ;;
@@ -79,10 +82,9 @@ install-vim-modules() {
 # local font dependencies if this is run on an actual
 # workstation. (read: Mac OS)
 # 
-# pip install powerline-status
 
 ## install-pyenv: self-explanatory
-install-pyenv(){
+install-pyenv() {
   echo "pulling down some key utilities for vim first. note, these will be"
   echo "installed locally via the --user flag"
   pip3 install black --user
@@ -90,6 +92,19 @@ install-pyenv(){
   echo "cloning pyenv"
   git clone https://github.com/pyenv/pyenv.git "${HOME}/.pyenv"
   echo "you'll need to re-init your shell to pick up pyenv"
+}
+
+## install-pythons: install the interesting versions of python via pyenv
+install-pythons() {
+  echo "installing python2 version: ${PYTHON2_VER}"
+  pyenv install "${PYTHON2_VER}"
+  echo "installing python3 version: ${PYTHON3_VER}"
+  pyenv install "${PYTHON3_VER}"
+
+  echo "setting pyenv global"
+  pyenv global "${PYTHON3_VER}" "${PYTHON2_VER}" 
+  echo "installing relevant python packages"
+  pip3 install powerline-status
 }
 
 ## install-poetry: self-explanatory
