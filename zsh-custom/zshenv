@@ -26,8 +26,8 @@ export ANSIBLE_INVENTORY=${HOME}/src/ansible/etc/hosts
 # generic environment variables
 #
 
-export PYENV_VERSION="3.8.10"
-
+export PYTHON2_VER="2.7.18"
+export PYTHON3_VER="3.8.10"
 export PYENV_ROOT="${HOME}/.pyenv"
 export SSH_KEY_PATH="${HOME}/.ssh/id_rsa"   # i'm tired of fucking with this
 export TTY 
@@ -40,12 +40,7 @@ export GOPATH=${HOME}/go
 # added the eFRX to pass through escape characters in git diff mode
 export LESS="$LESS -eFRX -i -x2"
 export GPG_TTY=$(tty)
-
-# this assumes that we're doing something with powerline for tmux
-export POWERLINE_DIR="${HOME}/.pyenv/versions/${PYENV_VERSION}/lib/python3.8/site-packages/powerline"
-# makes gnuplot happy, assumes that gnuplot was built w/qt support, otherwise
-# set this to X11
-export GNUTERM=x11
+export POWERLINE_DIR="${HOME}/.pyenv/versions/${PYTHON3_VER}/lib/python3.8/site-packages/powerline"
 
 # localization info
 export LC_ALL=en_US.UTF-8
