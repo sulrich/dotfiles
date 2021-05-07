@@ -107,6 +107,19 @@ install-pythons() {
   pip3 install powerline-status
 }
 
+## install-docker-ubuntu (sudo): install docker
+install-docker-ubuntu() {
+  echo "updating the base packages"
+  sudo apt-get install apt-transport-https ca-certificates \
+    curl gnupg-agent software-properties-common
+  curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+  echo "adding docker repo"
+  sudo add-apt-repository \
+   "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
+  sudo apt-get update
+  sudo apt-get install docker-ce docker-ce-cli containerd.io
+}
+
 ## install-poetry: self-explanatory
 install-poetry() {
 	curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py \
