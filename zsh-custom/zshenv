@@ -161,8 +161,13 @@ fi
 # actually set the path per the constructed elements above
 setpath
 
-# update pyenv stuff accordingly
+# update pyenv elements appropriaately
+# 20210601 (sulrich) - the first `pyenv init` does the heavy lifting associated
+# with the path shim updates, the second rehashes the shims and adds the
+# necessary elements to handle autocomplete, etc.  not sure this is the best
+# approach  seems to address the near term breakage.
 if command -v pyenv 1>/dev/null 2>&1; then
+  eval "$(pyenv init --path)"
   eval "$(pyenv init -)"
 fi
 
