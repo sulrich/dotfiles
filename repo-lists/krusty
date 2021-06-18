@@ -10,6 +10,7 @@ declare -a REPO_LIST=(
   "${HOME}/src/openconfig/reference"
   "${HOME}/src/openconfig/ygot"
   "${HOME}/src/openconfig/hercules"
+  "${HOME}/src/openconfig/ondatra"
   "${HOME}/src/openconfig/autobahn"
   "${HOME}/src/yang"
 
@@ -22,6 +23,7 @@ declare -a REPO_LIST=(
   # google repos
   "${HOME}/src/google/gnxi"
   "${HOME}/src/google/orismologer"
+  "${HOME}/src/google/gnsi"
 )
 
 
