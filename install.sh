@@ -34,16 +34,16 @@ install-go() {
   mkdir -p "${HOME}/go/src"
   mkdir -p "${HOME}/go/pkg"
   local GO_VERSION=$(curl -s "https://golang.org/VERSION?m=text")
+  local GO_VER_STR="${GO_VERSION}.${GO_OS}-${ARCH}"
   local GO_OS=$(uname -s | tr "[:upper:]" "[:lower:]"n)
   local FILENAME="${GO_VERSION}.${GO_OS}-${ARCH}.tar.gz"
-  # echo ${ARCH}
-  echo "downloading: https://dl.google.com/go/${GO_VERSION}.${GO_OS}-${ARCH}.tar.gz to ${FILENAME}" 
-  curl -s           "https://dl.google.com/go/${GO_VERSION}.${GO_OS}-${ARCH}.tar.gz" -o "${FILENAME}"
+  echo "https://dl.google.com/go/${GO_VER_STR}.tar.gz -> ${FILENAME}" 
+  curl -s "https://dl.google.com/go/${GO_VER_STR}.tar.gz" -o "${FILENAME}"
   sudo tar -C /usr/local -xzf "${FILENAME}"
   rm -i "${FILENAME}"
 }
 
-## isntall-brew: new macs only. do the needful
+## install-brew: new macs only. do the needful
 install-brew() {
   /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 }
