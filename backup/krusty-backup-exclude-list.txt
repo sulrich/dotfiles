@@ -1,10 +1,12 @@
-Downloads/*.iso
-Downloads/*.vmdk
-Downloads/*.qcow
-Downloads/*.qcow2
+.Trash
 .vagrant.d
 Box
 Documents/Virtual Machines.localized
+Downloads/**/*.iso
+Downloads/**/*.qcow
+Downloads/**/*.qcow2
+Downloads/**/*.swi
+Downloads/**/*.vmdk
 Downloads/eos-images
 Dropbox
 Library
