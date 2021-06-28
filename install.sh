@@ -89,7 +89,7 @@ install-vim-modules() {
   echo "adding neovim plugins/modules"
   mkdir -p "${HOME}/.local/share"
   git clone https://github.com/sulrich/nvim.git "${HOME}/.local/share/nvim"
-  cd "${HOME}/.local/share/nvim"
+  cd "${HOME}/.local/share/nvim" || exit
   git module update --init
 }
 
