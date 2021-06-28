@@ -2,7 +2,6 @@
 title: "%%TITLE%%"
 date: %%TIMESTAMP%%
 layout: post
-published: false
 author: steve ulrich
 tags: [reading, ]
 # weight: 1
