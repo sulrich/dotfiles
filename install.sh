@@ -27,6 +27,14 @@ case $(uname -m) in
     arm*)   dpkg --print-architecture | grep -q "arm64" && ARCH="arm64" || ARCH="armv6l" ;;
 esac
 
+# TODO: provide an option for upgrading go on raspberry pi
+#
+# upgrading process
+# 1. check the latest version online vs. the installed version
+# 2. prompt the operator to see if they want to upgrade
+# 3. rm -rf /usr/local/go
+# 3. run the install-go process
+
 ## install-go (sudo): pull down the latest go releas and install 
 install-go() {
   echo "installing go"
@@ -37,8 +45,8 @@ install-go() {
   local GO_VER_STR="${GO_VERSION}.${GO_OS}-${ARCH}"
   local GO_OS=$(uname -s | tr "[:upper:]" "[:lower:]"n)
   local FILENAME="${GO_VERSION}.${GO_OS}-${ARCH}.tar.gz"
-  echo "https://dl.google.com/go/${GO_VER_STR}.tar.gz -> ${FILENAME}" 
-  curl -s "https://dl.google.com/go/${GO_VER_STR}.tar.gz" -o "${FILENAME}"
+  echo "https://dl.google.com/go/${FILENAME} -> ${FILENAME}" 
+  curl -s "https://dl.google.com/go/${FILENAME}" -o "${FILENAME}"
   sudo tar -C /usr/local -xzf "${FILENAME}"
   rm -i "${FILENAME}"
 }
@@ -75,6 +83,8 @@ install-vim-modules() {
   cd "${HOME}/.vim" || return
   git submodule update --init
   cd "${HOME}" || return
+
+  # TODO - install nvim configuration elements
 }
 
 # after having built pyenv end the necessary python - install
