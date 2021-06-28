@@ -42,7 +42,6 @@ install-go() {
   mkdir -p "${HOME}/go/src"
   mkdir -p "${HOME}/go/pkg"
   local GO_VERSION=$(curl -s "https://golang.org/VERSION?m=text")
-  local GO_VER_STR="${GO_VERSION}.${GO_OS}-${ARCH}"
   local GO_OS=$(uname -s | tr "[:upper:]" "[:lower:]"n)
   local FILENAME="${GO_VERSION}.${GO_OS}-${ARCH}.tar.gz"
   echo "https://dl.google.com/go/${FILENAME} -> ${FILENAME}" 
@@ -84,7 +83,14 @@ install-vim-modules() {
   git submodule update --init
   cd "${HOME}" || return
 
-  # TODO - install nvim configuration elements
+  echo "adding neovim elements"
+  echo "adding XDG_CONFIG_HOME ..."
+  git clone https://github.com/sulrich/xdg-config-home.git "${HOME}/.config"
+  echo "adding neovim plugins/modules"
+  mkdir -p "${HOME}/.local/share"
+  git clone https://github.com/sulrich/nvim.git "${HOME}/.local/share/nvim"
+  cd "${HOME}/.local/share/nvim"
+  git module update --init
 }
 
 # after having built pyenv end the necessary python - install
