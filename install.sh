@@ -90,7 +90,7 @@ install-vim-modules() {
   mkdir -p "${HOME}/.local/share"
   git clone https://github.com/sulrich/nvim.git "${HOME}/.local/share/nvim"
   cd "${HOME}/.local/share/nvim" || exit
-  git module update --init
+  git submodule update --init
 }
 
 # after having built pyenv end the necessary python - install
@@ -159,7 +159,6 @@ make-symlinks() {
     ['flake8']=".flake8"
     ['gitconfig']=".gitconfig"
     ['gitignore']=".gitignore"
-    ['gvimrc']=".gvimrc"
     ['mailcap']=".mailcap"
     ['markdownlint.yaml']=".markdownlint.yaml"
     ['octaverc']=".octaverc"
@@ -168,21 +167,26 @@ make-symlinks() {
     ['tmux.conf']=".tmux.conf"
     ['urlview']=".urlview"
     ['vimrc']=".vimrc"
+    ['zshrc']=".zshrc"
+    ['zsh-custom/zlogin']=".zlogin"
+    ['zsh-custom/zshenv']=".zshenv"
   )
 
   echo "making dotfile symlinks" 
-  ln -s "${HOME}/.home/zsh-custom/zlogin" "${HOME}/.zlogin"
-  ln -s "${HOME}/.home/zsh-custom/zshenv" "${HOME}/.zshenv"
+  ln -s "${HOME}/.home/
+  ln -s "${HOME}/.home/
 
-  echo "making local ~/.credentials cache"
-  mkdir -p "${HOME}/.credentials"
-  chmod 0700 "${HOME}/.credentials"
-  
   for DFILE in "${!DOTFILES[@]}";
   do
     echo  "- ${DFILE} -> ${DOTFILES[$DFILE]}"
     ln -s "${HOME}/.home/${DFILE}" "${HOME}/${DOTFILES[$DFILE]}"
   done
+
+  echo "making local ~/.credentials cache"
+  mkdir -p "${HOME}/.credentials"
+  chmod 0700 "${HOME}/.credentials"
+  echo "copy the necessary credentials into ~/.credentials"
+ 
 }
 
 ## install-personal-bin: install personal binaries into home directory
@@ -191,7 +195,7 @@ install-personal-bin() {
   git clone https://github.com/sulrich/home-bin.git "${HOME}/bin"
 }
 
-## sycn-public-ssh-keys: copy my authorized ssh public keys from github
+## sync-public-ssh-keys: copy my authorized ssh public keys from github
 sync-public-ssh-keys() {
   mkdir -p "${HOME}/.ssh"
   chmod 0700 "${HOME}/.ssh"
@@ -199,8 +203,8 @@ sync-public-ssh-keys() {
   chmod 0755 "${HOME}/.ssh/authorized_keys"
 }
 
-## install-min-packages-ubuntu (sudo): install minimum set of tools (ubuntu)
-install-min-packages-ubuntu() {
+## install-min-packages-debian (sudo): install minimum set of tools (debian/ubuntu)
+install-min-packages-debian() {
   # install the minimum set of bootstrap tools for a host
    sudo apt install                                                             \
      build-essential curl direnv fzf git libbz2-dev libffi-dev liblzma-dev      \
