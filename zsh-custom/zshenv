@@ -25,7 +25,6 @@ export ANSIBLE_INVENTORY=${HOME}/src/ansible/etc/hosts
 #---------------------------------------------------------------------
 # generic environment variables
 #
-
 export PYTHON2_VER="2.7.18"
 export PYTHON3_VER="3.8.10"
 export PYENV_ROOT="${HOME}/.pyenv"
@@ -116,10 +115,8 @@ function setpath () {
     fi
   fi  
 
-  
   # set path to address OS/arch  specific binaries within home directory
   # OSPATH=`uname -ms | sed 's| |/|g'`
-
   export PATH="${PYENV_PATH}${POETRY_PATH}${CONDA_PATH}${LOCAL_PATH}:${HOME}/bin:${PATH}:."
   export MANPATH="/usr/local/man:/usr/man:/usr/share/man:"
   export MANPATH="${MANPATH}:/usr/X11R6/man:/usr/local/man:${HOME}/Library/man:."
@@ -130,9 +127,7 @@ function setpath () {
   export MIBDIRS="${MIBDIRS}:${HOME}/.snmp/mibs/std:${HOME}/.snmp/mibs/misc:."
 }
 
-
-
-# for perlbrew
+# perlbrew
 if [[ -f "${HOME}/src/perl/etc/bashrc" && -z "${INSIDE_EMACS}" ]];
 then
   source "${HOME}/src/perl/etc/bashrc"

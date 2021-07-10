@@ -101,7 +101,6 @@ fi
 # functions
 #
 
-
 # misc. handy one liners
 #function strip-blank () { cat $1 | awk '$0!~/^$/ {print $0}' }
 function strip-blank () { sed '/^[[:space:]]*$/d' < $1 }
@@ -122,7 +121,7 @@ su () {
   fi
 } # end of su override
 
-gen-mac-addr () {
+function gen-mac-addr () {
   # generate a random mac address
   printf 'DE:CA:FB:AD:%02X:%02X\n' $((RANDOM%256)) $((RANDOM%256))
 }
@@ -160,36 +159,49 @@ function pyang-path () {
   pyang --plugindir ${YANG_PLUGINS} --strip -f paths $*
 }
 
-
 function remote-pcap() {
-if [ "$#" -lt 2 ]; then
-  echo "Capture to Wireshark usage:"
-  echo "cap { DUT IP | hostname | FQDN } interface [filter]"
-  echo ""
-  echo "Few examples:"
-  echo "To capture ICMP traffic sent to/from a host with IP address of 1.2.3.4"
-  echo " cap co630 mirror1 icmp and host 1.2.3.4"
-  echo ""
-  echo "Continuing the above example; to capture only 4 packets:"
-  echo " cap co630 mirror1 icmp and host 1.2.3.4 -c 4"
-  echo ""
-else
-  dut="$1"
-  tcpdump_interface="$2"
-  shift 2
-  tcpdump_filter=""
-  while (( "$#" )); do
-    tcpdump_filter="$tcpdump_filter $1"
-    shift
-  done
-  tcpdump_string="bash tcpdump -s 0 -Un -w - -i "$tcpdump_interface" "$tcpdump_filter""
-  ssh admin@"$dut" "$tcpdump_string" | wireshark -k -i -
-fi
-
+  if [ "$#" -lt 2 ]; then
+    echo "capture to wireshark usage:"
+    echo "cap { DUT IP | hostname | FQDN } interface [filter]"
+    echo ""
+    echo "a few examples:"
+    echo "to capture icmp traffic sent to/from a host with ip address of 1.2.3.4"
+    echo " cap co630 mirror1 icmp and host 1.2.3.4"
+    echo ""
+    echo "continuing the above example; to capture only 4 packets:"
+    echo " cap co630 mirror1 icmp and host 1.2.3.4 -c 4"
+    echo ""
+  else
+    dut="$1"
+    tcpdump_interface="$2"
+    shift 2
+    tcpdump_filter=""
+    while (( "$#" )); do
+      tcpdump_filter="$tcpdump_filter $1"
+      shift
+    done
+    tcpdump_string="bash tcpdump -s 0 -Un -w - -i "$tcpdump_interface" "$tcpdump_filter""
+    ssh admin@"$dut" "$tcpdump_string" | wireshark -k -i -
+  fi
 }
 
+# 1password CLI functions
+OP_ACCOUNT_NAME="botzinski"
+function 1p-on() {
+  if [[ -z ${OP_SESSION_botzinski} ]]; then
+    eval $(op signin "${OP_ACCOUNT_NAME}")
+  fi
+}
 
+function 1p-off() {
+  op signout
+  unset OP_SESSION_botzinski
+}
 
+function get-passwd() {
+  1p-on
+  op get item "$1" --fields password
+}
 
 umask 002  
 setaliases
