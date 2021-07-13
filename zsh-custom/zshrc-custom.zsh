@@ -146,13 +146,8 @@ function google-nets () {
   end
 }
 
-# push blog to the outside world
-function botwerks-push () {
-  rsync -ave  'ssh -p 22' --delete-after ${HOME}/src/botwerks/public/   \
-        sulrich@ernie.botwerks.net:~/projects/botwerks.org/
-}
-
-# loads the right plugins to make things work
+# output yang models in the unfurled path format.  this require's anees' nifty
+# plugin which is in the openconfig repo.
 function pyang-path () {
   # this is dependent on having aashaikh's pyang module installed.  
   # use of --strip helps to make the output more readable.
@@ -183,6 +178,21 @@ function remote-pcap() {
     tcpdump_string="bash tcpdump -s 0 -Un -w - -i "$tcpdump_interface" "$tcpdump_filter""
     ssh admin@"$dut" "$tcpdump_string" | wireshark -k -i -
   fi
+}
+
+# misc. git functions
+function git-upstream-sync() {
+  # for stuff that i am actively working on with others, work off of my fork and
+  # update my $default_branch with the contents of the upstream. this is a
+  # pretty common workflow.  
+  # determine if the repo uses master/main as the default branch name
+  local DEFAULT_BRANCH=$(git remote show upstream | grep 'HEAD branch' | awk '{print $NF}')
+  echo "default branch: ${DEFAULT_BRANCH}"
+
+  git checkout "${DEFAULT_BRANCH}"
+  git fetch upstream
+  git pull upstream "${DEFAULT_BRANCH}"
+  git push origin "${DEFAULT_BRANCH}"
 }
 
 # 1password CLI functions
