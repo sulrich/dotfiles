@@ -15,11 +15,10 @@ declare -a REPO_LIST=(
   "${HOME}/src/openconfig/autobahn"
   "${HOME}/src/yang"
 
-  # arista repos - these have been deprecated for g* protocol work
-  # "${HOME}/src/arista/gnmitest_common"
-  # "${HOME}/src/arista/gnmitest_arista"
+  # the following should be kept current to facilitate public deployment 
+  "${HOME}/src/arista/docs-release-openmgmt"
+  # keep release models handy
   "${HOME}/src/arista/yang"
-  "${HOME}/src/arista/openmgmt"
  
   # google repos
   "${HOME}/src/google/gnxi"
