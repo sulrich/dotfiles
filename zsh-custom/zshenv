@@ -50,7 +50,7 @@ then
   # we're remote
   export EDITOR=vim
 else
-  export EDITOR=vim
+  export EDITOR=nvim
 fi
 export VISUAL=${EDITOR} 
 

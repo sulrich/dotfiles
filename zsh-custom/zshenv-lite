@@ -46,7 +46,7 @@ then
   # we're remote
   export EDITOR=vim
 else
-  export EDITOR=emacsclient
+  export EDITOR=nvim
 fi
 export VISUAL=${EDITOR} 
 
