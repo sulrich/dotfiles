@@ -23,6 +23,7 @@ declare -a MODEL_LIST=(
   "policy-forwarding/*.yang"
   "policy/*.yang"
   "probes/*.yang"
+  "p4rt/*.yang"
   "qos/*.yang"
   "relay-agent/*.yang"
   "rib/*.yang"
