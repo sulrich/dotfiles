@@ -1,0 +1,9 @@
+Host home-tunnel
+  HostName          dyn.botwerks.net
+  User              sulrich
+  StrictHostKeyChecking no
+  UserKnownHostsFile /dev/null
+  ForwardAgent yes
+  ControlPath       /tmp/%h-%r 
+  LocalForward      127.0.0.2:139 10.0.0.243:139
+
