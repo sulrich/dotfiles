@@ -84,11 +84,22 @@ install-vim-modules() {
   cd "${HOME}" || return
 
   echo "adding neovim elements"
-  echo "adding XDG_CONFIG_HOME ..."
-  git clone https://github.com/sulrich/xdg-config-home.git "${HOME}/.config"
-  echo "adding neovim plugins/modules"
-  mkdir -p "${HOME}/.local/share"
-  git clone https://github.com/sulrich/nvim.git "${HOME}/.local/share/nvim"
+  if [ ! -d "${HOME}/.config" ] 
+  then
+    echo "adding XDG_CONFIG_HOME ..."
+    git clone https://github.com/sulrich/xdg-config-home.git "${HOME}/.config"
+  fi
+
+  if [ ! -d "${HOME}/.local/share" ] 
+  then
+    echo "adding neovim plugins/modules"
+    mkdir -p "${HOME}/.local/share"
+  fi
+
+  if [ ! -d "${HOME}/.local/share/nvim" ] 
+  then
+    git clone https://github.com/sulrich/nvim.git "${HOME}/.local/share/nvim"
+  fi
   cd "${HOME}/.local/share/nvim" || exit
   git submodule update --init
 }
