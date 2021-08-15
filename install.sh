@@ -238,11 +238,11 @@ install-tpm() {
 ## install-min-packages-centos7 (sudo) : install minimum set of tools (centos)
 install-min-packages-centos7() {
   # install the minimum set of bootstrap tools for a host
-  sudo yum install                                                               \
-    @development bzip2 bzip2-devel curl findutils git libffi-devel               \
-    ncurses-devel ncurses-libs openssl-devel readline-devel sqlite sqlite-devel  \
-    tmux xz xz-devel zlib-devel llvm make zsh python3 python3-devel python3-pip  \
-    python3-libs vim-minimal wget neovim
+  sudo yum install                                                              \
+    @development bzip2 bzip2-devel curl findutils git libffi-devel              \
+    ncurses-devel ncurses-libs openssl-devel readline-devel sqlite sqlite-devel \
+    tmux xz xz-devel zlib-devel llvm make zsh python3 python3-devel python3-pip \
+    python3-libs vim-minimal wget mtr-tiny
 
   # ripgrep
   sudo yum-config-manager \
@@ -251,6 +251,51 @@ install-min-packages-centos7() {
   # fzf
   # install direnv separately (no rpm available)
   curl -sfL https://direnv.net/install.sh | bash
+}
+
+## setup-ssh: bootstrap ssh config elements
+setup-ssh() {
+  sync-public-ssh-keys
+  cp "${HOME}/.home/ssh-config-zenith" "${HOME}/.ssh/config"
+  mkdir -p "${HOME}/.ssh/tmp"
+  chmod 0755 "${HOME}/.ssh/tmp"
+  # TODO(sulrich) - source the misc. keys from a secure backing store
+}
+
+
+## https://github.com/nodesource/distributions/blob/master/README.mdnstall-nodejs-debian (sudo): PPA nodjs install
+install-nodejs-debian() {
+  cat <<EOFMESSAGE
+  the base node version in the debian packages is ancient.  run the following
+  to install the 16.x relese of nodejs. note, you must be root
+  ref: https://github.com/nodesource/distributions/blob/master/README.md
+
+  curl -fsSL https://deb.nodesource.com/setup_16.x | bash -
+  apt install nodjs
+EOFMESSAGE
+
+}
+
+## install-server-debian (sudo): install server elements (debian/ubuntu)
+install-server-debian() {
+  sudo apt install \
+    nginx certbot ansible cifs-utils bind9 openjdk-8-jre-headless haveged
+  cat <<EOFMESSAGE
+  you'll need to install docker as well.  
+  ref: https://docs.docker.com/compose/install/
+EOFMESSAGE
+
+}
+
+## clone-config-repos: assume you're logged into github correctly
+clone-config-repos() {
+ local REPO_DIR="${HOME}/src/config-repos"
+ mkdir -p "${REPO_DIR}"
+ git clone https://github.com/sulrich/bert-nginx.git "${REPO_DIR}/nginx"
+ git clone https://github.com/sulrich/bind9-botwerks.git "${REPO_DIR}/bind"
+ git clone https://github.com/sulrich/zenith-docs.git "${REPO_DIR}/zenith-docs"
+ git clone https://github.com/sulrich/zenith-containers.git "${REPO_DIR}/zenith-containers"
+ # TODO - add network config repository
 }
 
 # anything that has ## at the front of the line will be used as input.
