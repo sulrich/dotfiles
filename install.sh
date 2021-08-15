@@ -184,9 +184,6 @@ make-symlinks() {
   )
 
   echo "making dotfile symlinks" 
-  ln -s "${HOME}/.home/
-  ln -s "${HOME}/.home/
-
   for DFILE in "${!DOTFILES[@]}";
   do
     echo  "- ${DFILE} -> ${DOTFILES[$DFILE]}"
@@ -279,10 +276,14 @@ EOFMESSAGE
 ## install-server-debian (sudo): install server elements (debian/ubuntu)
 install-server-debian() {
   sudo apt install \
-    nginx certbot ansible cifs-utils bind9 openjdk-8-jre-headless haveged
-  cat <<EOFMESSAGE
-  you'll need to install docker as well.  
-  ref: https://docs.docker.com/compose/install/
+    nginx certbot ansible cifs-utils bind9 openjdk-8-jre-headless haveged \
+		protobuf-compiler libprotobuf-dev libutempter-dev libboost-dev        \
+  	libio-pty-perl libssl-dev pkg-config autoconf
+	
+	cat <<EOFMESSAGE 
+	you'll need to install docker as well.  
+	ref: https://docs.docker.com/compose/install/ 
+
 EOFMESSAGE
 
 }
