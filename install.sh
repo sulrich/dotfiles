@@ -211,7 +211,7 @@ sync-public-ssh-keys() {
   mkdir -p "${HOME}/.ssh"
   chmod 0700 "${HOME}/.ssh"
   # get the public sources
-  curl -s https://github.com/sulrich.key >> "${HOME}/.ssh/authorized_keys"
+  curl -s https://github.com/sulrich.keys >> "${HOME}/.ssh/authorized_keys"
   # remove dups
   uniq "${HOME}/.ssh/authorized_keys" > "${HOME}/.ssh/tmp_keys"
   mv "${HOME}/.ssh/tmp_keys" "${HOME}/.ssh/authorized_keys" 
