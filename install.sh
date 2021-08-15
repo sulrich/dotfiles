@@ -206,12 +206,12 @@ install-personal-bin() {
   git clone https://github.com/sulrich/home-bin.git "${HOME}/bin"
 }
 
-## qsync-public-ssh-keys: copy my authorized ssh public keys from github
+## sync-public-ssh-keys: copy my authorized ssh public keys from github
 sync-public-ssh-keys() {
   mkdir -p "${HOME}/.ssh"
   chmod 0700 "${HOME}/.ssh"
   # get the public sources
-  curl -s https://github.com/sulrich.key >> "${HOME}/.ssh/authorized_keys"s
+  curl -s https://github.com/sulrich.key >> "${HOME}/.ssh/authorized_keys"
   # remove dups
   uniq "${HOME}/.ssh/authorized_keys" > "${HOME}/.ssh/tmp_keys"
   mv "${HOME}/.ssh/tmp_keys" "${HOME}/.ssh/authorized_keys" 
