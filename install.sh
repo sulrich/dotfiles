@@ -280,7 +280,7 @@ install-server-debian() {
   sudo apt install \
     nginx certbot ansible cifs-utils bind9 openjdk-8-jre-headless haveged \
 		protobuf-compiler libprotobuf-dev libutempter-dev libboost-dev        \
-  	libio-pty-perl libssl-dev pkg-config autoconf
+  	libio-pty-perl libssl-dev pkg-config autoconf ack 
 	
 	cat <<EOFMESSAGE 
 
