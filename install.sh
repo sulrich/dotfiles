@@ -260,9 +260,11 @@ setup-ssh() {
 }
 
 
-## https://github.com/nodesource/distributions/blob/master/README.mdnstall-nodejs-debian (sudo): PPA nodjs install
+# https://github.com/nodesource/distributions/blob/master/README.mdnstall-nodejs-debian (sudo): PPA nodjs install
+## install-nodejs-debian: print pointers to installation of nodejs
 install-nodejs-debian() {
   cat <<EOFMESSAGE
+
   the base node version in the debian packages is ancient.  run the following
   to install the 16.x relese of nodejs. note, you must be root
   ref: https://github.com/nodesource/distributions/blob/master/README.md
@@ -281,6 +283,7 @@ install-server-debian() {
   	libio-pty-perl libssl-dev pkg-config autoconf
 	
 	cat <<EOFMESSAGE 
+
 	you'll need to install docker as well.  
 	ref: https://docs.docker.com/compose/install/ 
 
@@ -290,13 +293,16 @@ EOFMESSAGE
 
 ## clone-config-repos: assume you're logged into github correctly
 clone-config-repos() {
+
  local REPO_DIR="${HOME}/src/config-repos"
  mkdir -p "${REPO_DIR}"
  git clone https://github.com/sulrich/bert-nginx.git "${REPO_DIR}/nginx"
  git clone https://github.com/sulrich/bind9-botwerks.git "${REPO_DIR}/bind"
  git clone https://github.com/sulrich/zenith-docs.git "${REPO_DIR}/zenith-docs"
  git clone https://github.com/sulrich/zenith-containers.git "${REPO_DIR}/zenith-containers"
- # TODO - add network config repository
+ git clone https://github.com/sulrich/ansible-private.git "${HOME}/src/ansible"
+ git clone http://dyn.botwerks.net/git/sulrich/network-configs.git "${HOME}/src/network-configs"
+
 }
 
 # anything that has ## at the front of the line will be used as input.
