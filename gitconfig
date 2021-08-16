@@ -17,6 +17,7 @@
   quotepath = false
   pager = less -r
   fileMode = false
+	commitGraph = true
   # safecrlf = true
   # quotepath = false
 
@@ -85,3 +86,7 @@
 	rebase = false
 [init]
 	defaultBranch = main
+[receive]
+	advertisePushOptions = true
+[gc]
+	writeCommitGraph = true
