@@ -70,8 +70,13 @@ install-omz() {
 
 ## install-snmp-mibs: pull down the collection of mibs
 install-snmp-mibs() {
+  mkdir -p "${HOME}/.snmp"
   echo "downloading various SNMP mibs"
-  curl -sf https://dyn.botwerks.net/mibs/mibs.tar.gz 
+  curl -s https://dyn.botwerks.net/mibs/mibs.tar.gz -o "${HOME}/.home/mibs.tar.gz"
+  echo "expanding mibs to ${HOME}/.snmp/mibs"
+  cd "${HOME}/.snmp" || return 
+  tar xzf "${HOME}/.home/mibs.tar.gz"
+  rm -i "${HOME}/.home/mibs.tar.gz"
 } 
 
 # pull down my vim config
