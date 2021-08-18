@@ -124,7 +124,10 @@ function setpath () {
   export INFOPATH="/usr/local/share/info:${INFOPATH}"
 
   # snmptools needs to pick this up
-  export MIBDIRS="${HOME}/.snmp/mibs/cisco:${HOME}/.snmp/mibs/juniper"
+  # note that the default "/usr/share/snmp/mibs" is available across most unixes
+  # this includes macos.  the balance of the mibs can be installed from my
+  # personal stash.
+  export MIBDIRS="/usr/share/snmp/mibs:${HOME}/.snmp/mibs/cisco:${HOME}/.snmp/mibs/juniper"
   export MIBDIRS="${MIBDIRS}:${HOME}/.snmp/mibs/std:${HOME}/.snmp/mibs/misc:."
 }
 
