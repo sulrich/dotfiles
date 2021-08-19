@@ -186,13 +186,21 @@ function git-upstream-sync() {
   # update my $default_branch with the contents of the upstream. this is a
   # pretty common workflow.  
   # determine if the repo uses master/main as the default branch name
+
   local DEFAULT_BRANCH=$(git remote show upstream | grep 'HEAD branch' | awk '{print $NF}')
   echo "default branch: ${DEFAULT_BRANCH}"
 
-  git checkout "${DEFAULT_BRANCH}"
-  git fetch upstream
-  git pull upstream "${DEFAULT_BRANCH}"
-  git push origin "${DEFAULT_BRANCH}"
+  if [ -z "${DEFAULT_BRANCH}" ]; then
+    echo ""
+    echo "the upstream rep is undefined, you will need to add an upstream repo to track"
+    echo "git remote add upstream <upstream-url-here>"
+    echo ""
+  else
+    git checkout "${DEFAULT_BRANCH}"
+    git fetch upstream
+    git pull upstream "${DEFAULT_BRANCH}"
+    git push origin "${DEFAULT_BRANCH}"
+  fi
 }
 
 # 1password CLI functions
