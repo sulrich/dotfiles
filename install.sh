@@ -55,6 +55,12 @@ install-brew() {
   /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 }
 
+## install-fzf: new servers only 
+install-fzf() {
+  git clone --depth 1 https://github.com/junegunn/fzf.git "${HOME}/.fzf"
+  "${HOME}/.fzf/install"
+}
+
 ## install-brew-packages: down all the cool stuff 
 install-brew-packages() {
   brew bundle --file="${BREWFILE}"
