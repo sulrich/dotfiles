@@ -1,0 +1,6 @@
+show tech-support | gzip > /mnt/flash/%%CASE_NUM%%-show-tech-$HOSTNAME-$(date +%m_%d.%H%M).log.gz
+show agent log | gzip > /mnt/flash/%%CASE_NUM%%-show-agentlog-$HOSTNAME-$(date +%m_%d.%H%M).log.gz
+bash sudo tar -cvf - /var/log/qt/ > /mnt/flash/%%CASE_NUM%%-qt-logs-$HOSTNAME-$(date +%m_%d.%H%M).tar.gz
+show agent qtrace | gzip >/mnt/flash/%%CASE_NUM%%-show-agentqt-$HOSTNAME-$(date +%m_%d.%H%M).log.gz
+show logging system | gzip >/mnt/flash/%%CASE_NUM%%-show-logsys-$HOSTNAME-$(date +%m_%d.%H%M).log.gz
+bash sudo tar -cvf - /mnt/flash/schedule/tech-support/* > /mnt/flash/%%CASE_NUM%%-history-tech-$HOSTNAME-$(date +%m_%d.%H%M).tar

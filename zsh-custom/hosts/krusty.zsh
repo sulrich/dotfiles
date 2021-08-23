@@ -1,5 +1,4 @@
 # arista specific functions for interacting w/internal services
-
 fpath=(/usr/local/share/zsh-completions $fpath)
 
 # mail rollover tools - tis moves my mailbox to the right spot
@@ -16,7 +15,6 @@ koff () {
   offlineimap -u basic
 }
 
-
 ashark() {
   if [ "$1" = "" ]
   then
@@ -29,6 +27,22 @@ EOF
     ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null \
         admin@$1 "bash sudo tcpdump -s 0 -Un -w - -i $2"            \
       | tshark -i -
+  fi
+}
+
+case-blurb() {
+  local CASEBLURB="${HOME}/.home/templates/text/case-blurb.txt"
+  if [ "$1" = "" ]
+  then
+    cat <<EOFUSAGE
+
+usage: 
+  case-blurb <case-number> - where the case-number is a whitespace-free string
+
+EOFUSAGE
+
+  else
+    sed "s/%%CASE_NUM%%/${1}/g" < ${CASEBLURB}
   fi
 }
 

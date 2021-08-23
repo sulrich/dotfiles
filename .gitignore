@@ -1,5 +1,4 @@
 *.gpg
-*.gpg
 *.pyc
 */*.autosave
 */*.elc
@@ -15,6 +14,3 @@ irssi/*.log
 mutt/aliases
 openconfig/oc-path-list.txt
 s3cfg
-vim/bundle
-vim/colors
-vim/spell
