@@ -15,21 +15,6 @@ koff () {
   offlineimap -u basic
 }
 
-ashark() {
-  if [ "$1" = "" ]
-  then
-    cat <<EOF
-usage: ashark <hostname|ip> <remote_interface>
-
-EOF
-
-  else
-    ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null \
-        admin@$1 "bash sudo tcpdump -s 0 -Un -w - -i $2"            \
-      | tshark -i -
-  fi
-}
-
 case-blurb() {
   local CASEBLURB="${HOME}/.home/templates/text/case-blurb.txt"
   if [ "$1" = "" ]
@@ -47,4 +32,5 @@ EOFUSAGE
 }
 
 # misc. arista specific aliases
+alias ago="TERM=vt100 ssh -l admin -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null"
 source "${HOME}/.home/pb.sh"
