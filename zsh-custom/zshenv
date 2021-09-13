@@ -1,22 +1,14 @@
 # -*- Mode: shell-script; tab-width: 2 -*- *
-# 
 
 # this should prevent me from sourcing the /etc/z* files
 unsetopt GLOBAL_RCS
 
+# shell specific vars
+export DIRSTACKSIZE=20
+export HISTSIZE=100
+
 export HOSTNAME=$(hostname)
 export PLATFORM=$(uname)
-# pull in platform specific environment variables, etc.  
-if [ -e "${HOME}/.home/zsh-custom/platform/${PLATFORM}-env.zsh" ]
-then
-  source "${HOME}/.home/zsh-custom/platform/${PLATFORM}-env.zsh"
-fi
-
-# pull in host specific environment variables, etc.
-if [ -e  "${HOME}/.home/zsh-custom/hosts/${HOSTNAME}-env.zsh" ]
-then
-  source "${HOME}/.home/zsh-custom/hosts/${HOSTNAME}-env.zsh"
-fi
 
 #---------------------------------------------------------------------
 # ansible vars
@@ -48,18 +40,16 @@ export LANG=en_US.UTF-8
 
 if (( ${+SSH_CONNECTION} )); 
 then
-  # we're remote
-  export EDITOR=vim
+  export EDITOR=vim # we're remote
 else
   export EDITOR=nvim
 fi
 export VISUAL=${EDITOR} 
 
 # misc. perl specific variables.
-# use PERLBREW for locally installed perl
-# make sure the specify the preferred perlbrew for the installation we're running on
-# e.g.: perlbrew list ... pick one
-#       perlbrew use <perl_ver_here>
+# use PERLBREW for locally installed perl make sure the specify the preferred
+# perlbrew for the installation we're running on e.g.: perlbrew list, pick 1
+# perlbrew use <perl_ver_here>
 export PERLDOC_PAGER="less -isrR"
 export PERL5LIB="${HOME}/src/perl/libs"
 export PERLBREW_HOME="${HOME}/.perlbrew"
@@ -69,7 +59,6 @@ export YANG_MODPATH=${HOME}/src/yang/standard:${HOME}/src/openconfig/public/rele
 export YANG_PLUGINS="${HOME}/.pyang"
 
 function setpath () {
-
   LOCAL_PATH="/usr/local/bin:/usr/local/sbin:${GOPATH}/bin"
   POETRY_DIR="${HOME}/.poetry/bin"
 
@@ -131,6 +120,18 @@ function setpath () {
   export MIBDIRS="${MIBDIRS}:${HOME}/.snmp/mibs/std:${HOME}/.snmp/mibs/misc:."
 }
 
+# pull in platform specific environment variables, etc.  
+if [ -e "${HOME}/.home/zsh-custom/platform/${PLATFORM}-env.zsh" ]
+then
+  source "${HOME}/.home/zsh-custom/platform/${PLATFORM}-env.zsh"
+fi
+
+# pull in host specific environment variables, etc.
+if [ -e  "${HOME}/.home/zsh-custom/hosts/${HOSTNAME}-env.zsh" ]
+then
+  source "${HOME}/.home/zsh-custom/hosts/${HOSTNAME}-env.zsh"
+fi
+
 # perlbrew
 if [[ -f "${HOME}/src/perl/etc/bashrc" && -z "${INSIDE_EMACS}" ]];
 then
@@ -142,7 +143,6 @@ if [ -f "${HOME}/src/google-cloud-sdk/path.zsh.inc" ]
 then
   source "${HOME}/src/google-cloud-sdk/path.zsh.inc"
 fi 
-
 
 # load rvm into a shell session *as a function*
 if [ -e "${HOME}/.rvm/scripts/rvm" ];
@@ -161,13 +161,9 @@ fi
 setpath
 
 # update pyenv elements appropriaately
-# 20210601 (sulrich) - the first `pyenv init` does the heavy lifting associated
-# with the path shim updates, the second rehashes the shims and adds the
-# necessary elements to handle autocomplete, etc.  not sure this is the best
-# approach  seems to address the near term breakage.
 if command -v pyenv 1>/dev/null 2>&1; then
   eval "$(pyenv init --path)"
-  eval "$(pyenv init -)"
+  ## eval "$(pyenv init -)"
 fi
 
 if which pyenv-virtualenv-init > /dev/null; then 
