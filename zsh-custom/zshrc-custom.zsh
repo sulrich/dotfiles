@@ -21,41 +21,6 @@ unsetopt bgnice correct correctall noflowcontrol markdirs pathdirs \
          recexact mailwarning notify noclobber completeinword ignore_eof \
          autocd cdablevars autoresume extendedglob
 
-DIRSTACKSIZE=20
-HISTSIZE=100
-
-#---------------------------------------------------------------------
-# aliases
-#
-setaliases() {
-  alias -g L=" 2>&1|less"  #  page through the output, inluding STDERR
-  alias -g NUL="> /dev/null 2>&1"
-  alias -g TL="| tail -20"
-  alias ago="TERM=vt100 ssh -l admin -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null"
-  alias e="emacsclient"
-  alias gitdiff-lastone="git diff HEAD^^ $1"
-  alias gitlog-lastone="git log -p -n 1 $1"
-  alias gitlog-short='git log --graph --date=short --pretty="%h %cd %cn %ce"'
-  alias jspp="python -m json.tool $1"
-  alias ll="ls -lh"
-  alias lld="ls -ld -- */"
-  alias ls="ls -CF"
-  alias quickhttp="python2 -m SimpleHTTPServer 4000"
-  alias rm="rm -f"
-  alias vi="vim"
-  alias mutt="neomutt"   # mutt is dead, long live mutt.
-  # overrides to prevent craziness from oh-my-zsh
-  unalias grep
-  # mess with escaping jq stuff at your own risk
-  alias json2path="jq '[leaf_paths as \$p | {'key': \$p | join(\"/\"), 'value': getpath(\$p)}] | from_entries'"
-  # the following requires imagemagick to be installed
-  alias mkwebp="convert $1 -quality 100 -define webp-:lossless=true $2"
-  # get rid of those annoying git filemode issues
-  alias gitfilemode="git config core.filemode false"
-  alias findtags="egrep -i '(#{1}[[:alpha:]]{2,}\s)'"
-
-}
-
 # misc. completions experiments and command line editing options
 autoload -U compinit
 # compinit
@@ -69,11 +34,47 @@ bindkey '^Xe' edit-command-line
 bindkey -e
 bindkey '^];' spell-word
 
+#---------------------------------------------------------------------
+# aliases
+#
+setaliases() {
+  alias -g L=" 2>&1|less"  #  page through the output, inluding STDERR
+  alias -g NUL="> /dev/null 2>&1"
+  alias -g TL="| tail -20"
+  alias e="emacsclient"
+
+  # git aliases for misc. stuff i do
+  alias gitdiff-lastone="git diff HEAD^^ $1"
+  alias gitlog-lastone="git log -p -n 1 $1"
+  alias gitlog-short='git log --graph --date=short --pretty="%h %cd %cn %ce"'
+  alias gitfilemode="git config core.filemode false"
+
+  alias ll="ls -lh"
+  alias lld="ls -ld -- */"
+  alias ls="ls -CF"
+  alias quickhttp="python3 -m http.server 4000"   # use python3 by default
+  alias quickhttp2="python2 -m SimpleHTTPServer 4000"
+  alias rm="rm -f"
+  alias vi="vim"
+  alias mutt="neomutt"   # mutt is dead, long live mutt.
+
+  # mess with escaping jq stuff at your own risk
+  alias json2path="jq '[leaf_paths as \$p | {'key': \$p | join(\"/\"), 'value': getpath(\$p)}] | from_entries'"
+  alias jspp="python -m json.tool $1"
+
+  # the following requires imagemagick to be installed
+  alias mkwebp="convert $1 -quality 100 -define webp-:lossless=true $2"
+  # get rid of those annoying git filemode issues
+  alias findtags="egrep -i '(#{1}[[:alpha:]]{2,}\s)'"
+
+  # overrides to prevent craziness from oh-my-zsh
+  unalias grep
+}
 
 # the following should prevent tramp hangs in emacs
 if [[ $TERM == "dumb" ]];
 then
-  unsetopt zle 
+  unsetopt zle
   unset zle_bracketed_paste
   PS1='$ '
   PS3='$ '
@@ -91,7 +92,7 @@ then
     PS3='$ '
   fi
 
-  if [[ "$INSIDE_EMACS" = 'vterm' ]]; 
+  if [[ "$INSIDE_EMACS" = 'vterm' ]];
   then
     alias clear='vterm_printf "51;Evterm-clear-scrollback";tput clear'
   fi
@@ -107,8 +108,10 @@ function strip-blank () { sed '/^[[:space:]]*$/d' < $1 }
 function debug() { [ "$DEBUG" ] && echo ">>> $*"; }
 function mwhois { whois -h `whois "domain $@" | sed '/^.*Whois Server:/!d;s///'` "$@" }
 function asnwhois { whois -h whois.cymru.com " -v AS$1" }
-# note: on bert we need to remap the url to /prometheus and make sure that the
-# web-command elements are enabled to trigger reloads. 
+
+# note: this assumes that the URL has been remapped to /prometheus and the 
+# web-command elements are enabled to trigger reloads. applicable to home
+# operation
 function prom-reload { curl -X POST http://localhost:9090/prometheus/-/reload }
 
 SU==su
@@ -149,42 +152,16 @@ function google-nets () {
 # output yang models in the unfurled path format.  this require's anees' nifty
 # plugin which is in the openconfig repo.
 function pyang-path () {
-  # this is dependent on having aashaikh's pyang module installed.  
+  # this is dependent on having aashaikh's pyang module installed.
   # use of --strip helps to make the output more readable.
   pyang --plugindir ${YANG_PLUGINS} --strip -f paths $*
-}
-
-function remote-pcap() {
-  if [ "$#" -lt 2 ]; then
-    echo "capture to wireshark usage:"
-    echo "cap { DUT IP | hostname | FQDN } interface [filter]"
-    echo ""
-    echo "a few examples:"
-    echo "to capture icmp traffic sent to/from a host with ip address of 1.2.3.4"
-    echo " cap co630 mirror1 icmp and host 1.2.3.4"
-    echo ""
-    echo "continuing the above example; to capture only 4 packets:"
-    echo " cap co630 mirror1 icmp and host 1.2.3.4 -c 4"
-    echo ""
-  else
-    dut="$1"
-    tcpdump_interface="$2"
-    shift 2
-    tcpdump_filter=""
-    while (( "$#" )); do
-      tcpdump_filter="$tcpdump_filter $1"
-      shift
-    done
-    tcpdump_string="bash tcpdump -s 0 -Un -w - -i "$tcpdump_interface" "$tcpdump_filter""
-    ssh admin@"$dut" "$tcpdump_string" | wireshark -k -i -
-  fi
 }
 
 # misc. git functions
 function git-upstream-sync() {
   # for stuff that i am actively working on with others, work off of my fork and
   # update my $default_branch with the contents of the upstream. this is a
-  # pretty common workflow.  
+  # pretty common workflow.
   # determine if the repo uses master/main as the default branch name
 
   local DEFAULT_BRANCH=$(git remote show upstream | grep 'HEAD branch' | awk '{print $NF}')
@@ -221,11 +198,11 @@ function get-passwd() {
   op get item "$1" --fields password
 }
 
-umask 002  
+umask 002
 setaliases
 
 # completion kits --------------------------------------------------------------
-# these aren't necessarily going to be available everywhere. 
+# these aren't necessarily going to be available everywhere.
 #
 # enable misc. completions available from homebrew
 fpath=(/usr/local/share/zsh-completions $fpath)
@@ -257,7 +234,7 @@ fi
 ### azure completion - end ###
 
 #-------------------------------------------------------------------------------
-## additional modules / functions for various activities 
+## additional modules / functions for various activities
 
 # pull in platform specific configuration - note this needs to be somewhere
 # other than the ZSH_CUSTOM directory otherwise everything gets pulled in.
@@ -274,9 +251,9 @@ then
 fi
 
 if [[ $TERM != "dumb" && -z "${INSIDE_EMACS}" ]];
-then 
-  # enable iterm zsh integration if it's available 
-  # exclude dumb terminals so that tramp for emacs, etc. works 
+then
+  # enable iterm zsh integration if it's available
+  # exclude dumb terminals so that tramp for emacs, etc. works
   # also exclude from inside of emacs so that ansi-term, etc. works.
   test -e "${HOME}/.iterm2_shell_integration.zsh" && \
     source "${HOME}/.iterm2_shell_integration.zsh"
