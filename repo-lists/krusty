@@ -26,4 +26,8 @@ declare -a REPO_LIST=(
   "${HOME}/src/google/gnsi"
 )
 
+declare -a MIRROR_LIST=(
+  "${HOME}/src/openconfig/ondatra"
+)
 
+INTERNAL_REMOTE="ANET-MIRROR"
