@@ -233,7 +233,7 @@ install-min-packages-debian() {
      build-essential curl direnv fzf git libbz2-dev libffi-dev liblzma-dev      \
      libncurses5-dev libncursesw5-dev libreadline-dev libsqlite3-dev libssl-dev \
      llvm make python3-dev python3-pip python-openssl ripgrep tmux vim-nox      \
-     wget xz-utils zlib1g-dev zsh neovim
+     wget xz-utils zlib1g-dev zsh 
 }
 
 ## install-tpm: install tmux plugin manager (TPM)
@@ -291,7 +291,8 @@ install-server-debian() {
   sudo apt install \
     nginx certbot ansible cifs-utils bind9 openjdk-8-jre-headless haveged \
 		protobuf-compiler libprotobuf-dev libutempter-dev libboost-dev        \
-  	libio-pty-perl libssl-dev pkg-config autoconf ack 
+  	libio-pty-perl libssl-dev pkg-config autoconf ack python3-certbot-nginx
+
 	
 	cat <<EOFMESSAGE 
 
