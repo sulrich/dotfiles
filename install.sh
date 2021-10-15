@@ -289,10 +289,10 @@ EOFMESSAGE
 ## install-server-debian (sudo): install server elements (debian/ubuntu)
 install-server-debian() {
   sudo apt install \
-    nginx certbot ansible cifs-utils bind9 openjdk-8-jre-headless haveged \
-		protobuf-compiler libprotobuf-dev libutempter-dev libboost-dev        \
-  	libio-pty-perl libssl-dev pkg-config autoconf ack python3-certbot-nginx
-
+    nginx certbot ansible cifs-utils bind9 openjdk-8-jre-headless haveged   \
+		protobuf-compiler libprotobuf-dev libutempter-dev libboost-dev          \
+  	libio-pty-perl libssl-dev pkg-config autoconf ack python3-certbot-nginx \
+    whois
 	
 	cat <<EOFMESSAGE 
 
@@ -315,6 +315,12 @@ clone-config-repos() {
  git clone https://github.com/sulrich/ansible-private.git "${HOME}/src/ansible"
  git clone http://dyn.botwerks.net/git/sulrich/network-configs.git "${HOME}/src/network-configs"
 
+}
+
+## bootstrap-deb-1 (sudo): install the elements to make server happy
+bootstrap-debian-1() {
+  install-server-debian
+  install-min-packages-debian
 }
 
 # anything that has ## at the front of the line will be used as input.
