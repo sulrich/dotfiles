@@ -193,9 +193,15 @@ function 1p-off() {
   unset OP_SESSION_botzinski
 }
 
-function get-passwd() {
+function get-1pass-passwd() {
   1p-on
   op get item "$1" --fields password
+}
+
+# API tokens use the credential field.  
+function get-1pass-api-token() {
+  1p-on
+  op get item "$1" --fields credential
 }
 
 umask 002

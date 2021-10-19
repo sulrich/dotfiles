@@ -14,7 +14,10 @@ export D1J="${HOME}/Library/Group Containers/5U8NS4GX82.dayoneapp2/Data/Auto Imp
 # convenience environment variable to get to the iCloud root directory
 export ICLOUD="${HOME}/Library/Mobile Documents/com~apple~CloudDocs"
 
-export SULRICH_BKUP_RPATH="/Volumes/media/archives/${HOSTNAME}-backup"
+# note the following requires that synology be configured with the relevant ssh
+# keys.  the path is also _relative_ to the home directory as presented by the
+# sftp process.
+export SULRICH_BKUP_RPATH="sftp:sulrich@snuffles.local.:/home/archive/backups/${HOSTNAME}-backup/"
 export SULRICH_BKUP_EXCLUDE="${HOME}/.home/backup/${HOSTNAME}-backup-exclude-list.txt"
 # note that the following is sensitive to the naming inside 1password
 export SULRICH_BKUP_1P="restic-${HOSTNAME}"
