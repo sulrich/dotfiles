@@ -161,10 +161,8 @@ fi
 setpath
 
 # update pyenv elements appropriaately
-if command -v pyenv 1>/dev/null 2>&1; then
-  eval "$(pyenv init --path)"
-  ## eval "$(pyenv init -)"
-fi
+eval "$(pyenv init --path)"
+eval "$(pyenv init -)"  # i honestly don't know if i need this 2nd invocation
 
 if which pyenv-virtualenv-init > /dev/null; then 
   eval "$(pyenv virtualenv-init -)"; 
