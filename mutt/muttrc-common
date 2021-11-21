@@ -21,13 +21,13 @@ macro attach W <save-entry><kill-line>/Users/sulrich/Desktop/_attach/
 # traceroute for mail - should be platform independent
 macro pager <esc>t "|mailhops|less -c\n" "show trace of mail routing"
 # send this to my tracker
-macro pager <esc>O "|mail_ofocus.rb\n" "send to omnifocus"
+#macro pager <esc>O "|mail_ofocus.rb\n" "send to omnifocus"
 # rot13 the message
 macro pager <esc>R \
  "<pipe-message>formail -I ''|tr a-zA-Z n-za-mN-ZA-M|less -c<enter>" "rot13"
 
 
-set query_command = '/usr/local/bin/contacts -HlS -f"%fn %ln <%e>" %s' 
+#set query_command = '/usr/local/bin/contacts -HlS -f"%fn %ln <%e>" %s' 
 # set query_command = "contacts -Sf '%eTOKEN%n' '%s' | sed -e 's/TOKEN/\t/g'"
 #bind editor <Tab> complete-query
 #bind editor ^T    complete
@@ -169,7 +169,7 @@ hdr_order	from: subject: to: cc: message-id: date: x-mailer: x-url: \
 #
 
 #set implicit_autoview=yes
-auto_view         text/html
+auto_view         text/html 
 
 # misc. additional note - when operating under tmux there's some oddities with
 # the operation of opening html files in quickview (ala qlmanage) this has been
