@@ -13,4 +13,4 @@ application/*                 ; qlmanage -p 2>/dev/null %s ; copiousoutput
 
 text/plain                    ; less
 text/open                     ; open %s
-text/calendar                 ; open -a "Microsoft Outlook" %s
+text/calendar                 ; open -a "Fantastical" %s
