@@ -13,6 +13,7 @@ my_hdr From: sulrich@botwerks.org
 set from = "sulrich@botwerks.org"
 set realname = "steve ulrich"
 
+set folder="~/mail"
 
 #-------------------------------------------------------------------------------
 # path vars
