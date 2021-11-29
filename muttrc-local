@@ -1,0 +1,36 @@
+#-------------------------------------------------------------------------------
+#
+# steve ulrich's .muttrc (mutt 0.85) <sulrich@botwerks.*>
+#
+# the format of this file is one command per line.  everything after a pound
+# sign (#) is a comment, unless a backward slash (\) precedes it
+#
+#-------------------------------------------------------------------------------
+#
+# add my header(s)
+my_hdr Reply-To: sulrich@botwerks.org
+my_hdr From: sulrich@botwerks.org
+set from = "sulrich@botwerks.org"
+set realname = "steve ulrich"
+
+set folder="~/mail"
+
+#-------------------------------------------------------------------------------
+# path vars
+#
+# note: $folder should be set _before_ any other path vars where `+' or `='
+# is used because paths are expanded when parsed
+#
+set signature="~/.home/signature-botwerks"	# my signature
+set mailcap_path="~/.mailcap"
+
+mailboxes ! =!kathy =family =!travel
+
+# the following is necessary for use with isync - per the isync manpage
+# set maildir_trash
+
+# set the key that i'll use for encrypted stuff
+set pgp_sign_as="4B254EF9"
+
+#source ~/.mutt/gpg.rc
+source ~/.mutt/muttrc-common
