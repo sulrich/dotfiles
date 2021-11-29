@@ -17,7 +17,7 @@ export ICLOUD="${HOME}/Library/Mobile Documents/com~apple~CloudDocs"
 # note the following requires that synology be configured with the relevant ssh
 # keys.  the path is also _relative_ to the home directory as presented by the
 # sftp process.
-export SULRICH_BKUP_RPATH="sftp:sulrich@snuffles.local.:/home/archive/backups/${HOSTNAME}-backup/"
+export SULRICH_BKUP_RPATH="/home/archive/backups/${HOSTNAME}-backup/"
 export SULRICH_BKUP_EXCLUDE="${HOME}/.home/backup/${HOSTNAME}-backup-exclude-list.txt"
 # note that the following is sensitive to the naming inside 1password
 export SULRICH_BKUP_1P="restic-${HOSTNAME}"
