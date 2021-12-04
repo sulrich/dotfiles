@@ -178,6 +178,7 @@ make-symlinks() {
     ['Xdefaults']=".Xdefaults"
     ['ansible.cfg']=".ansible.cfg"
     ['cloginrc']=".cloginrc"
+    ['digrc']=".digrc"
     ['flake8']=".flake8"
     ['gitconfig']=".gitconfig"
     ['gitignore']=".gitignore"
