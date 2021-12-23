@@ -19,6 +19,7 @@ declare -a REPO_LIST=(
   "${HOME}/src/arista/docs-release-openmgmt"
   # keep release models handy
   "${HOME}/src/arista/yang"
+  "${HOME}/src/arista/goarista"
  
   # google repos
   "${HOME}/src/google/gnxi"
