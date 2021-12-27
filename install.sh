@@ -17,7 +17,7 @@
 BREWFILE="${HOME}/iCloud/src/configs/brewfile.txt"
 
 PYTHON2_VER="2.7.18"
-PYTHON3_VER="3.8.10"
+PYTHON3_VER="3.9.9"
 
 ARCH=""
 case $(uname -m) in

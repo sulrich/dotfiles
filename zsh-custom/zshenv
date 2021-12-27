@@ -33,7 +33,7 @@ export GOPATH=${HOME}/go
 export LESS="$LESS -eFRX -i -x2"
 export GPG_TTY=$(tty)
 export OC_PATH_DUMP="${HOME}/.home/openconfig/oc-path-list.txt"
-export POWERLINE_DIR="${HOME}/.pyenv/versions/${PYTHON3_VER}/lib/$(PYTHON3_MAJOR}/site-packages/powerline"
+export POWERLINE_DIR="${HOME}/.pyenv/versions/${PYTHON3_VER}/lib/${PYTHON3_MAJOR}/site-packages/powerline"
 
 # localization info
 export LC_ALL=en_US.UTF-8
