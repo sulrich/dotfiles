@@ -19,7 +19,6 @@ declare -a MODEL_LIST=(
   "openflow/*.yang"
   "optical-transport/*.yang"
   "ospf/*.yang"
-  "p4rt/*.yang"
   "platform/*.yang"
   "platform/* interfaces/*"
   "policy-forwarding/*.yang"
@@ -35,5 +34,5 @@ declare -a MODEL_LIST=(
   "system/*.yang"
   "telemetry/*.yang"
   "vlan/*.yang"
-  "wifi/*.yang "
+  "wifi/*.yang"
 )
