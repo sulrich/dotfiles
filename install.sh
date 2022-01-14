@@ -42,7 +42,7 @@ install-go() {
   mkdir -p "${HOME}/go/src"
   mkdir -p "${HOME}/go/pkg"
   local GO_VERSION=$(curl -s "https://golang.org/VERSION?m=text")
-  local GO_OS=$(uname -s | tr "[:upper:]" "[:lower:]"n)
+  local GO_OS=$(uname -s | tr "[:upper:]" "[:lower:]")
   local FILENAME="${GO_VERSION}.${GO_OS}-${ARCH}.tar.gz"
   echo "https://dl.google.com/go/${FILENAME} -> ${FILENAME}" 
   curl -s "https://dl.google.com/go/${FILENAME}" -o "${FILENAME}"
@@ -94,25 +94,24 @@ install-vim-modules() {
   git submodule update --init
   cd "${HOME}" || return
 
-  echo "adding neovim elements"
+  echo "adding neovim ..."
   if [ ! -d "${HOME}/.config" ] 
   then
-    echo "adding XDG_CONFIG_HOME ..."
+    echo " - adding XDG_CONFIG_HOME"
     git clone https://github.com/sulrich/xdg-config-home.git "${HOME}/.config"
+  fi
+
+  if [ ! -d "${HOME}/.config/nvim" ] 
+  then
+    echo " - adding neovim config dir"
+    git clone https://github.com/sulrich/nvim.git "${HOME}/.config/nvim"
   fi
 
   if [ ! -d "${HOME}/.local/share" ] 
   then
-    echo "adding neovim plugins/modules"
+    echo " - adding neovim plugins/modules location"
     mkdir -p "${HOME}/.local/share"
   fi
-
-  if [ ! -d "${HOME}/.local/share/nvim" ] 
-  then
-    git clone https://github.com/sulrich/nvim.git "${HOME}/.local/share/nvim"
-  fi
-  cd "${HOME}/.local/share/nvim" || exit
-  git submodule update --init
 }
 
 # after having built pyenv end the necessary python - install
@@ -239,7 +238,7 @@ install-min-packages-debian() {
 ## install-tpm: install tmux plugin manager (TPM)
 install-tpm() {
   echo "cloning TPM ..."
-	git clone https://github.com/tmux-plugins/tpm ${HOME}/.tmux/plugins/tpm
+	git clone https://github.com/tmux-plugins/tpm "${HOME}/.tmux/plugins/tpm"
   echo 'start tmux, and install using "C-t + I" to install'
 }
 
