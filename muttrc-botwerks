@@ -21,7 +21,7 @@ set imap_pass = `/usr/local/bin/op get item botwerks-imap --fields password`
 set ssl_force_tls = yes   # make sure that this is set
 set ssl_use_sslv3
 set smtp_url = "smtp://sulrich@botwerks.org@smtp.gmail.com:587"
-set smtp_pass = `/usr/local/bin/op get item botwerks-imap --fields password`
+set smtp_pass = `/usr/local/bin/op item get botwerks-imap --fields password`
 set smtp_authenticators = "plain"
 
 # folder settings
