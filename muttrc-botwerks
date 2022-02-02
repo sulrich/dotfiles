@@ -15,7 +15,7 @@ set realname = "steve ulrich"
 
 # imap settings
 set imap_user = "sulrich@botwerks.org"
-set imap_pass = `/usr/local/bin/op get item botwerks-imap --fields password`
+set imap_pass = `/usr/local/bin/op item get botwerks-imap --fields password`
 
 # smtp settings
 set ssl_force_tls = yes   # make sure that this is set
