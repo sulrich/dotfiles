@@ -34,6 +34,7 @@ export LESS="$LESS -eFRX -i -x2"
 export GPG_TTY=$(tty)
 export OC_PATH_DUMP="${HOME}/.home/openconfig/oc-path-list.txt"
 export POWERLINE_DIR="${HOME}/.pyenv/versions/${PYTHON3_VER}/lib/${PYTHON3_MAJOR}/site-packages/powerline"
+export CLAB_DIR="${HOME}/clab"
 
 # localization info
 export LC_ALL=en_US.UTF-8
@@ -62,6 +63,7 @@ export YANG_PLUGINS="${HOME}/.pyang"
 function setpath () {
   LOCAL_PATH="/usr/local/bin:/usr/local/sbin:${GOPATH}/bin"
   POETRY_DIR="${HOME}/.poetry/bin"
+  CARGO_DIR="${HOME}/.cargo/bin"
 
   # handle cases where we need to shim the go binaries into the path due to a
   # non-default installation of golang
@@ -78,7 +80,16 @@ function setpath () {
     POETRY_PATH=""
   fi
 
+  # inject rust cargo into the path as appropriate
+  if [[ -d "${CARGO_DIR}" ]];
+  then
+    CARGO_PATH="${CARGO_DIR}:"
+  else
+    CARGO_PATH=""
+  fi
+
   # we should be running pyenv for all our python needs interactively
+  # check for the presence of PYENV_ROOT
   if (( ${+PYENV_ROOT} )); 
   then
     PYENV_PATH="${PYENV_ROOT}/bin:"
@@ -100,7 +111,7 @@ function setpath () {
     . "${HOME}/src/anaconda3/etc/profile.d/conda.sh"
   else
     if [[ -d "${HOME}/src/anaconda3/bin" ]]; then
-      CONDA_PATH="${HOME}/src/anaconda3/bin"
+      CONDA_PATH="${HOME}/src/anaconda3/bin:"
     else
       CONDA_PATH=""
     fi
@@ -108,7 +119,7 @@ function setpath () {
 
   # set path to address OS/arch  specific binaries within home directory
   # OSPATH=`uname -ms | sed 's| |/|g'`
-  export PATH="${PYENV_PATH}${POETRY_PATH}${CONDA_PATH}${LOCAL_PATH}:${HOME}/bin:${PATH}:."
+  export PATH="${PYENV_PATH}${POETRY_PATH}${CONDA_PATH}${CARGO_PATH}${LOCAL_PATH}:${HOME}/bin:${PATH}:."
   export MANPATH="/usr/local/man:/usr/man:/usr/share/man:"
   export MANPATH="${MANPATH}:/usr/X11R6/man:/usr/local/man:${HOME}/Library/man:."
   export INFOPATH="/usr/local/share/info:${INFOPATH}"
