@@ -26,7 +26,7 @@ matches:
           format: "%Y%m%d"
 
   - trigger: "`:shrug:"
-    replace: "¯\_(ツ)_/¯"
+    replace: "¯\\_(ツ)_/¯"
 
   - trigger: "`>su"
     replace: ">> [sulrich]\n>>"
