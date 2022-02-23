@@ -13,5 +13,5 @@ gnupg/random_seed
 irssi/*.log
 mutt/aliases
 mutt/cache
-openconfig/oc-path-list.txt
+openconfig/oc-path-list.*
 s3cfg
