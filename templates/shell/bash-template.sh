@@ -4,8 +4,7 @@
 trap cleanup SIGINT SIGTERM ERR EXIT
 
 
-
-useage() {
+usage() {
     cat << EOF
 usage: ${0##*/} [-h]
 
@@ -16,7 +15,9 @@ EOF
 }
 
 # anything that has ## at the front of the line will be used as input.
+## help: details the available functions in this script
 help() {
+  usage
   echo "available functions:"
   sed -n 's/^##//p' $0 | column -t -s ':' | sed -e 's/^/ /'
 }
@@ -27,7 +28,16 @@ cleanup() {
     # script cleanup here, tmp files, etc.
 }
 
+if [[ $# -lt 1 ]]; then
+  help
+  exit
+fi
 
-
-# keep this - it lets you run the various functions in this script separately.
-"$@"
+case $1 in
+  *)
+    # shift positional arguments so that arg 2 becomes arg 1, etc.
+    CMD=$1
+    shift 1
+    ${CMD} ${@} || help
+    ;;
+esac
