@@ -1,4 +1,7 @@
 #!/bin/bash
+# -*- mode: sh; fill-column: 78; comment-column: 50; tab-width: 2 -*-
+
+trap cleanup SIGINT SIGTERM ERR EXIT
 
 # note that the minimum bash version for this script is 4.0 to support
 # the associative arrays
@@ -72,6 +75,14 @@ install-omz() {
   mkdir -p "${HOME}/src"
   echo "cloning oh-my-zsh"
   git clone https://github.com/robbyrussell/oh-my-zsh.git "${HOME}/src/zsh"
+}
+
+## install-language-servers: intall relevant lsps for nvim
+install-language-servers() {
+  # install python language server (pyright)
+  npm install -g pyright
+  # install go language server
+  go install golang.org/x/tools/gopls@latest
 }
 
 ## install-snmp-mibs: pull down the collection of mibs
@@ -338,5 +349,21 @@ EOF
   sed -n "s/^##//p" "$0" | column -t -s ":" | sed -e "s/^/ /"
 }
 
-# keep this - it lets you run the various functions in this script
-"$@"
+cleanup() {
+    trap - SIGINT SIGTERM ERR EXIT
+    # script cleanup here, tmp files, etc.
+}
+
+if [[ $# -lt 1 ]]; then
+  help
+  exit
+fi
+
+case $1 in
+  *)
+    # shift positional arguments so that arg 2 becomes arg 1, etc.
+    CMD=$1
+    shift 1
+    ${CMD} ${@} || help
+    ;;
+esac
