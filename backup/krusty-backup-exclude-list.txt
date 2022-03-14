@@ -16,3 +16,5 @@ Library/Caches/Google
 Library/Containers/com.docker.docker/Data/vms
 Library/Mobile Documents
 Virtual Machines.localized
+clab
+Library/Containers/com.docker.docker
