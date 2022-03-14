@@ -184,7 +184,8 @@ function git-upstream-sync() {
 OP_ACCOUNT_NAME="botzinski"
 function 1p-on() {
   if [[ -z ${OP_SESSION_botzinski} ]]; then
-    eval $(op signin "${OP_ACCOUNT_NAME}")
+    # eval $(op signin "${OP_ACCOUNT_NAME}")
+    eval $(op signin)
   fi
 }
 
