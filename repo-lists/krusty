@@ -1,6 +1,5 @@
 declare -a REPO_LIST=(
   # openconfig repos
-  "${HOME}/src/openconfig/public" 
   "${HOME}/src/openconfig/gnmi"
   "${HOME}/src/openconfig/gnoi"
   "${HOME}/src/openconfig/goyang"
@@ -11,12 +10,10 @@ declare -a REPO_LIST=(
   "${HOME}/src/openconfig/reference"
   "${HOME}/src/openconfig/ygot"
   "${HOME}/src/openconfig/hercules"
-  "${HOME}/src/openconfig/ondatra"
   "${HOME}/src/openconfig/autobahn"
   "${HOME}/src/yang"
 
   # the following should be kept current to facilitate public deployment 
-  "${HOME}/src/arista/docs-release-openmgmt"
   # keep release models handy
   "${HOME}/src/arista/yang"
   "${HOME}/src/arista/goarista"
@@ -25,6 +22,13 @@ declare -a REPO_LIST=(
   "${HOME}/src/google/gnxi"
   "${HOME}/src/google/orismologer"
   "${HOME}/src/google/gnsi"
+)
+
+declare -a UPSTREAM_LIST=(
+  # openconfig repos
+  "${HOME}/src/openconfig/public" 
+  "${HOME}/src/openconfig/ondatra"
+  "${HOME}/src/arista/openmgmt"
 )
 
 declare -a MIRROR_LIST=()
