@@ -28,6 +28,7 @@ declare -a UPSTREAM_LIST=(
   # openconfig repos
   "${HOME}/src/openconfig/public" 
   "${HOME}/src/openconfig/ondatra"
+  "${HOME}/src/openconfig/featureprofiles"
   "${HOME}/src/arista/openmgmt"
 )
 
