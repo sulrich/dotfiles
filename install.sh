@@ -9,8 +9,8 @@ trap cleanup SIGINT SIGTERM ERR EXIT
 # create the framework of dotfiles and supporting software, etc that i
 # use on a standard unix system.  this presumes that i'm setting up
 # shop on a new machine / laptop.
-# 
-# make sure that direnv is installed 
+#
+# make sure that direnv is installed
 
 # installation script to pull down the necessary configuration files for me to
 # bootstrap a machine.
@@ -38,7 +38,7 @@ esac
 # 3. rm -rf /usr/local/go
 # 3. run the install-go process
 
-## install-go (sudo): pull down the latest go releas and install 
+## install-go (sudo): pull down the latest go releas and install
 install-go() {
   echo "installing go"
   mkdir -p "${HOME}/go/bin"
@@ -47,7 +47,7 @@ install-go() {
   local GO_VERSION=$(curl -s "https://golang.org/VERSION?m=text")
   local GO_OS=$(uname -s | tr "[:upper:]" "[:lower:]")
   local FILENAME="${GO_VERSION}.${GO_OS}-${ARCH}.tar.gz"
-  echo "https://dl.google.com/go/${FILENAME} -> ${FILENAME}" 
+  echo "https://dl.google.com/go/${FILENAME} -> ${FILENAME}"
   curl -s "https://dl.google.com/go/${FILENAME}" -o "${FILENAME}"
   sudo tar -C /usr/local -xzf "${FILENAME}"
   rm -i "${FILENAME}"
@@ -58,16 +58,16 @@ install-brew() {
   /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 }
 
-## install-fzf: new servers only 
+## install-fzf: new servers only
 install-fzf() {
   git clone --depth 1 https://github.com/junegunn/fzf.git "${HOME}/.fzf"
   "${HOME}/.fzf/install"
 }
 
-## install-brew-packages: down all the cool stuff 
+## install-brew-packages: down all the cool stuff
 install-brew-packages() {
   brew bundle --file="${BREWFILE}"
-} 
+}
 
 ## install-omz: install oh-my-zsh
 install-omz() {
@@ -91,10 +91,10 @@ install-snmp-mibs() {
   echo "downloading various SNMP mibs"
   curl -s https://dyn.botwerks.net/mibs/mibs.tar.gz -o "${HOME}/.home/mibs.tar.gz"
   echo "expanding mibs to ${HOME}/.snmp/mibs"
-  cd "${HOME}/.snmp" || return 
+  cd "${HOME}/.snmp" || return
   tar xzf "${HOME}/.home/mibs.tar.gz"
   rm -i "${HOME}/.home/mibs.tar.gz"
-} 
+}
 
 # pull down my vim config
 ## install-vim-modules: pull down git repos and init
@@ -106,19 +106,19 @@ install-vim-modules() {
   cd "${HOME}" || return
 
   echo "adding neovim ..."
-  if [ ! -d "${HOME}/.config" ] 
+  if [ ! -d "${HOME}/.config" ]
   then
     echo " - adding XDG_CONFIG_HOME"
     git clone https://github.com/sulrich/xdg-config-home.git "${HOME}/.config"
   fi
 
-  if [ ! -d "${HOME}/.config/nvim" ] 
+  if [ ! -d "${HOME}/.config/nvim" ]
   then
     echo " - adding neovim config dir"
     git clone https://github.com/sulrich/nvim.git "${HOME}/.config/nvim"
   fi
 
-  if [ ! -d "${HOME}/.local/share" ] 
+  if [ ! -d "${HOME}/.local/share" ]
   then
     echo " - adding neovim plugins/modules location"
     mkdir -p "${HOME}/.local/share"
@@ -129,7 +129,7 @@ install-vim-modules() {
 # powerline to make things look cool - this will likely have some
 # local font dependencies if this is run on an actual
 # workstation. (read: Mac OS)
-# 
+#
 
 ## install-pyenv: self-explanatory
 install-pyenv() {
@@ -150,7 +150,7 @@ install-pythons() {
   pyenv install "${PYTHON3_VER}"
 
   echo "setting pyenv global"
-  pyenv global "${PYTHON3_VER}" "${PYTHON2_VER}" 
+  pyenv global "${PYTHON3_VER}" "${PYTHON2_VER}"
   echo "installing relevant python packages"
   pip3 install powerline-status
 }
@@ -204,7 +204,7 @@ make-symlinks() {
     ['zsh-custom/zshenv']=".zshenv"
   )
 
-  echo "making dotfile symlinks" 
+  echo "making dotfile symlinks"
   for DFILE in "${!DOTFILES[@]}";
   do
     echo  "- ${DFILE} -> ${DOTFILES[$DFILE]}"
@@ -215,7 +215,6 @@ make-symlinks() {
   mkdir -p "${HOME}/.credentials"
   chmod 0700 "${HOME}/.credentials"
   echo "copy the necessary credentials into ~/.credentials"
- 
 }
 
 ## install-personal-bin: install personal binaries into home directory
@@ -232,7 +231,7 @@ sync-public-ssh-keys() {
   curl -s https://github.com/sulrich.keys >> "${HOME}/.ssh/authorized_keys"
   # remove dups
   uniq "${HOME}/.ssh/authorized_keys" > "${HOME}/.ssh/tmp_keys"
-  mv "${HOME}/.ssh/tmp_keys" "${HOME}/.ssh/authorized_keys" 
+  mv "${HOME}/.ssh/tmp_keys" "${HOME}/.ssh/authorized_keys"
   chmod 0755 "${HOME}/.ssh/authorized_keys"
 }
 
@@ -243,7 +242,7 @@ install-min-packages-debian() {
      build-essential curl direnv fzf git libbz2-dev libffi-dev liblzma-dev      \
      libncurses5-dev libncursesw5-dev libreadline-dev libsqlite3-dev libssl-dev \
      llvm make python3-dev python3-pip python-openssl ripgrep tmux vim-nox      \
-     wget xz-utils zlib1g-dev zsh 
+     wget xz-utils zlib1g-dev zsh
 }
 
 ## install-tpm: install tmux plugin manager (TPM)
@@ -303,14 +302,13 @@ install-server-debian() {
 		protobuf-compiler libprotobuf-dev libutempter-dev libboost-dev          \
   	libio-pty-perl libssl-dev pkg-config autoconf ack python3-certbot-nginx \
     whois
-	
-	cat <<EOFMESSAGE 
 
-	you'll need to install docker as well.  
-	ref: https://docs.docker.com/compose/install/ 
+	cat <<EOFMESSAGE
+
+	you'll need to install docker as well.
+	ref: https://docs.docker.com/compose/install/
 
 EOFMESSAGE
-
 }
 
 ## clone-config-repos: assume you're logged into github correctly
@@ -324,7 +322,6 @@ clone-config-repos() {
  git clone https://github.com/sulrich/zenith-containers.git "${REPO_DIR}/zenith-containers"
  git clone https://github.com/sulrich/ansible-private.git "${HOME}/src/ansible"
  git clone http://dyn.botwerks.net/git/sulrich/network-configs.git "${HOME}/src/network-configs"
-
 }
 
 ## bootstrap-deb-1 (sudo): install the elements to make server happy
@@ -342,7 +339,7 @@ usage install.sh <function>
 this provides a mechanism to quickly install and align various personal
 configuration elements.  when used with a fresh system, there are functions
 that install the minimum set of required packages for the distro of interest.
-these commands will require the use of sudo.  plan accordingly. 
+these commands will require the use of sudo.  plan accordingly.
 
 available functions:
 EOF

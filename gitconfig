@@ -30,7 +30,7 @@
   type = cat-file -t
   dump = cat-file -p
   open = !vim `git-open.sh`
-
+  edit = !$EDITOR $(git status --porcelain --short | awk '$1 ~ /^M|A|U/ {print $2}')
 
 [merge]
   tool = Kaleidoscope
