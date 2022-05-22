@@ -21,6 +21,10 @@ export PYTHON2_VER="2.7.18"
 export PYTHON3_MAJOR="python3.9"
 export PYTHON3_VER="3.9.9"
 export PYENV_ROOT="${HOME}/.pyenv"
+# i have mixed feelings about the following.  if i were in a consistent
+# development mode of operation would probably need to enable this.
+# set to true in a pristine environment.  documenting this for future me.
+export PIP_REQUIRE_VIRTUALENV=false
 export SSH_KEY_PATH="${HOME}/.ssh/id_rsa"   # i'm tired of fucking with this
 export TTY 
 export PAGER="less"
