@@ -56,7 +56,7 @@ matches:
     replace: "https://partnerissuetracker.corp.google.com/issues/"
 
   - trigger: "`cclist"
-    replace: "roland@arista.com, akshay@arista.com, akhilesh@arista.com, sriram@arista.com"
+    replace: "roland@arista.com, amittal@arista.com, akshay@arista.com, akhilesh@arista.com, sriram@arista.com"
 
   - trigger: "`abug"
     replace: "https://bb/"
