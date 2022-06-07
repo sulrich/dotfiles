@@ -227,7 +227,7 @@ then
 fi
 
 # note the following is a zsh-specific check for the existence of a command. 
-if [ $+commands[kubectl] ]
+if [ $+commands[kubectl] == "1" ]
 then
   source <(kubectl completion zsh)
 fi
