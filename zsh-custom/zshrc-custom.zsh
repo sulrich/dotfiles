@@ -34,6 +34,9 @@ bindkey '^Xe' edit-command-line
 bindkey -e
 bindkey '^];' spell-word
 
+umask 002
+
+
 #---------------------------------------------------------------------
 # aliases
 #
@@ -66,6 +69,9 @@ setaliases() {
   alias mkwebp="convert $1 -quality 100 -define webp-:lossless=true $2"
   # get rid of those annoying git filemode issues
   alias findtags="egrep -i '(#{1}[[:alpha:]]{2,}\s)'"
+
+  # makes logging into lab routers handy
+  alias ago="TERM=vt100 ssh -l admin -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null"
 
   # overrides to prevent craziness from oh-my-zsh
   unalias grep
@@ -205,8 +211,26 @@ function get-1pass-api-token() {
   op get item "$1" --fields credential
 }
 
-umask 002
-setaliases
+case-blurb() {
+  local CASEBLURB="${HOME}/.home/templates/text/case-blurb.txt"
+  if [ "$1" = "" ]
+  then
+    cat <<EOFUSAGE
+
+usage: 
+  case-blurb <case-number> - where the case-number is a whitespace-free string
+
+EOFUSAGE
+
+  else
+    sed "s/%%CASE_NUM%%/${1}/g" < ${CASEBLURB}
+  fi
+}
+
+setaliases # load the aliases
+
+# misc. arista specific aliases
+source "${HOME}/.home/pb.sh"
 
 # completion kits --------------------------------------------------------------
 # these aren't necessarily going to be available everywhere.
