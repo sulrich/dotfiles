@@ -77,7 +77,7 @@ install-omz() {
   git clone https://github.com/robbyrussell/oh-my-zsh.git "${HOME}/src/zsh"
 }
 
-## install-language-servers: intall relevant lsps for nvim
+## install-language-servers (sudo): intall relevant lsps for nvim
 install-language-servers() {
   # install python language server (pyright)
   npm install -g pyright
