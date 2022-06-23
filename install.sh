@@ -199,6 +199,7 @@ make-symlinks() {
     ['sqliterc']=".sqliterc"
     ['tmux.conf']=".tmux.conf"
     ['urlview']=".urlview"
+    ['vale.ini']=".vale.ini"
     ['zshrc']=".zshrc"
     ['zsh-custom/zlogin']=".zlogin"
     ['zsh-custom/zshenv']=".zshenv"
