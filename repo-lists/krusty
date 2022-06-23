@@ -11,6 +11,7 @@ declare -a REPO_LIST=(
   "${HOME}/src/openconfig/ygot"
   "${HOME}/src/openconfig/hercules"
   "${HOME}/src/openconfig/autobahn"
+  "${HOME}/src/openconfig/gnsi"
   "${HOME}/src/yang"
 
   # the following should be kept current to facilitate public deployment 
