@@ -242,7 +242,7 @@ install-min-packages-debian() {
    sudo apt install                                                             \
      build-essential curl direnv fzf git libbz2-dev libffi-dev liblzma-dev      \
      libncurses5-dev libncursesw5-dev libreadline-dev libsqlite3-dev libssl-dev \
-     llvm make python3-dev python3-pip python-openssl ripgrep tmux vim-nox      \
+     llvm make python3-dev python3-pip python3-openssl ripgrep tmux vim-nox     \
      wget xz-utils zlib1g-dev zsh
 }
 
