@@ -51,7 +51,7 @@ matches:
 
   - trigger: "`mgbug"
     replace: "[b/__bugid__](https://partnerissuetracker.corp.google.com/issues/__bugid__)"
-  
+
   - trigger: "`gbug"
     replace: "https://partnerissuetracker.corp.google.com/issues/"
 
@@ -64,3 +64,10 @@ matches:
   - trigger: "`ains"
     replace: "### action items / next steps\n\n - [ ]"
 
+  - trigger: "`zoom"
+    replace: "{{zoom-invite}}"
+    vars:
+      - name: zoom-invite
+        type: shell
+        params:
+          cmd: "cat '/Users/sulrich/.config/personal-zoom.txt'"
