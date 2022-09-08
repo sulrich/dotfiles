@@ -3,7 +3,7 @@ title: "%%DATELINK%% - %%DAY_SUFFIX_TITLE%% links, etc."
 date: %%TIMESTAMP%%
 layout: post
 author: steve ulrich
-tags: 
+tags:
   - links
   - 2022
 showToc: false
@@ -20,4 +20,3 @@ searchHidden: true
 
 ### links, etc
 
-<!-- LINK_CONTENT -->

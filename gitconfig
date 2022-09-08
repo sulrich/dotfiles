@@ -18,6 +18,7 @@
   pager = less -r
   fileMode = false
 	commitGraph = true
+	fsmonitor = true
   # safecrlf = true
   # quotepath = false
 

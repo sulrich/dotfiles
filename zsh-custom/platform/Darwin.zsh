@@ -11,6 +11,7 @@ alias topc="top -o cpu"
 alias vctl="/Applications/VMware\ Fusion.app/Contents/Public/vctl"
 alias loc="less ${OC_PATH_DUMP}"
 alias lopr="less ${ANET_PATHREPORT}"
+alias vim="nvim"  # always use nvim on a mac
 
 function set_volume() { sudo osascript -e "set Volume $1" }
 function ql () { qlmanage -p "$@" >& /dev/null & }

@@ -182,6 +182,9 @@ fi
 # actually set the path per the constructed elements above
 setpath
 
+# ruby environment setup
+# eval "$(rbenv init - zsh)"
+
 # update pyenv elements appropriaately
 eval "$(pyenv init --path)"
 eval "$(pyenv init -)"  # i honestly don't know if i need this 2nd invocation
