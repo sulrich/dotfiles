@@ -197,6 +197,7 @@ make-symlinks() {
     ['octaverc']=".octaverc"
     ['screenrc']=".screenrc"
     ['sqliterc']=".sqliterc"
+    ['templates']=".templates"
     ['tmux.conf']=".tmux.conf"
     ['urlview']=".urlview"
     ['vale.ini']=".vale.ini"

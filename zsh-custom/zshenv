@@ -42,8 +42,7 @@ export CLAB_DIR="${HOME}/clab"
 
 # 20220331 TODO(sulrich): check back on this in 30days seems to impact gnmic,
 # containerlab and more
-export ASSUME_NO_MOVING_GC_UNSAFE_RISK_IT_WITH=go1.18
-
+export ASSUME_NO_MOVING_GC_UNSAFE_RISK_IT_WITH=go1.19
 
 # localization info
 export LC_ALL=en_US.UTF-8
