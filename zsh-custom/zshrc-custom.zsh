@@ -72,6 +72,7 @@ setaliases() {
 
   # makes logging into lab routers handy
   alias ago="TERM=vt100 ssh -l admin -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null"
+  alias mgo="TERM=vt100 sshpass -f ${HOME}/.credentials/meta-lab.txt ssh $@" 
 
   # overrides to prevent craziness from oh-my-zsh
   unalias grep

@@ -70,7 +70,7 @@ export YANG_PLUGINS="${HOME}/.pyang"
 
 function setpath () {
   # LOCAL_PATH="/usr/local/bin:/usr/local/sbin:${GOPATH}/bin"
-  LOCAL_PATH="/opt/homebrew/bin:/opt/homebrew/sbin:${GOPATH}/bin"
+  LOCAL_PATH="/opt/homebrew/bin:/opt/homebrew/sbin:/usr/local/bin:/usr/local/sbin:${GOPATH}/bin"
   POETRY_DIR="${HOME}/.poetry/bin"
   CARGO_DIR="${HOME}/.cargo/bin"
 
