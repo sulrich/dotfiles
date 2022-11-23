@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # -*- mode: sh; fill-column: 78; comment-column: 50; tab-width: 2 -*-
 
 trap cleanup SIGINT SIGTERM ERR EXIT
@@ -27,7 +27,7 @@ case $(uname -m) in
     i386)   ARCH="386" ;;
     i686)   ARCH="386" ;;
     x86_64) ARCH="amd64" ;;
-    arm*)   dpkg --print-architecture | grep -q "arm64" && ARCH="arm64" || ARCH="armv6l" ;;
+    arm*)   ARCH="$(uname -m)"
 esac
 
 # TODO: provide an option for upgrading go on raspberry pi
@@ -225,12 +225,20 @@ install-personal-bin() {
   git clone https://github.com/sulrich/home-bin.git "${HOME}/bin"
 }
 
-## sync-public-ssh-keys: copy my authorized ssh public keys from github
+## sync-public-ssh-keys: copy my authorized ssh public keys from the 
+##                     : appropriate repo (arista, github, botwerks)
 sync-public-ssh-keys() {
   mkdir -p "${HOME}/.ssh"
   chmod 0700 "${HOME}/.ssh"
-  # get the public sources
-  curl -s https://github.com/sulrich.keys >> "${HOME}/.ssh/authorized_keys"
+
+  declare -A PUBKEYS
+  PUBKEYS=(
+    ['arista']="https://gitlab.aristanetworks.com/sulrich.keys"
+    ['github']="https://github.com/sulrich.keys"
+    ['botwerks']="https://botwerks.net/sulrich.keys"
+  )
+  # get the public ssh key
+  curl -s ${PUBKEYS[$1]} >> "${HOME}/.ssh/authorized_keys"
   # remove dups
   uniq "${HOME}/.ssh/authorized_keys" > "${HOME}/.ssh/tmp_keys"
   mv "${HOME}/.ssh/tmp_keys" "${HOME}/.ssh/authorized_keys"
