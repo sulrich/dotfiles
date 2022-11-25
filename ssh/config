@@ -1,0 +1,70 @@
+CanonicalDomains botwerks.net sjc.aristanetworks.com
+CanonicalizeFallbackLocal yes
+CanonicalizeHostname yes
+
+ControlPath     ~/.ssh/tmp/%h-%r 
+ControlMaster   auto
+TCPKeepAlive    yes
+Compression     yes
+
+ServerAliveInterval 5
+ServerAliveCountMax 1
+
+# botwerks/home host configuration
+Include ~/.home/ssh/botwerks.cfg
+
+# arista specific configuration elements
+Include ~/.home/ssh/arista.cfg
+
+# configuration elements for laptop virtual configs
+# note: much of this was specific to my intel laptop
+# Include ~/.home/ssh/laptop-virtual.cfg
+
+# this gets pretty widely abused on containerlab setups
+host 172.20.20.*
+  User                   admin
+  StrictHostKeyChecking  no
+  UserKnownHostsFile     /dev/null
+  # note, we're not using the 1password agent here
+  IdentityFile           ~/.ssh/id_router
+
+Host 172.*.*.*
+  User                   admin
+  PubkeyAuthentication   no
+  StrictHostKeyChecking  no
+  UserKnownHostsFile     /dev/null
+
+Host 172.30.*.*
+  User                   admin
+  PubkeyAuthentication   no
+  StrictHostKeyChecking  no
+  UserKnownHostsFile     /dev/null
+
+Host cmp323
+  User                   admin15
+  PubkeyAuthentication   no
+  StrictHostKeyChecking  no
+  UserKnownHostsFile     /dev/null
+
+Host pcd123 pcd456
+  User                   admin15
+  PubkeyAuthentication   no
+  StrictHostKeyChecking  no
+  UserKnownHostsFile     /dev/null
+
+Host *.sjc.aristanetworks.com !secon !google-server2 !google-b4-oc
+  User                   admin
+  PubkeyAuthentication   no
+  StrictHostKeyChecking  no
+  UserKnownHostsFile     /dev/null
+
+Host *
+  # the following is for macos only
+  #UseKeychain     yes
+  # i have mixed feelings on the following
+  #AddKeysToAgent  yes
+  #ForwardAgent    no
+  #ForwardX11      no
+  # i've knuckled under to 1password's ssh-agent
+  IdentityAgent       "~/Library/Group Containers/2BUA8C4S2C.com.1password/t/agent.sock"
+  UserKnownHostsFile  ~/.ssh/known_hosts
