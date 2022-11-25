@@ -204,7 +204,11 @@ make-symlinks() {
     ['zshrc']=".zshrc"
     ['zsh-custom/zlogin']=".zlogin"
     ['zsh-custom/zshenv']=".zshenv"
+    ['ssh/config']=".ssh/config"
   )
+
+  # may be redundant
+  mkdir -p "${HOME}/.ssh"
 
   echo "making dotfile symlinks"
   for DFILE in "${!DOTFILES[@]}";
