@@ -20,47 +20,7 @@ Include ~/.home/ssh/arista.cfg
 # note: much of this was specific to my intel laptop
 # Include ~/.home/ssh/laptop-virtual.cfg
 
-# this gets pretty widely abused on containerlab setups
-host 172.20.20.*
-  User                   admin
-  StrictHostKeyChecking  no
-  UserKnownHostsFile     /dev/null
-  # note, we're not using the 1password agent here
-  IdentityFile           ~/.ssh/id_router
-
-Host 172.*.*.*
-  User                   admin
-  PubkeyAuthentication   no
-  StrictHostKeyChecking  no
-  UserKnownHostsFile     /dev/null
-
-Host 172.30.*.*
-  User                   admin
-  PubkeyAuthentication   no
-  StrictHostKeyChecking  no
-  UserKnownHostsFile     /dev/null
-
-Host cmp323
-  User                   admin15
-  PubkeyAuthentication   no
-  StrictHostKeyChecking  no
-  UserKnownHostsFile     /dev/null
-
-Host pcd123 pcd456
-  User                   admin15
-  PubkeyAuthentication   no
-  StrictHostKeyChecking  no
-  UserKnownHostsFile     /dev/null
-
-Host *.sjc.aristanetworks.com !secon !google-server2 !google-b4-oc
-  User                   admin
-  PubkeyAuthentication   no
-  StrictHostKeyChecking  no
-  UserKnownHostsFile     /dev/null
-
 Host *
-  # the following is for macos only
-  #UseKeychain     yes
   # i have mixed feelings on the following
   #AddKeysToAgent  yes
   #ForwardAgent    no
