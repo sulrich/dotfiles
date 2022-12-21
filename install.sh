@@ -20,7 +20,7 @@ trap cleanup SIGINT SIGTERM ERR EXIT
 BREWFILE="${HOME}/iCloud/src/configs/brewfile.txt"
 
 PYTHON2_VER="2.7.18"
-PYTHON3_VER="3.9.9"
+PYTHON3_VER="3.11.1"
 
 ARCH=""
 case $(uname -m) in
