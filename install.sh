@@ -96,6 +96,25 @@ install-snmp-mibs() {
   rm -i "${HOME}/.home/mibs.tar.gz"
 }
 
+## install-1pass-apt: install 1password in apt based systems
+install-1pass-apt() {
+  # ref: https://developer.1password.com/docs/cli/get-started/
+  # install key
+  curl -sS https://downloads.1password.com/linux/keys/1password.asc | \
+    sudo gpg --dearmor --output /usr/share/keyrings/1password-archive-keyring.gpg
+  # install apt repo 
+  echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/1password-archive-keyring.gpg] https://downloads.1password.com/linux/debian/$(dpkg --print-architecture) stable main" | sudo tee /etc/apt/sources.list.d/1password.list
+  # more debsig stuff
+  sudo mkdir -p /etc/debsig/policies/AC2D62742012EA22/
+    curl -sS https://downloads.1password.com/linux/debian/debsig/1password.pol | \
+    sudo tee /etc/debsig/policies/AC2D62742012EA22/1password.pol
+  sudo mkdir -p /usr/share/debsig/keyrings/AC2D62742012EA22
+  curl -sS https://downloads.1password.com/linux/keys/1password.asc | \
+    sudo gpg --dearmor --output /usr/share/debsig/keyrings/AC2D62742012EA22/debsig.gpg
+  # freshen apt and install
+  sudo apt update && sudo apt install 1password-cli
+}
+
 # pull down my vim config
 ## install-vim-modules: pull down git repos and init
 install-vim-modules() {
