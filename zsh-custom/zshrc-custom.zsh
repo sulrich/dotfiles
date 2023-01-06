@@ -75,6 +75,11 @@ setaliases() {
   alias mgo="TERM=vt100 sshpass -f ${HOME}/.credentials/meta-lab.txt ssh $@" 
   alias ov-parse="openssl asn1parse -inform der -in $1"
 
+  if hash nvim;
+  then
+    alias vim="nvim"  # always use nvim where possible
+  fi
+
   # overrides to prevent craziness from oh-my-zsh
   unalias grep
 }
