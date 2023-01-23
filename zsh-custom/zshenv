@@ -196,6 +196,11 @@ then
     source "${HOME}/.credentials/00-api-creds.env"
   fi
 
+  # pull in the 1password plugin-tools
+  if [ -f "${HOME}/.config/op/plugins.sh" ];
+  then
+    source "${HOME}/.config/op/plugins.sh"
+  fi
 
   # ruby environment setup
   # eval "$(rbenv init - zsh)"
