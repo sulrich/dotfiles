@@ -72,9 +72,13 @@ export VISUAL=${EDITOR}
 export YANG_MODPATH=${HOME}/src/yang/standard:${HOME}/src/openconfig/public/release
 export YANG_PLUGINS="${HOME}/.pyang"
 
-function setpath () {
-  # LOCAL_PATH="/usr/local/bin:/usr/local/sbin:${GOPATH}/bin"
-  LOCAL_PATH="/opt/homebrew/bin:/opt/homebrew/sbin:/usr/local/bin:/usr/local/sbin:${GOPATH}/bin"
+setpath() {
+  if [[ -d "/opt/homebrew/bin" ]];
+  then
+    LOCAL_PATH="/opt/homebrew/bin:/opt/homebrew/sbin:"
+  fi 
+  
+  LOCAL_PATH="${LOCAL_PATH}/usr/local/bin:/usr/local/sbin:${GOPATH}/bin:/usr/bin:/usr/sbin:/sbin"
   POETRY_DIR="${HOME}/.poetry/bin"
   CARGO_DIR="${HOME}/.cargo/bin"
 
@@ -120,15 +124,16 @@ function setpath () {
   #
   # of note is the guidance to manage these separately and to disable the base
   # environment by default.
-  if [ -f "${HOME}/src/anaconda3/etc/profile.d/conda.sh" ]; then
-    . "${HOME}/src/anaconda3/etc/profile.d/conda.sh"
-  else
-    if [[ -d "${HOME}/src/anaconda3/bin" ]]; then
-      CONDA_PATH="${HOME}/src/anaconda3/bin:"
-    else
-      CONDA_PATH=""
-    fi
-  fi  
+  # if [ -f "${HOME}/src/anaconda3/etc/profile.d/conda.sh" ]; then
+  #   # note that the following bumps the conda elements into the path
+  #   . "${HOME}/src/anaconda3/etc/profile.d/conda.sh"
+  # else
+  #   if [[ -d "${HOME}/src/anaconda3/bin" ]]; then
+  #     CONDA_PATH="${HOME}/src/anaconda3/bin:"
+  #   else
+  #     CONDA_PATH=""
+  #   fi
+  # fi  
 
   # set path to address OS/arch  specific binaries within home directory
   # OSPATH=`uname -ms | sed 's| |/|g'`
@@ -143,55 +148,66 @@ function setpath () {
   # personal stash.
   export MIBDIRS="/usr/share/snmp/mibs:${HOME}/.snmp/mibs/cisco:${HOME}/.snmp/mibs/juniper"
   export MIBDIRS="${MIBDIRS}:${HOME}/.snmp/mibs/std:${HOME}/.snmp/mibs/misc:."
-}
+} # end setpath()
 
-# pull in platform specific environment variables, etc.  
-if [ -e "${HOME}/.home/zsh-custom/platform/${PLATFORM}-env.zsh" ]
+
+# check to see if we're in tmux
+if [[ -z ${TMUX} ]];  # we're not in tmux
 then
-  source "${HOME}/.home/zsh-custom/platform/${PLATFORM}-env.zsh"
-fi
+  # actually set the path per the constructed elements 
+  # note that if we're in tmux we'll append the $PATH entries that makes things
+  # difficult sometimes.
+  setpath
 
-# pull in host specific environment variables, etc.
-if [ -e  "${HOME}/.home/zsh-custom/hosts/${HOSTNAME}-env.zsh" ]
-then
-  source "${HOME}/.home/zsh-custom/hosts/${HOSTNAME}-env.zsh"
-fi
+  # pull in platform specific environment variables, etc.  
+  if [ -e "${HOME}/.home/zsh-custom/platform/${PLATFORM}-env.zsh" ]
+  then
+    source "${HOME}/.home/zsh-custom/platform/${PLATFORM}-env.zsh"
+  fi
 
-# perlbrew
-if [[ -f "${HOME}/src/perl/etc/bashrc" && -z "${INSIDE_EMACS}" ]];
-then
-  source "${HOME}/src/perl/etc/bashrc"
-fi
+  # pull in host specific environment variables, etc.
+  if [ -e  "${HOME}/.home/zsh-custom/hosts/${HOSTNAME}-env.zsh" ]
+  then
+    source "${HOME}/.home/zsh-custom/hosts/${HOSTNAME}-env.zsh"
+  fi
 
-# pull in the gcloud sdk tools
-if [ -f "${HOME}/src/google-cloud-sdk/path.zsh.inc" ]
-then
-  source "${HOME}/src/google-cloud-sdk/path.zsh.inc"
-fi 
+  # perlbrew
+  if [[ -f "${HOME}/src/perl/etc/bashrc" && -z "${INSIDE_EMACS}" ]];
+  then
+    source "${HOME}/src/perl/etc/bashrc"
+  fi
 
-# load rvm into a shell session *as a function*
-if [ -e "${HOME}/.rvm/scripts/rvm" ];
-then
-  source "${HOME}/.rvm/scripts/rvm"
-fi
+  # pull in the gcloud sdk tools
+  if [ -f "${HOME}/src/google-cloud-sdk/path.zsh.inc" ]
+  then
+    source "${HOME}/src/google-cloud-sdk/path.zsh.inc"
+  fi 
 
-# include credentials which are embedded in environment variables.  this
-# should not be included in git repos
-if [ -f "${HOME}/.credentials/00-api-creds.env" ];
-then
-  source "${HOME}/.credentials/00-api-creds.env"
-fi
+  # load rvm into a shell session *as a function*
+  if [ -e "${HOME}/.rvm/scripts/rvm" ];
+  then
+    source "${HOME}/.rvm/scripts/rvm"
+  fi
 
-# actually set the path per the constructed elements above
-setpath
+  # include credentials which are embedded in environment variables.  this
+  # should not be included in git repos
+  if [ -f "${HOME}/.credentials/00-api-creds.env" ];
+  then
+    source "${HOME}/.credentials/00-api-creds.env"
+  fi
 
-# ruby environment setup
-# eval "$(rbenv init - zsh)"
 
-# update pyenv elements appropriaately
-eval "$(pyenv init --path)"
-eval "$(pyenv init -)"  # i honestly don't know if i need this 2nd invocation
+  # ruby environment setup
+  # eval "$(rbenv init - zsh)"
 
-if which pyenv-virtualenv-init > /dev/null; then 
-  eval "$(pyenv virtualenv-init -)"; 
+  # update pyenv elements appropriaately
+  eval "$(pyenv init --path)"
+  eval "$(pyenv init -)"  # i honestly don't know if i need this 2nd invocation
+
+  if which pyenv-virtualenv-init > /dev/null; then 
+    eval "$(pyenv virtualenv-init -)"; 
+  fi
+
+else 
+  # we're inside of tmux
 fi
