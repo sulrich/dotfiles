@@ -46,7 +46,10 @@ ZSH_CUSTOM="${HOME}/.home/zsh-custom"
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
 #plugins=(git docker virtualenv tmux)
-plugins=(git docker tmux)
+plugins=(docker git ssh-agent tmux)
+
+# the following must be before sourcing omz
+zstyle :omz:plugins:ssh-agent agent-forwarding yes
 
 # User configuration 
 source $ZSH/oh-my-zsh.sh
