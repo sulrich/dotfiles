@@ -118,11 +118,11 @@ install-1pass-apt() {
 # pull down my vim config
 ## install-vim-modules: pull down git repos and init
 install-vim-modules() {
-  echo "installing vim customizations"
-  git clone https://github.com/sulrich/vim.git "${HOME}/.vim"
-  cd "${HOME}/.vim" || return
-  git submodule update --init
-  cd "${HOME}" || return
+  # echo "installing vim customizations"
+  # git clone https://github.com/sulrich/vim.git "${HOME}/.vim"
+  # cd "${HOME}/.vim" || return
+  # git submodule update --init
+  # cd "${HOME}" || return
 
   echo "adding neovim ..."
   if [ ! -d "${HOME}/.config" ]
@@ -143,12 +143,6 @@ install-vim-modules() {
     mkdir -p "${HOME}/.local/share"
   fi
 }
-
-# after having built pyenv end the necessary python - install
-# powerline to make things look cool - this will likely have some
-# local font dependencies if this is run on an actual
-# workstation. (read: Mac OS)
-#
 
 ## install-pyenv: self-explanatory
 install-pyenv() {
@@ -226,8 +220,14 @@ make-symlinks() {
     ['ssh/config']=".ssh/config"
   )
 
-  # may be redundant
-  mkdir -p "${HOME}/.ssh"
+  # ssh specific elements
+  mkdir -p "${HOME}/.ssh/tmp"
+  # git isn't great re: permissions
+  chmod -R 0755 "${HOME}/.home/ssh"
+  chmod 0755 "${HOME}/.ssh/tmp"
+  # put platform specific ssh elements into place
+  local BASEOS=$(uname -s | tr "[:upper:]" "[:lower:]")
+  ln -s "${HOME}/.home/ssh/${BASEOS}" "${HOME}/.ssh/conf.d"
 
   echo "making dotfile symlinks"
   for DFILE in "${!DOTFILES[@]}";
@@ -262,6 +262,7 @@ sync-public-ssh-keys() {
   )
   # get the public ssh key
   curl -s ${PUBKEYS[$1]} >> "${HOME}/.ssh/authorized_keys"
+
   # remove dups
   uniq "${HOME}/.ssh/authorized_keys" > "${HOME}/.ssh/tmp_keys"
   mv "${HOME}/.ssh/tmp_keys" "${HOME}/.ssh/authorized_keys"
@@ -302,16 +303,6 @@ install-min-packages-centos7() {
   # install direnv separately (no rpm available)
   curl -sfL https://direnv.net/install.sh | bash
 }
-
-## setup-ssh: bootstrap ssh config elements
-setup-ssh() {
-  sync-public-ssh-keys
-  cp "${HOME}/.home/ssh-config-zenith" "${HOME}/.ssh/config"
-  mkdir -p "${HOME}/.ssh/tmp"
-  chmod 0755 "${HOME}/.ssh/tmp"
-  # TODO(sulrich) - source the misc. keys from a secure backing store
-}
-
 
 # https://github.com/nodesource/distributions/blob/master/README.mdnstall-nodejs-debian (sudo): PPA nodjs install
 ## install-nodejs-debian: print pointers to installation of nodejs
