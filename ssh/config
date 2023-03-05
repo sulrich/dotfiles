@@ -11,20 +11,22 @@ ServerAliveInterval 5
 ServerAliveCountMax 1
 
 # botwerks/home host configuration
-Include ~/.home/ssh/botwerks.cfg
+#Include ~/.home/ssh/botwerks.cfg
 
 # arista specific configuration elements
-Include ~/.home/ssh/arista.cfg
+#Include ~/.home/ssh/arista.cfg
 
 # configuration elements for laptop virtual configs
 # note: much of this was specific to my intel laptop
 # Include ~/.home/ssh/laptop-virtual.cfg
 
-Host *
-  # i have mixed feelings on the following
-  #AddKeysToAgent  yes
-  #ForwardAgent    no
-  #ForwardX11      no
-  # i've knuckled under to 1password's ssh-agent
-  IdentityAgent       "~/Library/Group Containers/2BUA8C4S2C.com.1password/t/agent.sock"
-  UserKnownHostsFile  ~/.ssh/known_hosts
+Include ~/.ssh/conf.d/*
+
+# Host *
+#   # i have mixed feelings on the following
+#   #AddKeysToAgent  yes
+#   #ForwardAgent    no
+#   #ForwardX11      no
+#   # i've knuckled under to 1password's ssh-agent
+#   IdentityAgent       "~/Library/Group Containers/2BUA8C4S2C.com.1password/t/agent.sock"
+#   UserKnownHostsFile  ~/.ssh/known_hosts
