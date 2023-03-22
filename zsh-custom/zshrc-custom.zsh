@@ -75,7 +75,7 @@ setaliases() {
   alias mgo="TERM=vt100 sshpass -f ${HOME}/.credentials/meta-lab.txt ssh $@" 
   alias ov-parse="openssl asn1parse -inform der -in $1"
 
-  if hash nvim;
+  if [ $+commands[nvim] == "1" ]
   then
     alias vim="nvim"  # always use nvim where possible
   fi
@@ -290,4 +290,7 @@ then
 fi
 
 # load the direnv overrides
-eval "$(direnv hook zsh)"
+if [ $+commands[direnv] == "1" ]
+then
+  eval "$(direnv hook zsh)"
+fi 

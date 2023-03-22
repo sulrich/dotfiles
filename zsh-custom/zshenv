@@ -201,10 +201,14 @@ then
   # eval "$(rbenv init - zsh)"
 
   # update pyenv elements appropriaately
-  eval "$(pyenv init --path)"
-  eval "$(pyenv init -)"  # i honestly don't know if i need this 2nd invocation
+  if (( $+commands[pyenv] == 1 ));
+  then
+    eval "$(pyenv init --path)"
+    eval "$(pyenv init -)"  # i honestly don't know if i need this 2nd invocation
+  fi 
 
-  if which pyenv-virtualenv-init > /dev/null; then 
+  if (( $+commands[pyenv-virtualenv-init] == 1 ));
+  then
     eval "$(pyenv virtualenv-init -)"; 
   fi
 
