@@ -41,16 +41,11 @@ export CLAB_DIR="${HOME}/clab"
 
 # 20220331 TODO(sulrich): check back on this in 30days seems to impact gnmic,
 # containerlab and more
-export ASSUME_NO_MOVING_GC_UNSAFE_RISK_IT_WITH=go1.19
+export ASSUME_NO_MOVING_GC_UNSAFE_RISK_IT_WITH=go1.20
 
 # localization info
 export LC_ALL=en_US.UTF-8
 export LANG=en_US.UTF-8 
-
-# just set this to vim everywhere and set the alias to nvim as appropriate for
-# our environment.
-export EDITOR=vim
-export VISUAL=${EDITOR} 
 
 # env fixups if remote
 # if (( ${+SSH_CONNECTION} )); 
@@ -216,3 +211,11 @@ then
 else 
   # we're inside of tmux
 fi
+
+if (( $+commands[nvim] == 1 ));
+then
+  export EDITOR=nvim
+else
+  export EDITOR=vim
+fi
+export VISUAL=${EDITOR} 

@@ -21,9 +21,9 @@ unsetopt bgnice correct correctall noflowcontrol markdirs pathdirs \
          recexact mailwarning notify noclobber completeinword ignore_eof \
          autocd cdablevars autoresume extendedglob
 
-# misc. completions experiments and command line editing options
-autoload -Uz compinit
-compinit
+# completion setup
+autoload -Uz compinit && compinit
+zmodload -i zsh/complist
 compctl -c type
 compctl -g '*(-/) .*(-/)' cd rmdir
 
