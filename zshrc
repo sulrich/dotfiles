@@ -46,7 +46,13 @@ ZSH_CUSTOM="${HOME}/.home/zsh-custom"
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
 #plugins=(git docker virtualenv tmux)
-plugins=(docker git ssh-agent tmux)
+
+if [[ $(uname) == "Darwin" ]];
+then
+  plugins=(docker git ssh-agent tmux)
+else
+  plugins=(docker git tmux)
+fi
 
 # the following must be before sourcing omz
 zstyle :omz:plugins:ssh-agent agent-forwarding yes
