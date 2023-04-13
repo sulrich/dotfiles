@@ -164,8 +164,6 @@ install-pythons() {
 
   echo "setting pyenv global"
   pyenv global "${PYTHON3_VER}" "${PYTHON2_VER}"
-  echo "installing relevant python packages"
-  pip3 install powerline-status
 }
 
 ## install-docker-ubuntu (sudo): install docker
