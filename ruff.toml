@@ -1,0 +1,13 @@
+# personal ruff configurqtion 
+
+# enable autofixing
+fix = true 
+# only enable isort autofixes
+fixable = [ "I" ]
+
+# linting rules to apply 
+select = [ "E", "F", "I"] 
+
+# initial application is to eliminate standalone isort dependency
+[isort]
+force-single-line = true

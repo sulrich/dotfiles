@@ -206,6 +206,7 @@ make-symlinks() {
     ['mailcap']=".mailcap"
     ['markdownlint.yaml']=".markdownlint.yaml"
     ['octaverc']=".octaverc"
+    ['ruff.toml']=".ruff.toml"
     ['screenrc']=".screenrc"
     ['sqliterc']=".sqliterc"
     ['templates']=".templates"
