@@ -14,4 +14,5 @@ irssi/*.log
 mutt/aliases
 mutt/cache
 openconfig/oc-path-list.*
+openconfig/*.csv
 s3cfg
