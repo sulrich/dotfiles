@@ -6,11 +6,9 @@
 # being expressed.
 
 # default state for all rules
+---
 default:
   true
-
-MD002:
-  false
 
 # heading style
 MD003:
@@ -27,7 +25,7 @@ MD007:
 
 # line length
 MD013:
-  line_length: 80
+  line_length: 90
   code_block_line_length: 450
   tables: false
 
@@ -36,6 +34,7 @@ MD013:
 # documents
 MD024:
   siblings_only: true
+
 
 # fenced code  should be surrounded by blank lines default: true
 MD031:
@@ -47,7 +46,18 @@ MD032:
 
 # MD033/no-inline-html - Inline HTML
 MD033:
- allowed_elements: [ "br", "code", "details", "p", "pre", "span", "summary" ]
+  allowed_elements:
+    - "br"
+    - "details"
+    - "p"
+    - "pre"
+    - "span"
+    - "strong"
+    - "summary"
+    - "table"
+    - "td"
+    - "th"
+    - "tr"
 
 # bare URL - bare URLs shoudl be wrapped in angle brackets
 # <https://eos.arista.com>
@@ -62,6 +72,7 @@ MD035:
 # since we're using front-matter, this can be relaxed a bit.
 MD041:
   false
+
 
 # proper-names - proper names to have the correct capitalization
 # probably not entirely helpful in a technical writing environment.
