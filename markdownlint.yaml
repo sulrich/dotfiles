@@ -46,18 +46,8 @@ MD032:
 
 # MD033/no-inline-html - Inline HTML
 MD033:
-  allowed_elements:
-    - "br"
-    - "details"
-    - "p"
-    - "pre"
-    - "span"
-    - "strong"
-    - "summary"
-    - "table"
-    - "td"
-    - "th"
-    - "tr"
+  allowed_elements: ["br", "details", "p", "pre", "span", "strong", "summary",
+                     "table", "td", "th", "tr"]
 
 # bare URL - bare URLs shoudl be wrapped in angle brackets
 # <https://eos.arista.com>
