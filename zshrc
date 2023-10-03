@@ -1,3 +1,6 @@
+## the following is useful for profiling shell startup times.
+# zmodload zsh/zprof
+
 # Path to your oh-my-zsh installation.
 export ZSH=$HOME/src/zsh
 
@@ -11,13 +14,13 @@ ZSH_THEME="minimal"
 # CASE_SENSITIVE="true"
 
 # Uncomment the following line to disable bi-weekly auto-update checks.
-# DISABLE_AUTO_UPDATE="true"
+DISABLE_AUTO_UPDATE="true"
 
 # Uncomment the following line to change how often to auto-update (in days).
-export UPDATE_ZSH_DAYS=13
+#export UPDATE_ZSH_DAYS=13
 
 # Uncomment the following line to disable colors in ls.
-# DISABLE_LS_COLORS="true"
+DISABLE_LS_COLORS="true"
 
 # Uncomment the following line to disable auto-setting terminal title.
 DISABLE_AUTO_TITLE="true"
@@ -49,9 +52,9 @@ ZSH_CUSTOM="${HOME}/.home/zsh-custom"
 
 if [[ $(uname) == "Darwin" ]];
 then
-  plugins=(docker git ssh-agent tmux)
+  plugins=(git ssh-agent)
 else
-  plugins=(docker git tmux)
+  plugins=(git)
 fi
 
 # the following must be before sourcing omz
@@ -66,3 +69,7 @@ source $ZSH/oh-my-zsh.sh
 # the following seems necessary to make the virtualenv plugin happy
 # ref: https://stackoverflow.com/questions/38928717/virtualenv-name-not-show-in-zsh-prompt
 export VIRTUAL_ENV_DISABLE_PROMPT=
+
+# the following is useful when trying to figure out why shell startup times are
+# so dang slow.
+# zprof

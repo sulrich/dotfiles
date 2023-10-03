@@ -26,7 +26,7 @@ export PYENV_ROOT="${HOME}/.pyenv"
 # set to true in a pristine environment.  documenting this for future me.
 export PIP_REQUIRE_VIRTUALENV=false
 export SSH_KEY_PATH="${HOME}/.ssh/id_rsa"   # i'm tired of fucking with this
-export TTY 
+export TTY
 export PAGER="less"
 export LYNX_CFG="${HOME}/.home/lynx.cfg"
 export CVS_RSH=ssh
@@ -46,10 +46,10 @@ export ASSUME_NO_MOVING_GC_UNSAFE_RISK_IT_WITH=go1.20
 
 # localization info
 export LC_ALL=en_US.UTF-8
-export LANG=en_US.UTF-8 
+export LANG=en_US.UTF-8
 
 # env fixups if remote
-# if (( ${+SSH_CONNECTION} )); 
+# if (( ${+SSH_CONNECTION} ));
 # then
 #   echo ""
 # else
@@ -72,8 +72,8 @@ setpath() {
   if [[ -d "/opt/homebrew/bin" ]];
   then
     LOCAL_PATH="/opt/homebrew/bin:/opt/homebrew/sbin:"
-  fi 
-  
+  fi
+
   LOCAL_PATH="${LOCAL_PATH}/usr/local/bin:/usr/local/sbin:${GOPATH}/bin:/usr/bin:/usr/sbin:/sbin"
   POETRY_DIR="${HOME}/.poetry/bin"
   CARGO_DIR="${HOME}/.cargo/bin"
@@ -103,7 +103,7 @@ setpath() {
 
   # we should be running pyenv for all our python needs interactively
   # check for the presence of PYENV_ROOT
-  if (( ${+PYENV_ROOT} )); 
+  if (( ${+PYENV_ROOT} ));
   then
     PYENV_PATH="${PYENV_ROOT}/bin:"
   else
@@ -129,7 +129,7 @@ setpath() {
   #   else
   #     CONDA_PATH=""
   #   fi
-  # fi  
+  # fi
 
   # set path to address OS/arch  specific binaries within home directory
   # OSPATH=`uname -ms | sed 's| |/|g'`
@@ -150,12 +150,12 @@ setpath() {
 # check to see if we're in tmux
 if [[ -z ${TMUX} ]];  # we're not in tmux
 then
-  # actually set the path per the constructed elements 
+  # actually set the path per the constructed elements
   # note that if we're in tmux we'll append the $PATH entries that makes things
   # difficult sometimes.
   setpath
 
-  # pull in platform specific environment variables, etc.  
+  # pull in platform specific environment variables, etc.
   if [ -e "${HOME}/.home/zsh-custom/platform/${PLATFORM}-env.zsh" ]
   then
     source "${HOME}/.home/zsh-custom/platform/${PLATFORM}-env.zsh"
@@ -167,25 +167,13 @@ then
     source "${HOME}/.home/zsh-custom/hosts/${HOSTNAME}-env.zsh"
   fi
 
-  # perlbrew
-  if [[ -f "${HOME}/src/perl/etc/bashrc" && -z "${INSIDE_EMACS}" ]];
-  then
-    source "${HOME}/src/perl/etc/bashrc"
-  fi
-
   # pull in the gcloud sdk tools
   if [ -f "${HOME}/src/google-cloud-sdk/path.zsh.inc" ]
   then
     source "${HOME}/src/google-cloud-sdk/path.zsh.inc"
-  fi 
-
-  # load rvm into a shell session *as a function*
-  if [ -e "${HOME}/.rvm/scripts/rvm" ];
-  then
-    source "${HOME}/.rvm/scripts/rvm"
   fi
 
-  # include credentials which are embedded in environment variables.  this
+# include credentials which are embedded in environment variables.  this
   # should not be included in git repos
   if [ -f "${HOME}/.credentials/00-api-creds.env" ];
   then
@@ -205,15 +193,15 @@ then
   if (( $+commands[pyenv] == 1 ));
   then
     eval "$(pyenv init --path)"
-    eval "$(pyenv init -)"  # i honestly don't know if i need this 2nd invocation
-  fi 
+    # eval "$(pyenv init -)"  # i honestly don't know if i need this 2nd invocation
+  fi
 
   if (( $+commands[pyenv-virtualenv-init] == 1 ));
   then
-    eval "$(pyenv virtualenv-init -)"; 
+    eval "$(pyenv virtualenv-init -)";
   fi
 
-else 
+else
   # we're inside of tmux
 fi
 
@@ -223,4 +211,4 @@ then
 else
   export EDITOR=vim
 fi
-export VISUAL=${EDITOR} 
+export VISUAL=${EDITOR}

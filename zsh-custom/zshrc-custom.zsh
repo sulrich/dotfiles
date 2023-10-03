@@ -72,7 +72,7 @@ setaliases() {
 
   # makes logging into lab routers handy
   alias ago="TERM=vt100 ssh -l admin -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null"
-  alias mgo="TERM=vt100 sshpass -f ${HOME}/.credentials/meta-lab.txt ssh $@" 
+  alias mgo="TERM=vt100 sshpass -f ${HOME}/.credentials/meta-lab.txt ssh $@"
   alias ov-parse="openssl asn1parse -inform der -in $1"
 
   if [ $+commands[nvim] == "1" ]
@@ -122,7 +122,7 @@ function debug() { [ "$DEBUG" ] && echo ">>> $*"; }
 function mwhois { whois -h `whois "domain $@" | sed '/^.*Whois Server:/!d;s///'` "$@" }
 function asnwhois { whois -h whois.cymru.com " -v AS$1" }
 
-# note: this assumes that the URL has been remapped to /prometheus and the 
+# note: this assumes that the URL has been remapped to /prometheus and the
 # web-command elements are enabled to trigger reloads. applicable to home
 # operation
 function prom-reload { curl -X POST http://localhost:9090/prometheus/-/reload }
@@ -212,7 +212,7 @@ function get-1pass-passwd() {
   op get item "$1" --fields password
 }
 
-# API tokens use the credential field.  
+# API tokens use the credential field.
 function get-1pass-api-token() {
   1p-on
   op get item "$1" --fields credential
@@ -224,7 +224,7 @@ case-blurb() {
   then
     cat <<EOFUSAGE
 
-usage: 
+usage:
   case-blurb <case-number> - where the case-number is a whitespace-free string
 
 EOFUSAGE
@@ -257,11 +257,11 @@ then
   source /usr/local/share/zsh/site-functions/_aws
 fi
 
-# note the following is a zsh-specific check for the existence of a command. 
-if [ $+commands[kubectl] == "1" ]
-then
-  source <(kubectl completion zsh)
-fi
+# note the following is a zsh-specific check for the existence of a command.
+# if [ $+commands[kubectl] == "1" ]
+# then
+#   source <(kubectl completion zsh)
+# fi
 
 #-------------------------------------------------------------------------------
 ## additional modules / functions for various activities
@@ -280,17 +280,17 @@ then
   source "${HOME}/.home/zsh-custom/hosts/$(hostname).zsh"
 fi
 
-if [[ $TERM != "dumb" && -z "${INSIDE_EMACS}" ]];
-then
-  # enable iterm zsh integration if it's available
-  # exclude dumb terminals so that tramp for emacs, etc. works
-  # also exclude from inside of emacs so that ansi-term, etc. works.
-  test -e "${HOME}/.iterm2_shell_integration.zsh" && \
-    source "${HOME}/.iterm2_shell_integration.zsh"
-fi
+# if [[ $TERM != "dumb" && -z "${INSIDE_EMACS}" ]];
+# then
+#   # enable iterm zsh integration if it's available
+#   # exclude dumb terminals so that tramp for emacs, etc. works
+#   # also exclude from inside of emacs so that ansi-term, etc. works.
+#   test -e "${HOME}/.iterm2_shell_integration.zsh" && \
+#     source "${HOME}/.iterm2_shell_integration.zsh"
+# fi
 
 # load the direnv overrides
-if [ $+commands[direnv] == "1" ]
-then
-  eval "$(direnv hook zsh)"
-fi 
+# if [ $+commands[direnv] == "1" ]
+# then
+#   eval "$(direnv hook zsh)"
+# fi
