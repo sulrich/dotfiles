@@ -1,7 +1,7 @@
 ---
 title: %%TODAY%%: misc. notes
 author: steve ulrich
-email: sulrich@arista.com
+email: %%EMAIL%%
 location: %%LOCATION%%
 creation date: %%CREATE_DATE%%
 tags: %%TAGS%%
