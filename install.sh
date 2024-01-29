@@ -204,7 +204,7 @@ make-symlinks() {
     ['gitconfig']=".gitconfig"
     ['gitignore']=".gitignore"
     ['mailcap']=".mailcap"
-    ['markdownlint.yaml']=".markdownlint.yaml"
+    ['markdownlint.json']=".markdownlintrc"
     ['octaverc']=".octaverc"
     ['ruff.toml']=".ruff.toml"
     ['screenrc']=".screenrc"
