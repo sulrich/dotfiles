@@ -218,22 +218,6 @@ function get-1pass-api-token() {
   op get item "$1" --fields credential
 }
 
-case-blurb() {
-  local CASEBLURB="${HOME}/.home/templates/text/case-blurb.txt"
-  if [ "$1" = "" ]
-  then
-    cat <<EOFUSAGE
-
-usage:
-  case-blurb <case-number> - where the case-number is a whitespace-free string
-
-EOFUSAGE
-
-  else
-    sed "s/%%CASE_NUM%%/${1}/g" < ${CASEBLURB}
-  fi
-}
-
 setaliases # load the aliases
 
 # misc. arista specific aliases
@@ -243,18 +227,12 @@ source "${HOME}/.home/pb.sh"
 # these aren't necessarily going to be available everywhere.
 #
 # enable misc. completions available from homebrew
-fpath=(/usr/local/share/zsh-completions $fpath)
+fpath=(/opt/homebrew/share/zsh-completions $fpath)
 
 # google CLI
 if [ -e "${HOME}/src/google-cloud-sdk/completion.zsh.inc" ]
 then
   source "${HOME}/src/google-cloud-sdk/completion.zsh.inc"
-fi
-
-# enable AWS CLI completion
-if [ -e /usr/local/share/zsh/site-functions/_aws ]
-then
-  source /usr/local/share/zsh/site-functions/_aws
 fi
 
 # note the following is a zsh-specific check for the existence of a command.
@@ -268,16 +246,16 @@ fi
 
 # pull in platform specific configuration - note this needs to be somewhere
 # other than the ZSH_CUSTOM directory otherwise everything gets pulled in.
-if [ -e "${HOME}/.home/zsh-custom/platform/$(uname).zsh" ]
+if [ -e "${HOME}/.home/zsh-custom/platform/${PLATFORM}.zsh" ]
 then
-  source "${HOME}/.home/zsh-custom/platform/$(uname).zsh"
+  source "${HOME}/.home/zsh-custom/platform/${PLATFORM}.zsh"
 fi
 
 # pull in host specific configuration elements - same as re: platform specific
 # config elements in terms of placement
-if [ -e "${HOME}/.home/zsh-custom/hosts/$(hostname).zsh" ]
+if [ -e "${HOME}/.home/zsh-custom/hosts/${HOSTNAME}.zsh" ]
 then
-  source "${HOME}/.home/zsh-custom/hosts/$(hostname).zsh"
+  source "${HOME}/.home/zsh-custom/hosts/${HOSTNAME}.zsh"
 fi
 
 # if [[ $TERM != "dumb" && -z "${INSIDE_EMACS}" ]];

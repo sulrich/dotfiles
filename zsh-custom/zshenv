@@ -3,11 +3,13 @@
 # this should prevent me from sourcing the /etc/z* files
 unsetopt GLOBAL_RCS
 
+export SKIP_GLOBAL_COMPINIT=1
+
 # shell specific vars
 export DIRSTACKSIZE=20
 export HISTSIZE=100
 
-export HOSTNAME=$(hostname)
+export HOSTNAME=$HOST
 export PLATFORM=$(uname)
 
 #---------------------------------------------------------------------
