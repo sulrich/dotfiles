@@ -12,13 +12,12 @@
   tool = Kaleidoscope
 
 [core]
-  excludesfile = /Users/sulrich/.gitignore
+  excludesfile = ~/.gitignore
   autocrlf = input
   quotepath = false
   pager = less -r
   fileMode = false
 	commitGraph = true
-	fsmonitor = true
   # safecrlf = true
   # quotepath = false
 
@@ -51,8 +50,8 @@
   default = matching
 
 # experiments in color
-#[color]
-#  ui = auto
+[color]
+  ui = auto
 
 [color "branch"]
   current = yellow reverse
