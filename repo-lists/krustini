@@ -22,7 +22,6 @@ declare -a REPO_LIST=(
   # google repos
   "${HOME}/src/google/gnxi"
   "${HOME}/src/google/orismologer"
-  "${HOME}/src/google/gnsi"
 )
 
 declare -a UPSTREAM_LIST=(
