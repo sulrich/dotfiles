@@ -30,6 +30,7 @@ declare -a UPSTREAM_LIST=(
   "${HOME}/src/openconfig/ondatra"
   "${HOME}/src/openconfig/featureprofiles"
   "${HOME}/src/arista/openmgmt"
+  "${HOME}/src/arista/tech-library"
 )
 
 declare -a MIRROR_LIST=()
