@@ -271,11 +271,13 @@ sync-public-ssh-keys() {
 ## install-min-packages-debian (sudo): install minimum set of tools (debian/ubuntu)
 install-min-packages-debian() {
   # install the minimum set of bootstrap tools for a host
-   sudo apt install                                                             \
-     build-essential curl direnv fzf git libbz2-dev libffi-dev liblzma-dev      \
-     libncurses5-dev libncursesw5-dev libreadline-dev libsqlite3-dev libssl-dev \
-     llvm make python3-dev python3-pip python3-openssl ripgrep tmux vim-nox     \
-     wget xz-utils zlib1g-dev zsh
+   sudo apt install                                                            \
+     bpfcc-tools bpftrace build-essential cpuid curl direnv ethtool fzf git    \
+     iproute2 libbz2-dev libffi-dev liblzma-dev libncurses5-dev                \
+     libncursesw5-dev libreadline-dev libsqlite3-dev libssl-dev                \
+     linux-tools-common llvm make msr-tools nicstat numactl procps python3-dev \
+     python3-openssl python3-pip ripgrep sysstat tcpdump tiptop tmux trace-cmd \
+     util-linux vim-nox wget xz-utils zlib1g-dev zsh
 }
 
 ## install-tpm: install tmux plugin manager (TPM)
