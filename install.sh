@@ -255,12 +255,16 @@ sync-public-ssh-keys() {
 
   declare -A PUBKEYS
   PUBKEYS=(
-    ['arista']="https://gitlab.aristanetworks.com/sulrich.keys"
+    # ['arista']="https://gitlab.aristanetworks.com/sulrich.keys"
     ['github']="https://github.com/sulrich.keys"
     ['botwerks']="https://botwerks.net/sulrich.keys"
   )
-  # get the public ssh key
-  curl -s ${PUBKEYS[$1]} >> "${HOME}/.ssh/authorized_keys"
+  for KEY in "${!PUBKEYS[@]}";
+  do
+    # get the public ssh key
+    curl -s ${PUBKEYS[$KEY]} >> "${HOME}/.ssh/authorized_keys"
+  done
+      
 
   # remove dups
   uniq "${HOME}/.ssh/authorized_keys" > "${HOME}/.ssh/tmp_keys"
@@ -272,10 +276,10 @@ sync-public-ssh-keys() {
 install-min-packages-debian() {
   # install the minimum set of bootstrap tools for a host
    sudo apt install                                                            \
-     bpfcc-tools bpftrace build-essential cpuid curl direnv ethtool fzf git    \
+     bpfcc-tools bpftrace build-essential curl direnv ethtool fzf git    \
      iproute2 libbz2-dev libffi-dev liblzma-dev libncurses5-dev                \
      libncursesw5-dev libreadline-dev libsqlite3-dev libssl-dev                \
-     linux-tools-common llvm make msr-tools nicstat numactl procps python3-dev \
+     linux-tools-common llvm make  nicstat numactl procps python3-dev \
      python3-openssl python3-pip ripgrep sysstat tcpdump tiptop tmux trace-cmd \
      util-linux vim-nox wget xz-utils zlib1g-dev zsh
 }
