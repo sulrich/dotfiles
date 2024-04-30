@@ -17,7 +17,7 @@ trap cleanup SIGINT SIGTERM ERR EXIT
 
 # this will need to point at something useful, as the per-host brewfile won't
 # exist yet.
-BREWFILE="${HOME}/iCloud/src/configs/brewfile.txt"
+BREWFILE="${HOME}/iCloud/src/configs/krustini/brew-file.txt"
 
 PYTHON2_VER="2.7.18"
 PYTHON3_VER="3.11.1"
@@ -255,7 +255,7 @@ sync-public-ssh-keys() {
 
   declare -A PUBKEYS
   PUBKEYS=(
-    # ['arista']="https://gitlab.aristanetworks.com/sulrich.keys"
+    #['arista']="https://gitlab.aristanetworks.com/sulrich.keys"
     ['github']="https://github.com/sulrich.keys"
     ['botwerks']="https://botwerks.net/sulrich.keys"
   )
@@ -265,7 +265,6 @@ sync-public-ssh-keys() {
     curl -s ${PUBKEYS[$KEY]} >> "${HOME}/.ssh/authorized_keys"
   done
       
-
   # remove dups
   uniq "${HOME}/.ssh/authorized_keys" > "${HOME}/.ssh/tmp_keys"
   mv "${HOME}/.ssh/tmp_keys" "${HOME}/.ssh/authorized_keys"
