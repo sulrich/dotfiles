@@ -17,7 +17,7 @@ trap cleanup SIGINT SIGTERM ERR EXIT
 
 # this will need to point at something useful, as the per-host brewfile won't
 # exist yet.
-BREWFILE="${HOME}/iCloud/src/configs/brewfile.txt"
+BREWFILE="${HOME}/iCloud/src/configs/krustini/brew-file.txt"
 
 PYTHON2_VER="2.7.18"
 PYTHON3_VER="3.11.1"
@@ -255,13 +255,16 @@ sync-public-ssh-keys() {
 
   declare -A PUBKEYS
   PUBKEYS=(
-    ['arista']="https://gitlab.aristanetworks.com/sulrich.keys"
+    #['arista']="https://gitlab.aristanetworks.com/sulrich.keys"
     ['github']="https://github.com/sulrich.keys"
     ['botwerks']="https://botwerks.net/sulrich.keys"
   )
-  # get the public ssh key
-  curl -s ${PUBKEYS[$1]} >> "${HOME}/.ssh/authorized_keys"
-
+  for KEY in "${!PUBKEYS[@]}";
+  do
+    # get the public ssh key
+    curl -s ${PUBKEYS[$KEY]} >> "${HOME}/.ssh/authorized_keys"
+  done
+      
   # remove dups
   uniq "${HOME}/.ssh/authorized_keys" > "${HOME}/.ssh/tmp_keys"
   mv "${HOME}/.ssh/tmp_keys" "${HOME}/.ssh/authorized_keys"
@@ -271,11 +274,13 @@ sync-public-ssh-keys() {
 ## install-min-packages-debian (sudo): install minimum set of tools (debian/ubuntu)
 install-min-packages-debian() {
   # install the minimum set of bootstrap tools for a host
-   sudo apt install                                                             \
-     build-essential curl direnv fzf git libbz2-dev libffi-dev liblzma-dev      \
-     libncurses5-dev libncursesw5-dev libreadline-dev libsqlite3-dev libssl-dev \
-     llvm make python3-dev python3-pip python3-openssl ripgrep tmux vim-nox     \
-     wget xz-utils zlib1g-dev zsh
+   sudo apt install                                                            \
+     bpfcc-tools bpftrace build-essential curl direnv ethtool fzf git    \
+     iproute2 libbz2-dev libffi-dev liblzma-dev libncurses5-dev                \
+     libncursesw5-dev libreadline-dev libsqlite3-dev libssl-dev                \
+     linux-tools-common llvm make  nicstat numactl procps python3-dev \
+     python3-openssl python3-pip ripgrep sysstat tcpdump tiptop tmux trace-cmd \
+     util-linux vim-nox wget xz-utils zlib1g-dev zsh
 }
 
 ## install-tpm: install tmux plugin manager (TPM)
