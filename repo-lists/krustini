@@ -31,6 +31,8 @@ declare -a UPSTREAM_LIST=(
   "${HOME}/src/openconfig/featureprofiles"
   "${HOME}/src/arista/openmgmt"
   "${HOME}/src/arista/tech-library"
+  # this is the reference yang repo for vendors and SDOs
+  "${HOME}/src/yang"
 )
 
 declare -a MIRROR_LIST=()

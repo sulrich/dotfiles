@@ -176,6 +176,13 @@ function git-upstream-sync() {
   # update my $default_branch with the contents of the upstream. this is a
   # pretty common workflow.
   # determine if the repo uses master/main as the default branch name
+  #
+  # i need to remember to set the upstream for this first. thiis done by adding
+  # the upstream a la "git remote add upstream <upstream-repo-url>
+  #
+  # make changes to the new branch by doing ...
+  # git checkout -b <my-new-branch>
+  # git push --set-upstream origin <my-new-branch>
 
   local DEFAULT_BRANCH=$(git remote show upstream | grep 'HEAD branch' | awk '{print $NF}')
   echo "default branch: ${DEFAULT_BRANCH}"
