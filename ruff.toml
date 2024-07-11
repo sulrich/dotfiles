@@ -1,13 +1,26 @@
-# personal ruff configurqtion 
+fix = true
 
-# enable autofixing
-fix = true 
+[lint]
 # only enable isort autofixes
+select = [ "E", "F", "I"] 
 fixable = [ "I" ]
 
-# linting rules to apply 
-select = [ "E", "F", "I"] 
-
 # initial application is to eliminate standalone isort dependency
-[isort]
+[lint.isort]
 force-single-line = true
+
+[format]
+# like black, use double quotes for strings.
+# quote-style = "double"
+
+# like black, indent with spaces, rather than tabs.
+indent-style = "space"
+
+# like black, respect magic trailing commas.
+skip-magic-trailing-comma = false
+
+# like black, automatically detect the appropriate line ending.
+line-ending = "auto"
+
+docstring-code-format = true
+docstring-code-line-length = 80
