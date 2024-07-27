@@ -20,8 +20,8 @@ export ANSIBLE_INVENTORY=${HOME}/src/ansible/etc/hosts
 # generic environment variables
 #
 export PYTHON2_VER="2.7.18"
-export PYTHON3_MAJOR="python3.11"
-export PYTHON3_VER="3.11.1"
+export PYTHON3_MAJOR="python3.12"
+export PYTHON3_VER="3.12.4"
 export PYENV_ROOT="${HOME}/.pyenv"
 # i have mixed feelings about the following.  if i were in a consistent
 # development mode of operation would probably need to enable this.
