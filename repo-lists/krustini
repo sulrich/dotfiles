@@ -17,7 +17,6 @@ declare -a REPO_LIST=(
   # the following should be kept current to facilitate public deployment 
   # keep release models handy
   "${HOME}/src/arista/yang"
-  "${HOME}/src/arista/goarista"
  
   # google repos
   "${HOME}/src/google/gnxi"
