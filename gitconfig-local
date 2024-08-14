@@ -1,0 +1,11 @@
+[user]
+  name = steve ulrich
+  email = sulrich@botwerks.org
+
+[credential]
+  helper = osxkeychain
+  helper = store --file ~/.credentials/git-creds.txt
+  helper = cache --timeout 30000
+
+[github]
+  user = sulrich
