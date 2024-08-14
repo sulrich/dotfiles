@@ -27,7 +27,6 @@ export PYENV_ROOT="${HOME}/.pyenv"
 # development mode of operation would probably need to enable this.
 # set to true in a pristine environment.  documenting this for future me.
 export PIP_REQUIRE_VIRTUALENV=false
-export SSH_KEY_PATH="${HOME}/.ssh/id_rsa"   # i'm tired of fucking with this
 export TTY
 export PAGER="less"
 export LYNX_CFG="${HOME}/.home/lynx.cfg"

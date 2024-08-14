@@ -265,6 +265,12 @@ then
   source "${HOME}/.home/zsh-custom/hosts/${HOSTNAME}.zsh"
 fi
 
+# pull in the relevant 1password plugin credentials for github, etc.
+if [ -e "${HOME}/.config/op/plugins.sh" ]
+then
+  source "${HOME}/.config/op/plugins.sh" 
+fi
+
 # if [[ $TERM != "dumb" && -z "${INSIDE_EMACS}" ]];
 # then
 #   # enable iterm zsh integration if it's available

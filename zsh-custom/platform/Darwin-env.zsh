@@ -18,3 +18,5 @@ export SULRICH_BKUP_RPATH="/home/archive/backups/${HOSTNAME}-backup/"
 export SULRICH_BKUP_EXCLUDE="${HOME}/.home/backup/${HOSTNAME}-backup-exclude-list.txt"
 # note that the following is sensitive to the naming inside 1password
 export SULRICH_BKUP_1P="restic-${HOSTNAME}"
+
+export SSH_AUTH_SOCK="${HOME}/.1password/agent.sock"
