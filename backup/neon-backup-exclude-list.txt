@@ -1,0 +1,20 @@
+.Trash
+.vagrant.d
+Box
+Documents/Virtual Machines.localized
+Downloads/**/*.iso
+Downloads/**/*.qcow
+Downloads/**/*.qcow2
+Downloads/**/*.swi
+Downloads/**/*.vmdk
+Downloads/eos-images
+Dropbox
+Library
+Library/Application Support/Google/Chrome/
+Library/Application Support/Google/DriveFS/
+Library/Caches/Google
+Library/Containers/com.docker.docker/Data/vms
+Library/Mobile Documents
+Virtual Machines.localized
+clab
+Library/Containers/com.docker.docker

@@ -1,4 +1,4 @@
-# arista specific functions for interacting w/internal services
+# host specific functions for interacting w/internal services
 fpath=(/usr/local/share/zsh-completions $fpath)
 
 function clab-start() {
