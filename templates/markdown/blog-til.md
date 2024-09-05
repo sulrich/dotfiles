@@ -1,14 +1,14 @@
 ---
-title: "%%TITLE%%"
+title: "TIL: %%TITLE%%"
 date: %%TIMESTAMP%%
 layout: post
 author: steve ulrich
-tags: [%%YEAR%%, %%TAGS%%]
+tags: [%%YEAR%%, TIL, %%TAGS%%]
 # weight: 1
 # aliases: ["/first"]
 showToc: false
 TocOpen: false
-draft: true
+draft: false
 hidemeta: false
 comments: false
 description: "__descriptive text here__"
