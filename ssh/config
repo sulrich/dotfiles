@@ -1,6 +1,6 @@
-CanonicalDomains botwerks.net sjc.aristanetworks.com
-CanonicalizeFallbackLocal yes
-CanonicalizeHostname yes
+#CanonicalDomains botwerks.net 
+#CanonicalizeFallbackLocal yes
+#CanonicalizeHostname yes
 
 ControlPath     ~/.ssh/tmp/%h-%r 
 ControlMaster   auto
