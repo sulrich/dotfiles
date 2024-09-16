@@ -1,4 +1,7 @@
-#CanonicalDomains botwerks.net 
+# the following is useful when you need to resolve various aliases in funky
+# resolution environments.  for standard personal use, i don't need this.
+#
+#CanonicalDomains botwerks.net sjc.aristanetworks.com
 #CanonicalizeFallbackLocal yes
 #CanonicalizeHostname yes
 
