@@ -275,11 +275,15 @@ sync-public-ssh-keys() {
 ## install-min-packages-debian (sudo): install minimum set of tools (debian/ubuntu)
 install-min-packages-debian() {
   # install the minimum set of bootstrap tools for a host
+  # the following is a little bit of gravy to install the latest neovim
+   sudo add-apt-repository ppa:neovim-ppa/unstable
+   sudo apt update
+   # base packages installation
    sudo apt install                                                            \
-     bpfcc-tools bpftrace build-essential curl direnv ethtool fzf git    \
+     bpfcc-tools bpftrace build-essential curl direnv ethtool fzf git          \
      iproute2 libbz2-dev libffi-dev liblzma-dev libncurses5-dev                \
      libncursesw5-dev libreadline-dev libsqlite3-dev libssl-dev                \
-     linux-tools-common llvm make  nicstat numactl procps python3-dev \
+     linux-tools-common llvm make neovim nicstat numactl procps python3-dev    \
      python3-openssl python3-pip ripgrep sysstat tcpdump tiptop tmux trace-cmd \
      util-linux vim-nox wget xz-utils zlib1g-dev zsh
 }
