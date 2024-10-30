@@ -1,0 +1,29 @@
+declare -a REPO_LIST=(
+  # openconfig repos
+  "${HOME}/src/openconfig/gnmi"
+  "${HOME}/src/openconfig/gnoi"
+  "${HOME}/src/openconfig/goyang"
+  "${HOME}/src/openconfig/oc-pyang"
+  "${HOME}/src/openconfig/gnmitest"
+  "${HOME}/src/openconfig/gribi"
+  "${HOME}/src/openconfig/gribigo"
+  "${HOME}/src/openconfig/reference"
+  "${HOME}/src/openconfig/ygot"
+  "${HOME}/src/openconfig/gnsi"
+
+  # the following should be kept current to facilitate public deployment 
+  # keep release models handy
+  "${HOME}/src/arista/yang"
+ 
+)
+
+declare -a UPSTREAM_LIST=(
+  # openconfig repos
+  "${HOME}/src/openconfig/public" 
+  "${HOME}/src/openconfig/ondatra"
+  "${HOME}/src/openconfig/featureprofiles"
+  # this is the reference yang repo for vendors and SDOs
+  "${HOME}/src/yang"
+)
+
+declare -a MIRROR_LIST=()
