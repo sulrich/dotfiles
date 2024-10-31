@@ -9,3 +9,8 @@ appropriately depending on the platform this is being run on.
 the use of `unset GLOBAL_RCS` prevents the sourcing of the RC files from `/etc/`
 on mac os.  this makes things much simpler.  
 
+## miscellanea
+
+the presence of the `zshrc-custom.zsh` file in this directory is largely
+vestigial and related to the migration off of oh-my-zsh.
+
