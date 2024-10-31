@@ -21,12 +21,6 @@ unsetopt bgnice correct correctall noflowcontrol markdirs pathdirs \
          recexact mailwarning notify noclobber completeinword ignore_eof \
          autocd cdablevars autoresume extendedglob
 
-# completion setup
-autoload -Uz compinit && compinit
-zmodload -i zsh/complist
-compctl -c type
-compctl -g '*(-/) .*(-/)' cd rmdir
-
 autoload edit-command-line
 zle -N edit-command-line
 
@@ -43,8 +37,8 @@ autoload -Uz vcs_info
 zstyle ':vcs_info:*' enable git
 zstyle ':vcs_info:*' check-for-changes true
 zstyle ':vcs_info:*' stagedstr "%{$fg[red]%}●%{$fg[white]%}%{$reset_color%}" # %c in vcs_info_msg_0_
-zstyle ':vcs_info:*' unstagedstr '?'                                         # %u in vcs_info_msg_0_ 
-zstyle ':vcs_info:*' formats '[%b%c%u]'
+zstyle ':vcs_info:*' unstagedstr "%{$fg[blue]%}●%{$fg[white]%}%{$reset_color%}" # %u in vcs_info_msg_0_
+zstyle ':vcs_info:*' formats '[%b%c%u]' # %b is the branch %c and %u are tickled as noted above
 precmd() {
     vcs_info
 }
@@ -236,14 +230,22 @@ function get-1pass-api-token() {
 
 setaliases # load the aliases
 
-# misc. arista specific aliases
-source "${HOME}/.home/pb.sh"
-
 # completion kits --------------------------------------------------------------
 # these aren't necessarily going to be available everywhere.
 #
-# enable misc. completions available from homebrew
-fpath=(/opt/homebrew/share/zsh-completions $fpath)
+# enable misc. completions from various sources
+fpath=(/opt/homebrew/share/zsh-completions  ${HOME}/.home/zsh/completions $fpath)
+
+# note that zsh requires the completion directories be reasonably secured. check
+# compaudit for info on problematic directories and adjust permissions and
+# ownership accordingly
+
+# tickle the completion elements in zsh
+autoload -Uz compinit && compinit
+zmodload -i zsh/complist
+compctl -c type
+compctl -g '*(-/) .*(-/)' cd rmdir
+
 
 # google CLI
 if [ -e "${HOME}/src/google-cloud-sdk/completion.zsh.inc" ]
