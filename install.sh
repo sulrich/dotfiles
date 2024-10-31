@@ -215,8 +215,8 @@ make-symlinks() {
     ['urlview']=".urlview"
     ['vale.ini']=".vale.ini"
     ['zshrc']=".zshrc"
-    ['zsh-custom/zlogin']=".zlogin"
-    ['zsh-custom/zshenv']=".zshenv"
+    ['zsh/zlogin']=".zlogin"
+    ['zsh/zshenv']=".zshenv"
     ['ssh/config']=".ssh/config"
   )
 
