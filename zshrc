@@ -9,7 +9,7 @@ then
 fi
 
 setopt	pushdtohome cdablevars autolist automenu alwayslastprompt \
-	autoparamkeys autoremoveslash chaselinks extendedhistory hashcmds \
+	autoparamkeys autoremoveslash chaselinks hashcmds \
 	hashdirs histignoredups nobeep \
 	longlistjobs alwaystoend \
 	nobadpattern nonomatch \
@@ -45,6 +45,16 @@ precmd() {
 
 setopt prompt_subst
 PS1="%m(%2~)\${vcs_info_msg_0_}%% "
+
+
+## history handling
+setopt extended_history       # record timestamp of command in HISTFILE
+setopt hist_expire_dups_first # delete duplicates first when HISTFILE size exceeds HISTSIZE
+setopt hist_ignore_dups       # ignore duplicated commands history list
+setopt hist_ignore_space      # ignore commands that start with space
+setopt hist_verify            # show command with history expansion to user before running it
+setopt share_history          # share command history data
+
 
 #---------------------------------------------------------------------
 # aliases
@@ -241,11 +251,30 @@ fpath=(/opt/homebrew/share/zsh-completions  ${HOME}/.home/zsh/completions $fpath
 # ownership accordingly
 
 # tickle the completion elements in zsh
-autoload -Uz compinit && compinit
+autoload -U compinit && compinit
 zmodload -i zsh/complist
 compctl -c type
 compctl -g '*(-/) .*(-/)' cd rmdir
 
+unsetopt menu_complete   # do not autoselect the first completion entry
+unsetopt flowcontrol
+setopt auto_menu         # show completion menu on successive tab press
+setopt complete_in_word
+setopt always_to_end
+
+# :completion:<function>:<completer>:<command>:<argument>:<tag>
+# define completers
+zstyle ':completion:*' completer _extensions _complete _approximate
+
+# use cache for commands using cache
+zstyle ':completion:*' use-cache on
+zstyle ':completion:*' cache-path "{HOME}/.config/zsh/.zcompcache"
+# complete the alias when _expand_alias is used as a function
+zstyle ':completion:*' complete true
+zstyle ':completion:*' verbose yes
+
+# the following matcher-list enables matching on substrings in filenames, etc. 
+zstyle ':completion:*' matcher-list 'm:{[:lower:][:upper:]-_}={[:upper:][:lower:]_-}' 'r:|=*' 'l:|=* r:|=*'
 
 # google CLI
 if [ -e "${HOME}/src/google-cloud-sdk/completion.zsh.inc" ]

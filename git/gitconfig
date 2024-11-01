@@ -16,6 +16,8 @@
   autocrlf = input
   quotepath = false
   pager = less -r
+  # note that the following can be enabled selectively for a repo where there
+  # are critical file permissions
   fileMode = false
 	commitGraph = true
   # safecrlf = true
