@@ -7,22 +7,25 @@ export SKIP_GLOBAL_COMPINIT=1
 
 # shell specific vars
 export DIRSTACKSIZE=20
-export HISTSIZE=100
+
+export HISTSIZE=500
+export HISTFILE="${HOME}/.zsh_history"
+[ -z "$HISTFILE" ] && HISTFILE="${HOME}/.zsh_history"
 
 export HOSTNAME=$HOST
 export PLATFORM=$(uname)
 
 #---------------------------------------------------------------------
 # ansible vars
-export ANSIBLE_INVENTORY=${HOME}/src/ansible/etc/hosts
+export ANSIBLE_INVENTORY="${HOME}/src/ansible/etc/hosts"
 
 #---------------------------------------------------------------------
 # generic environment variables
-#
 export PYTHON2_VER="2.7.18"
 export PYTHON3_MAJOR="python3.12"
 export PYTHON3_VER="3.12.4"
 export PYENV_ROOT="${HOME}/.pyenv"
+
 # i have mixed feelings about the following.  if i were in a consistent
 # development mode of operation would probably need to enable this.
 # set to true in a pristine environment.  documenting this for future me.
@@ -33,6 +36,7 @@ export LYNX_CFG="${HOME}/.home/lynx.cfg"
 export CVS_RSH=ssh
 export CLICOLOR=1
 export GOPATH=${HOME}/go
+
 # export LESS="$LESS -i -x2" # do we still need this zhsrc-custom?
 # added the eFRX to pass through escape characters in git diff mode
 export LESS="$LESS -eFRX -i -x2"
@@ -157,15 +161,15 @@ then
   setpath
 
   # pull in platform specific environment variables, etc.
-  if [ -e "${HOME}/.home/zsh-custom/platform/${PLATFORM}-env.zsh" ]
+  if [ -e "${HOME}/.home/zsh/platform/${PLATFORM}-env.zsh" ]
   then
-    source "${HOME}/.home/zsh-custom/platform/${PLATFORM}-env.zsh"
+    source "${HOME}/.home/zsh/platform/${PLATFORM}-env.zsh"
   fi
 
   # pull in host specific environment variables, etc.
-  if [ -e  "${HOME}/.home/zsh-custom/hosts/${HOSTNAME}-env.zsh" ]
+  if [ -e  "${HOME}/.home/zsh/hosts/${HOSTNAME}-env.zsh" ]
   then
-    source "${HOME}/.home/zsh-custom/hosts/${HOSTNAME}-env.zsh"
+    source "${HOME}/.home/zsh/hosts/${HOSTNAME}-env.zsh"
   fi
 
   # pull in the gcloud sdk tools
@@ -174,8 +178,8 @@ then
     source "${HOME}/src/google-cloud-sdk/path.zsh.inc"
   fi
 
-# include credentials which are embedded in environment variables.  this
-  # should not be included in git repos
+  # include credentials which are embedded in environment variables.
+  # THIS MUST NOT BE INCLUDED IN GIT REPOS
   if [ -f "${HOME}/.credentials/00-api-creds.env" ];
   then
     source "${HOME}/.credentials/00-api-creds.env"
