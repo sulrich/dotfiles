@@ -69,14 +69,6 @@ install-brew-packages() {
   brew bundle --file="${BREWFILE}"
 }
 
-## install-omz: install oh-my-zsh
-install-omz() {
-  echo "making home src directory"
-  mkdir -p "${HOME}/src"
-  echo "cloning oh-my-zsh"
-  git clone https://github.com/robbyrussell/oh-my-zsh.git "${HOME}/src/zsh"
-}
-
 ## install-language-servers (sudo): intall relevant lsps for nvim
 install-language-servers() {
   # install python language server (pyright)
