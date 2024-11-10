@@ -63,13 +63,12 @@ setaliases() {
   alias -g L=" 2>&1|less"  #  page through the output, inluding STDERR
   alias -g NUL="> /dev/null 2>&1"
   alias -g TL="| tail -20"
-  alias e="emacsclient"
 
   # git aliases for misc. stuff i do
   alias gitdiff-lastone="git diff HEAD^^ $1"
   alias gitlog-lastone="git log -p -n 1 $1"
   alias gitlog-short='git log --graph --date=short --pretty="%h %cd %cn %ce"'
-  alias gitfilemode="git config core.filemode false"
+  alias git-set-filemode="git config core.filemode false"
 
   alias ll="ls -lh"
   alias lld="ls -ld -- */"
@@ -92,18 +91,19 @@ setaliases() {
   # makes logging into lab routers handy
   alias ago="TERM=vt100 ssh -l admin -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null"
   alias mgo="TERM=vt100 sshpass -f ${HOME}/.credentials/meta-lab.txt ssh $@"
+
+  # parse ownership vouchers.  in reality, this is just invoking openssl with
+  # the right flags to snarf the cert/signing elements from a DER formatted file
   alias ov-parse="openssl asn1parse -inform der -in $1"
 
   if [ $+commands[nvim] == "1" ]
   then
     alias vim="nvim"  # always use nvim where possible
   fi
-
-  # overrides to prevent craziness from oh-my-zsh
-  # unalias grep
 }
 
-# the following should prevent tramp hangs in emacs
+# the following should prevent tramp hangs in emacs. this is useful in some
+# other odd terminal scenarios as well.
 if [[ $TERM == "dumb" ]];
 then
   unsetopt zle
