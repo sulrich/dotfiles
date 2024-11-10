@@ -11,15 +11,15 @@ declare -a REPO_LIST=(
   "${HOME}/src/openconfig/ygot"
   "${HOME}/src/openconfig/gnsi"
 
-  # the following should be kept current to facilitate public deployment 
+  # the following should be kept current to facilitate public deployment
   # keep release models handy
   "${HOME}/src/arista/yang"
- 
+
 )
 
 declare -a UPSTREAM_LIST=(
   # openconfig repos
-  "${HOME}/src/openconfig/public" 
+  "${HOME}/src/openconfig/public"
   "${HOME}/src/openconfig/ondatra"
   "${HOME}/src/openconfig/featureprofiles"
   # this is the reference yang repo for vendors and SDOs

@@ -9,31 +9,22 @@ declare -a REPO_LIST=(
   "${HOME}/src/openconfig/gribigo"
   "${HOME}/src/openconfig/reference"
   "${HOME}/src/openconfig/ygot"
-  "${HOME}/src/openconfig/hercules"
-  "${HOME}/src/openconfig/autobahn"
   "${HOME}/src/openconfig/gnsi"
-  "${HOME}/src/yang"
 
-  # the following should be kept current to facilitate public deployment 
+  # the following should be kept current to facilitate public deployment
   # keep release models handy
   "${HOME}/src/arista/yang"
- 
-  # google repos
-  "${HOME}/src/google/gnxi"
-  "${HOME}/src/google/orismologer"
+
 )
 
 declare -a UPSTREAM_LIST=(
   # openconfig repos
-  "${HOME}/src/openconfig/public" 
+  "${HOME}/src/openconfig/public"
   "${HOME}/src/openconfig/ondatra"
   "${HOME}/src/openconfig/featureprofiles"
-  "${HOME}/src/arista/openmgmt"
-  "${HOME}/src/arista/tech-library"
   # this is the reference yang repo for vendors and SDOs
   "${HOME}/src/yang"
 )
 
 declare -a MIRROR_LIST=()
 
-INTERNAL_REMOTE="ANET-MIRROR"

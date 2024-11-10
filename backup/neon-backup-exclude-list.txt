@@ -1,4 +1,5 @@
 .Trash
+.ollama/*
 .vagrant.d
 Box
 Documents/Virtual Machines.localized
