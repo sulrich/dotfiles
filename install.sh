@@ -136,27 +136,14 @@ install-vim-modules() {
   fi
 }
 
-## install-pyenv: self-explanatory
-install-pyenv() {
-  echo "pulling down some key utilities for vim first. note, these will be"
-  echo "installed locally via the --user flag"
-  pip3 install black --user
-  pip3 install websockets --user
-  echo "cloning pyenv"
-  git clone https://github.com/pyenv/pyenv.git "${HOME}/.pyenv"
-  echo "you'll need to re-init your shell to pick up pyenv"
+## install-uv: self-explanatory
+install-uv() {
+  # this should work across linux and mac (will place into ~/.local/bin/)
+  curl -LsSf https://astral.sh/uv/install.sh | sh
+  echo 'make sure to install the relevant pythons via "uv python install"'
 }
 
-## install-pythons: install the interesting versions of python via pyenv
-install-pythons() {
-  echo "installing python2 version: ${PYTHON2_VER}"
-  pyenv install "${PYTHON2_VER}"
-  echo "installing python3 version: ${PYTHON3_VER}"
-  pyenv install "${PYTHON3_VER}"
-
-  echo "setting pyenv global"
-  pyenv global "${PYTHON3_VER}" "${PYTHON2_VER}"
-}
+## TODO(sulrich) - install the critical set of uv tools for happy operation.
 
 ## install-docker-ubuntu (sudo): install docker
 install-docker-ubuntu() {
@@ -214,7 +201,7 @@ make-symlinks() {
 
   # ssh specific elements
   mkdir -p "${HOME}/.ssh/tmp"
-  # git isn't great re: permissions
+  # git isn't always great re: permissions
   chmod -R 0755 "${HOME}/.home/ssh"
   chmod 0755 "${HOME}/.ssh/tmp"
   # put platform specific ssh elements into place

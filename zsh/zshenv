@@ -47,7 +47,7 @@ export CLAB_DIR="${HOME}/clab"
 
 # 20220331 TODO(sulrich): check back on this in 30days seems to impact gnmic,
 # containerlab and more
-export ASSUME_NO_MOVING_GC_UNSAFE_RISK_IT_WITH=go1.20
+# export ASSUME_NO_MOVING_GC_UNSAFE_RISK_IT_WITH=go1.20
 
 # localization info
 export LC_ALL=en_US.UTF-8
@@ -74,13 +74,14 @@ export YANG_MODPATH=${HOME}/src/yang/standard:${HOME}/src/openconfig/public/rele
 export YANG_PLUGINS="${HOME}/.pyang"
 
 setpath() {
+  LOCAL_PATH="${HOME}/.local/bin"
+
   if [[ -d "/opt/homebrew/bin" ]];
   then
-    LOCAL_PATH="/opt/homebrew/bin:/opt/homebrew/sbin:"
+    LOCAL_PATH="${LOCAL_PATH}:/opt/homebrew/bin:/opt/homebrew/sbin:"
   fi
 
   LOCAL_PATH="${LOCAL_PATH}/usr/local/bin:/usr/local/sbin:${GOPATH}/bin:/usr/bin:/usr/sbin:/sbin"
-  POETRY_DIR="${HOME}/.poetry/bin"
   CARGO_DIR="${HOME}/.cargo/bin"
 
   # handle cases where we need to shim the go binaries into the path due to a
@@ -88,14 +89,6 @@ setpath() {
   if [[ -d "/usr/local/go/bin" ]];
   then
     LOCAL_PATH="/usr/local/go/bin:${LOCAL_PATH}"
-  fi
-
-  # inject poetry into the path as appropriate
-  if [[ -d "${POETRY_DIR}" ]];
-  then
-    POETRY_PATH="${POETRY_DIR}:"
-  else
-    POETRY_PATH=""
   fi
 
   # inject rust cargo into the path as appropriate
@@ -106,39 +99,9 @@ setpath() {
     CARGO_PATH=""
   fi
 
-  # we should be running pyenv for all our python needs interactively
-  # check for the presence of PYENV_ROOT
-  if (( ${+PYENV_ROOT} ));
-  then
-    PYENV_PATH="${PYENV_ROOT}/bin:"
-  else
-    PYENV_PATH=""
-  fi
-
-  # misc. conda stuff
-  #
-  # 20210321 (sulrich) for now, i'll stick my conda stuff in
-  # ${HOME}/src/anacondaX reference the following stack-exchange article re:
-  # managing pyenv and conda environments.
-  #
-  # https://stackoverflow.com/questions/58044214/installing-anaconda-with-pyenv-unable-to-configure-virtual-environment/58045893
-  #
-  # of note is the guidance to manage these separately and to disable the base
-  # environment by default.
-  # if [ -f "${HOME}/src/anaconda3/etc/profile.d/conda.sh" ]; then
-  #   # note that the following bumps the conda elements into the path
-  #   . "${HOME}/src/anaconda3/etc/profile.d/conda.sh"
-  # else
-  #   if [[ -d "${HOME}/src/anaconda3/bin" ]]; then
-  #     CONDA_PATH="${HOME}/src/anaconda3/bin:"
-  #   else
-  #     CONDA_PATH=""
-  #   fi
-  # fi
-
-  # set path to address OS/arch  specific binaries within home directory
+# set path to address OS/arch  specific binaries within home directory
   # OSPATH=`uname -ms | sed 's| |/|g'`
-  export PATH="${PYENV_PATH}${POETRY_PATH}${CONDA_PATH}${CARGO_PATH}${LOCAL_PATH}:${HOME}/bin:${PATH}:."
+  export PATH="${CARGO_PATH}${LOCAL_PATH}:${HOME}/bin:${PATH}:."
   export MANPATH="/usr/local/man:/usr/man:/usr/share/man:"
   export MANPATH="${MANPATH}:/usr/X11R6/man:/usr/local/man:${HOME}/Library/man:."
   export INFOPATH="/usr/local/share/info:${INFOPATH}"
@@ -194,18 +157,6 @@ then
   # ruby environment setup
   # eval "$(rbenv init - zsh)"
 
-  # update pyenv elements appropriaately
-  if (( $+commands[pyenv] == 1 ));
-  then
-    eval "$(pyenv init --path)"
-    # eval "$(pyenv init -)"  # i honestly don't know if i need this 2nd invocation
-  fi
-
-  if (( $+commands[pyenv-virtualenv-init] == 1 ));
-  then
-    eval "$(pyenv virtualenv-init -)";
-  fi
-
 else
   # we're inside of tmux
 fi
@@ -217,3 +168,5 @@ else
   export EDITOR=vi
 fi
 export VISUAL=${EDITOR}
+
+# uv
