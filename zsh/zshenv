@@ -78,10 +78,10 @@ setpath() {
 
   if [[ -d "/opt/homebrew/bin" ]];
   then
-    LOCAL_PATH="${LOCAL_PATH}:/opt/homebrew/bin:/opt/homebrew/sbin:"
+    LOCAL_PATH="${LOCAL_PATH}:/opt/homebrew/bin:/opt/homebrew/sbin"
   fi
 
-  LOCAL_PATH="${LOCAL_PATH}/usr/local/bin:/usr/local/sbin:${GOPATH}/bin:/usr/bin:/usr/sbin:/sbin"
+  LOCAL_PATH="${LOCAL_PATH}:/usr/local/bin:/usr/local/sbin:${GOPATH}/bin:/usr/bin:/usr/sbin:/sbin"
   CARGO_DIR="${HOME}/.cargo/bin"
 
   # handle cases where we need to shim the go binaries into the path due to a
