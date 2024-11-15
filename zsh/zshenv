@@ -112,34 +112,33 @@ setpath() {
   # personal stash.
   export MIBDIRS="/usr/share/snmp/mibs:${HOME}/.snmp/mibs/cisco:${HOME}/.snmp/mibs/juniper"
   export MIBDIRS="${MIBDIRS}:${HOME}/.snmp/mibs/std:${HOME}/.snmp/mibs/misc:."
+  
+  # pull in the gcloud sdk tools
+  if [ -f "${HOME}/src/google-cloud-sdk/path.zsh.inc" ]
+  then
+    source "${HOME}/src/google-cloud-sdk/path.zsh.inc"
+  fi
 } # end setpath()
 
 
 # check to see if we're in tmux
 if [[ -z ${TMUX} ]];  # we're not in tmux
 then
-  # actually set the path per the constructed elements
-  # note that if we're in tmux we'll append the $PATH entries that makes things
-  # difficult sometimes.
+  # construct the necessary path elements
   setpath
 
-  # pull in platform specific environment variables, etc.
+  # pull in platform-specific environment variables, etc.
   if [ -e "${HOME}/.home/zsh/platform/${PLATFORM}-env.zsh" ]
   then
     source "${HOME}/.home/zsh/platform/${PLATFORM}-env.zsh"
   fi
 
-  # pull in host specific environment variables, etc.
+  # pull in host-specific environment variables, etc.
   if [ -e  "${HOME}/.home/zsh/hosts/${HOSTNAME}-env.zsh" ]
   then
     source "${HOME}/.home/zsh/hosts/${HOSTNAME}-env.zsh"
   fi
 
-  # pull in the gcloud sdk tools
-  if [ -f "${HOME}/src/google-cloud-sdk/path.zsh.inc" ]
-  then
-    source "${HOME}/src/google-cloud-sdk/path.zsh.inc"
-  fi
 
   # include credentials which are embedded in environment variables.
   # THIS MUST NOT BE INCLUDED IN GIT REPOS
@@ -156,9 +155,8 @@ then
 
   # ruby environment setup
   # eval "$(rbenv init - zsh)"
-
 else
-  # we're inside of tmux
+  # we're inside of tmux - we'll inherit the necessary bits
 fi
 
 if (( $+commands[nvim] == 1 ));
@@ -168,5 +166,3 @@ else
   export EDITOR=vi
 fi
 export VISUAL=${EDITOR}
-
-# uv
