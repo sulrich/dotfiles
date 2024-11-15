@@ -108,15 +108,9 @@ install-1pass-apt() {
 }
 
 # pull down my vim config
-## install-vim-modules: pull down git repos and init
-install-vim-modules() {
-  # echo "installing vim customizations"
-  # git clone https://github.com/sulrich/vim.git "${HOME}/.vim"
-  # cd "${HOME}/.vim" || return
-  # git submodule update --init
-  # cd "${HOME}" || return
-
-  echo "adding neovim ..."
+## install-neovim-config: pull down config git repos and neovim config
+install-neovim-config() {
+  echo "adding neovim config..."
   if [ ! -d "${HOME}/.config" ]
   then
     echo " - adding XDG_CONFIG_HOME"
@@ -156,13 +150,6 @@ install-docker-ubuntu() {
    "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
   sudo apt-get update
   sudo apt-get install docker-ce docker-ce-cli containerd.io
-}
-
-## install-poetry: self-explanatory
-install-poetry() {
-	curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py \
-		> /tmp/get-poetry.py
-	python /tmp/get-poetry.py
 }
 
 ## make-symlinks: make the necessary symlinks
@@ -258,6 +245,7 @@ install-min-packages-debian() {
    sudo add-apt-repository ppa:neovim-ppa/unstable
    sudo apt update
    # base packages installation
+   echo "base linux package installation..."
    sudo apt install                                                            \
      bpfcc-tools bpftrace build-essential curl direnv ethtool fzf git          \
      iproute2 libbz2-dev libffi-dev liblzma-dev libncurses5-dev                \
