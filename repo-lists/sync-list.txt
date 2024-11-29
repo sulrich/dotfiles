@@ -1,16 +1,16 @@
 declare -a SYNC_LIST=(
   # openconfig repos
-  "src/openconfig/gnmi"
-  "src/openconfig/gnoi"
-  "src/openconfig/goyang"
-  "src/openconfig/oc-pyang"
-  "src/openconfig/gnmitest"
-  "src/openconfig/gribi"
-  "src/openconfig/gribigo"
-  "src/openconfig/reference"
-  "src/openconfig/ygot"
-  "src/openconfig/gnsi"
-  "src/arista/yang"
+  "/Users/sulrich/src/openconfig/gnmi"
+  "/Users/sulrich/src/openconfig/gnoi"
+  "/Users/sulrich/src/openconfig/goyang"
+  "/Users/sulrich/src/openconfig/oc-pyang"
+  "/Users/sulrich/src/openconfig/gnmitest"
+  "/Users/sulrich/src/openconfig/gribi"
+  "/Users/sulrich/src/openconfig/gribigo"
+  "/Users/sulrich/src/openconfig/reference"
+  "/Users/sulrich/src/openconfig/ygot"
+  "/Users/sulrich/src/openconfig/gnsi"
+  "/Users/sulrich/src/arista/yang"
   # misc. projects / directories
-  "src/human-measures"
+  "/Users/sulrich/src/human-measures"
 )
