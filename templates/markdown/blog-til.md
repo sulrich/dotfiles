@@ -26,7 +26,3 @@ searchHidden: true
 ---
 
 
-#### meta
-
-- **location:** %%LOCATION%%
-- **weather:** %%WEATHER%%
