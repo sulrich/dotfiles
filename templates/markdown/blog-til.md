@@ -11,7 +11,7 @@ TocOpen: false
 draft: false
 hidemeta: false
 comments: false
-description: "__descriptive text here__"
+description: "random learning: <xxx>"
 disableHLJS: false # to disable highlightjs
 disableShare: true
 disableHLJS: false
@@ -25,4 +25,4 @@ searchHidden: true
 #
 ---
 
-
+## TIL: <something here>
