@@ -1,6 +1,6 @@
 ---
 title: "%%DATELINK%% - links, etc."
-date: %%POSTDATE%%
+date: %%TIMESTAMP%%
 layout: post
 author: steve ulrich
 tags: 
@@ -11,7 +11,7 @@ TocOpen: false
 draft: false
 hidemeta: false
 comments: false
-description: "%%DATELINK%% - links, etc."
+description: "%%DATELINK%% - links, etc. (%%HOSTNAME%%)"
 disableHLJS: false # to disable highlightjs
 disableShare: true
 disableHLJS: false
