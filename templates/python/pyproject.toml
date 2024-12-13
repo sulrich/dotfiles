@@ -1,3 +1,15 @@
+[tool.ruff]
+# check ${HOME}/.ruff.toml - for a  
+# docs: https://docs.astral.sh/ruff/configuration/
+
 [tool.ruff.format]
-exclude = ["*"]
+# to disable formatting in existing projects, shim this into the mix
+# exclude = ["*"]
+
+# pyright config bits
+# docs: https://github.com/microsoft/pyright/blob/main/docs/configuration.md
+[tool.pyright]
+# adjust as necessary to bring elements into the mix for config
+# include = ["proto", "**",]
+# venv = ".venv"
 

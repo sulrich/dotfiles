@@ -10,7 +10,7 @@ fixable = [ "I" ]
 force-single-line = true
 
 [format]
-# like black, use double quotes for strings.
+# like black, use double quotes for strings. (default: double)
 # quote-style = "double"
 
 # like black, indent with spaces, rather than tabs.
