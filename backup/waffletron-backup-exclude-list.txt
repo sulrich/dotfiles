@@ -9,7 +9,6 @@ Downloads/**/*.qcow
 Downloads/**/*.qcow2
 Downloads/**/*.swi
 Downloads/**/*.vmdk
-Downloads/eos-images
 Dropbox
 Library
 Library/Application Support/Google/Chrome/
