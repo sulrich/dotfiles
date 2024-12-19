@@ -1,6 +1,7 @@
 .Trash
 .ollama/*
 .vagrant.d
+.notes
 Box
 Documents/Virtual Machines.localized
 Downloads/

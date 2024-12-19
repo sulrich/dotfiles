@@ -15,8 +15,8 @@ declare -a REPO_LIST=(
 declare -a UPSTREAM_LIST=(
   # openconfig repos
   "${HOME}/src/openconfig/public"
-  "${HOME}/src/openconfig/ondatra"
-  "${HOME}/src/openconfig/featureprofiles"
+  # "${HOME}/src/openconfig/ondatra"
+  # "${HOME}/src/openconfig/featureprofiles"
   # this is the reference yang repo for vendors and SDOs
   "${HOME}/src/yang"
 )
