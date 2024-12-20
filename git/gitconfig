@@ -1,6 +1,12 @@
+[user]
+  name = steve ulrich
+
 [include]
-  # for user info, creds, etc.
-  path = ~/.gitconfig-local
+  path = ~/.gitconfig-conditional
+
+[credential]
+  helper = store --file ~/.credentials/git-creds.txt
+  helper = cache --timeout 30000
 
 [difftool "Kaleidoscope"]
   cmd = ksdiff --partial-changeset --relative-path \"$MERGED\" -- \"$LOCAL\" \"$REMOTE\"

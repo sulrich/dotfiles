@@ -168,7 +168,7 @@ make-symlinks() {
     ['digrc']=".digrc"
     ['flake8']=".flake8"
     ['git/gitconfig']=".gitconfig"
-    ['git/gitconfig-local']=".gitconfig-local"
+    ['git/gitconfig-personal']=".gitconfig-personal"
     ['git/gitignore']=".gitignore"
     ['mailcap']=".mailcap"
     ['markdownlint.json']=".markdownlintrc"
