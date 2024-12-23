@@ -166,7 +166,7 @@ function google-nets () {
   end
 }
 
-# output yang models in the unfurled path format.  this require's anees' nifty
+# output yang models in the unfurled path format.  this requires anees' nifty
 # plugin which is in the openconfig repo.
 function pyang-path () {
   # use of --strip helps to make the output more readable.
@@ -192,8 +192,8 @@ function git-upstream-sync() {
 
   if [ -z "${DEFAULT_BRANCH}" ]; then
     echo ""
-    echo "the upstream rep is undefined, you will need to add an upstream repo to track"
-    echo "git remote add upstream <upstream-url-here>"
+    echo "ERROR: the upstream rep is undefined, you will need to add an upstream"
+    echo "ERROR: repo to track git remote add upstream <upstream-url-here>"
     echo ""
   else
     git checkout "${DEFAULT_BRANCH}"
@@ -273,7 +273,7 @@ zstyle ':completion:*' cache-path "{HOME}/.config/zsh/.zcompcache"
 zstyle ':completion:*' complete true
 zstyle ':completion:*' verbose yes
 
-# the following matcher-list enables matching on substrings in filenames, etc. 
+# the following matcher-list enables matching on substrings in filenames, etc.
 zstyle ':completion:*' matcher-list 'm:{[:lower:][:upper:]-_}={[:upper:][:lower:]_-}' 'r:|=*' 'l:|=* r:|=*'
 
 # google CLI
@@ -308,7 +308,7 @@ fi
 # pull in the relevant 1password plugin credentials for github, etc.
 if [ -e "${HOME}/.config/op/plugins.sh" ]
 then
-  source "${HOME}/.config/op/plugins.sh" 
+  source "${HOME}/.config/op/plugins.sh"
 fi
 
 # if [[ $TERM != "dumb" && -z "${INSIDE_EMACS}" ]];

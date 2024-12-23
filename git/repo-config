@@ -1,0 +1,5 @@
+declare -a REPO_COMMANDS=(
+  "git config user.email sulrich@botwerks.org"
+  "git config github.user sulrich"
+)
+
