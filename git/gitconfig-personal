@@ -4,3 +4,6 @@
 
 [github]
   user = sulrich
+
+[credential]
+  username = sulrich
