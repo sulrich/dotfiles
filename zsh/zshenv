@@ -16,10 +16,6 @@ export HOSTNAME=$HOST
 export PLATFORM=$(uname)
 
 #---------------------------------------------------------------------
-# ansible vars
-export ANSIBLE_INVENTORY="${HOME}/src/ansible/etc/hosts"
-
-#---------------------------------------------------------------------
 # generic environment variables
 export PYTHON2_VER="2.7.18"
 export PYTHON3_MAJOR="python3.12"
