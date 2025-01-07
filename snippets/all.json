@@ -1,0 +1,12 @@
+{
+  "dateYYYYMMDD": {
+    "prefix": "dateYYYYMMDD",
+    "body": ["${CURRENT_YEAR}${CURRENT_MONTH}${CURRENT_DATE}"],
+    "description": "insert the date in YYYYMMDD format"
+  },
+  "dateDD-mmm-YYYY": {
+    "prefix": "dateDD-mmm-YYYY",
+    "body": ["${CURRENT_DATE}-${CURRENT_MONTH_NAME_SHORT}-${CURRENT_YEAR}"],
+    "description": "insert the date in DD-mmm-YYYY format"
+  }
+}
