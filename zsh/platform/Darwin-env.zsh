@@ -1,5 +1,5 @@
 # -*- Mode: shell-script; tab-width: 2 -*- *
-# OSX specific functions and aliases
+# macos specific functions and aliases
 
 # i don't particularly like the placement of the XDG_CONFIG_HOME on mac os
 export XDG_CONFIG_HOME="${HOME}/.config" 
