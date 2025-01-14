@@ -27,3 +27,9 @@ gen-qcow-image () {
   # returns the filename sans extension
   qemu-img convert $IMG_BASE.vmdk -O qcow2 $IMG_BASE.qcow2
 }
+
+## i really only want ssh-add enabled on remote linux hosts
+if [ -z "$SSH_AUTH_SOCK" ]; then
+    eval $(ssh-agent -s)
+fi
+
