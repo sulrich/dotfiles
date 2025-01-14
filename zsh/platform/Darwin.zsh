@@ -3,16 +3,13 @@
 
 alias qlf='qlmanage -p "$@" >& /dev/null'
 alias clear-dns-cache='dscacheutil -flushcache'
-alias ocal="open ${HOME}/Desktop/meeting.ics"
-alias flashfind="find ~/Library -name \*sol"
 alias lsusb='system_profiler SPUSBDataType'
 alias fixopenwith='/System/Library/Frameworks/CoreServices.framework/Frameworks/LaunchServices.framework/Support/lsregister -kill -r -domain local -domain system -domain user'
 alias topc="top -o cpu"
-alias vctl="/Applications/VMware\ Fusion.app/Contents/Public/vctl"
 alias loc="less ${OC_PATH_DUMP}"
-alias lopr="less ${ANET_PATHREPORT}"
 
-
+# open a manpage in a new iterm window with a specific theme
+function xman() { open x-man-page://$@ ; }
 function set_volume() { sudo osascript -e "set Volume $1" }
 function ql () { qlmanage -p "$@" >& /dev/null & }
 function iterm-title () { echo -ne "\033]0;"${1}"\007" }
@@ -40,6 +37,6 @@ rolloutbox () {
 # kill offlineimap instances and clean up the lock file. 
 koff () {
   pkill -if offlineimap
-  rm "${HOME}/.offlineimap/arista.lock"
+  rm "${HOME}/.offlineimap/gmail.lock"
   offlineimap -u basic
 }

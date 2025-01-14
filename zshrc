@@ -293,16 +293,16 @@ fi
 
 # pull in platform specific configuration - note this needs to be somewhere
 # other than the ZSH_CUSTOM directory otherwise everything gets pulled in.
-if [ -e "${HOME}/.home/zsh-custom/platform/${PLATFORM}.zsh" ]
+if [ -e "${HOME}/.home/zsh/platform/${PLATFORM}.zsh" ]
 then
-  source "${HOME}/.home/zsh-custom/platform/${PLATFORM}.zsh"
+  source "${HOME}/.home/zsh/platform/${PLATFORM}.zsh"
 fi
 
 # pull in host specific configuration elements - same as re: platform specific
 # config elements in terms of placement
-if [ -e "${HOME}/.home/zsh-custom/hosts/${HOSTNAME}.zsh" ]
+if [ -e "${HOME}/.home/zsh/hosts/${HOSTNAME}.zsh" ]
 then
-  source "${HOME}/.home/zsh-custom/hosts/${HOSTNAME}.zsh"
+  source "${HOME}/.home/zsh/hosts/${HOSTNAME}.zsh"
 fi
 
 # pull in the relevant 1password plugin credentials for github, etc.
