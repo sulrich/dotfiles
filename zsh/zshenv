@@ -162,3 +162,8 @@ else
   export EDITOR=vi
 fi
 export VISUAL=${EDITOR}
+
+# if there are host-specific environment variables that we don't want in version
+# control, these can be added here.
+source "${HOME}/.host-env"
+
