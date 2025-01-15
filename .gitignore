@@ -16,3 +16,4 @@ mutt/cache
 openconfig/oc-path-list.*
 openconfig/*.csv
 s3cfg
+ssh/*/01-work.cfg
