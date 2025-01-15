@@ -1,8 +1,13 @@
+[include]
+  path = ~/.gitconfig-conditional
+
 [user]
   name = steve ulrich
 
-[include]
-  path = ~/.gitconfig-conditional
+# this is an ssh specific rewrite which may be required in some instances.  
+# see notes -- ~/.notes/ssh-github-rewrites.md
+[url "github-sulrich:"]
+  insteadOf = "git@github.com:sulrich/"
 
 [credential]
   helper = store --file ~/.credentials/git-creds.txt
