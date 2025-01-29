@@ -20,7 +20,6 @@ export PLATFORM=$(uname)
 export PYTHON2_VER="2.7.18"
 export PYTHON3_MAJOR="python3.12"
 export PYTHON3_VER="3.12.4"
-export PYENV_ROOT="${HOME}/.pyenv"
 
 # i have mixed feelings about the following.  if i were in a consistent
 # development mode of operation would probably need to enable this.
@@ -41,29 +40,20 @@ export OC_PATH_DUMP="${HOME}/.home/openconfig/oc-path-list.txt"
 export PATHREPORT_LATEST="${HOME}/.home/openconfig/pathreport-latest.csv"
 export CLAB_DIR="${HOME}/clab"
 
-# 20220331 TODO(sulrich): check back on this in 30days seems to impact gnmic,
-# containerlab and more
-# export ASSUME_NO_MOVING_GC_UNSAFE_RISK_IT_WITH=go1.20
-
 # localization info
 export LC_ALL=en_US.UTF-8
 export LANG=en_US.UTF-8
 
 # env fixups if remote
-# if (( ${+SSH_CONNECTION} ));
-# then
-#   echo ""
-# else
-#   echo ""
-# fi
-
-# misc. perl specific variables.
-# use PERLBREW for locally installed perl make sure the specify the preferred
-# perlbrew for the installation we're running on e.g.: perlbrew list, pick 1
-# perlbrew use <perl_ver_here>
-# export PERLDOC_PAGER="less -isrR"
-# export PERL5LIB="${HOME}/src/perl/libs"
-# export PERLBREW_HOME="${HOME}/.perlbrew"
+if (( ${+SSH_CONNECTION} ));
+then
+  export TMUX_COLOR="coral"
+  echo ""
+else
+  # when i'm local on my mac
+  export TMUX_COLOR="moon"
+  echo ""
+fi
 
 # pyang specific variables, etc.
 export YANG_MODPATH=${HOME}/src/yang/standard:${HOME}/src/openconfig/public/release
@@ -148,9 +138,7 @@ then
   then
     source "${HOME}/.config/op/plugins.sh"
   fi
-
-  # ruby environment setup
-  # eval "$(rbenv init - zsh)"
+  # end of environment init outside of tmux
 else
   # we're inside of tmux - we'll inherit the necessary bits
 fi
@@ -164,6 +152,10 @@ fi
 export VISUAL=${EDITOR}
 
 # if there are host-specific environment variables that we don't want in version
-# control, these can be added here.
-source "${HOME}/.host-env"
-
+# control, these can be added to the ~/.host-env file.  note that these will
+# override anything established above.
+#
+if [ -f "${HOME}/.host-env" ];
+then
+  source "${HOME}/.host-env"
+fi
