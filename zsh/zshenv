@@ -48,11 +48,9 @@ export LANG=en_US.UTF-8
 if (( ${+SSH_CONNECTION} ));
 then
   export TMUX_COLOR="coral"
-  echo ""
 else
   # when i'm local on my mac
   export TMUX_COLOR="moon"
-  echo ""
 fi
 
 # pyang specific variables, etc.
