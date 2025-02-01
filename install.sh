@@ -137,8 +137,6 @@ install-uv() {
   echo 'make sure to install the relevant pythons via "uv python install"'
 }
 
-## TODO(sulrich) - install the critical set of uv tools for happy operation.
-
 ## install-docker-ubuntu (sudo): install docker
 install-docker-ubuntu() {
   echo "updating the base packages"
@@ -222,7 +220,7 @@ sync-public-ssh-keys() {
 
   declare -A PUBKEYS
   PUBKEYS=(
-    #['arista']="https://gitlab.aristanetworks.com/sulrich.keys"
+    ['nh']="https://github.com/sulrich-nexthop.keys"
     ['github']="https://github.com/sulrich.keys"
     ['botwerks']="https://botwerks.net/sulrich.keys"
   )
@@ -309,19 +307,6 @@ install-server-debian() {
 	ref: https://docs.docker.com/compose/install/
 
 EOFMESSAGE
-}
-
-## clone-config-repos: assume you're logged into github correctly
-clone-config-repos() {
-
- local REPO_DIR="${HOME}/src/config-repos"
- mkdir -p "${REPO_DIR}"
- git clone https://github.com/sulrich/bert-nginx.git "${REPO_DIR}/nginx"
- git clone https://github.com/sulrich/bind9-botwerks.git "${REPO_DIR}/bind"
- git clone https://github.com/sulrich/zenith-docs.git "${REPO_DIR}/zenith-docs"
- git clone https://github.com/sulrich/zenith-containers.git "${REPO_DIR}/zenith-containers"
- git clone https://github.com/sulrich/ansible-private.git "${HOME}/src/ansible"
- git clone http://dyn.botwerks.net/git/sulrich/network-configs.git "${HOME}/src/network-configs"
 }
 
 ## bootstrap-deb-1 (sudo): install the elements to make server happy
