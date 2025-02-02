@@ -1,6 +1,8 @@
 # host specific functions for interacting w/internal services
 fpath=(/usr/local/share/zsh-completions $fpath)
 
+alias mp="multipass"
+
 function clab-start() {
   docker run --rm -it --privileged                 \
       --network host                               \
