@@ -7,6 +7,8 @@ alias lsusb='system_profiler SPUSBDataType'
 alias fixopenwith='/System/Library/Frameworks/CoreServices.framework/Frameworks/LaunchServices.framework/Support/lsregister -kill -r -domain local -domain system -domain user'
 alias topc="top -o cpu"
 alias loc="less ${OC_PATH_DUMP}"
+# useful for doing ubuntu stuff on my laptops
+alias mp="multipass" 
 
 # open a manpage in a new iterm window with a specific theme
 function xman() { open x-man-page://$@ ; }

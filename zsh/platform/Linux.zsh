@@ -1,6 +1,8 @@
 # -*- Mode: shell-script; tab-width: 2 -*- *
 # linux only aliases and functions
 
+alias hh="hopperhelper"
+
 # not everyone has killall installed
 killall () {
   local pid
