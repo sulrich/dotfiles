@@ -90,7 +90,8 @@ setaliases() {
 
   # makes logging into lab routers handy
   alias ago="TERM=vt100 ssh -l admin -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null"
-  alias mgo="TERM=vt100 sshpass -f ${HOME}/.credentials/meta-lab.txt ssh $@"
+  # when logging into netlab or sonic devices with the standard credentials.
+  alias sgo="TERM=vt100 sshpass -f ${HOME}/.credentials/sonic-pass.txt ssh $@"
 
   # parse ownership vouchers.  in reality, this is just invoking openssl with
   # the right flags to snarf the cert/signing elements from a DER formatted file
@@ -127,7 +128,7 @@ function asnwhois { whois -h whois.cymru.com " -v AS$1" }
 
 # note: this assumes that the URL has been remapped to /prometheus and the
 # web-command elements are enabled to trigger reloads. applicable to home
-# operation
+# prometheus operation
 function prom-reload { curl -X POST http://localhost:9090/prometheus/-/reload }
 
 SU==su
