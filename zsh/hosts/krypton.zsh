@@ -11,3 +11,10 @@ function clab-start() {
       -v $CLAB_DIR:$CLAB_DIR                       \
       ghcr.io/srl-labs/clab bash
 }
+
+
+## i really only want ssh-add enabled on select macos hosts
+if [ -z "$SSH_AUTH_SOCK" ]; then
+    eval $(ssh-agent -s)
+fi
+

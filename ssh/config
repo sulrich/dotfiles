@@ -13,4 +13,4 @@ Compression     yes
 ServerAliveInterval 5
 ServerAliveCountMax 1
 
-Include ~/.ssh/conf.d/*
+Include ~/.ssh/conf.d/*.cfg
