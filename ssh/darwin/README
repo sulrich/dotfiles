@@ -1,0 +1,4 @@
+for the most part this should be consistent across macos hosts.  however, there
+are macos dev hosts where i don't want to run the 1password ssh integration.  as
+such the `99-client.cfg` file should be symlinked to align with the requirements
+of the deployed host.
