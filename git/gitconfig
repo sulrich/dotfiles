@@ -13,14 +13,8 @@
   helper = store --file ~/.credentials/git-creds.txt
   helper = cache --timeout 30000
 
-[difftool "Kaleidoscope"]
-  cmd = ksdiff --partial-changeset --relative-path \"$MERGED\" -- \"$LOCAL\" \"$REMOTE\"
-
 [difftool]
   prompt = false
-
-[diff]
-  tool = Kaleidoscope
 
 [core]
   excludesfile = ~/.gitignore
@@ -44,13 +38,6 @@
   dump = cat-file -p
   open = !vim `git-open.sh`
   edit = !$EDITOR $(git status --porcelain --short | awk '$1 ~ /^M|A|U/ {print $2}')
-
-[merge]
-  tool = Kaleidoscope
-
-[mergetool "Kaleidoscope"]
-  cmd = ksdiff --merge --output \"$MERGED\" --base \"$BASE\" -- \"$LOCAL\" --snapshot \"$REMOTE\" --snapshot
-  trustExitCode = true
 
 [mergetool]
   prompt = false
@@ -81,19 +68,11 @@
   clean = git media clean %f
   smudge = git media smudge %f
 
-[filter "hawser"]
-  clean = git hawser clean %f
-  smudge = git hawser smudge %f
-  required = true
-
 [filter "lfs"]
 	clean = git-lfs clean -- %f
 	smudge = git-lfs smudge -- %f
 	required = true
 	process = git-lfs filter-process
-
-[http]
-  cookiefile = ~/.credentials/gitcookies
 
 [pull]
 	rebase = false
