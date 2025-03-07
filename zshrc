@@ -92,6 +92,7 @@ setaliases() {
   alias ago="TERM=vt100 ssh -l admin -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null"
   # when logging into netlab or sonic devices with the standard credentials.
   alias sgo="TERM=vt100 sshpass -f ${HOME}/.credentials/sonic-pass.txt ssh $@"
+  alias ngo="TERM=vt100 sshpass -f ${HOME}/.credentials/nh-dut-pass.txt ssh $@"
 
   # parse ownership vouchers.  in reality, this is just invoking openssl with
   # the right flags to snarf the cert/signing elements from a DER formatted file
