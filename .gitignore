@@ -16,3 +16,4 @@ mutt/cache
 openconfig/oc-path-list.*
 openconfig/*.csv
 s3cfg
+ssh/darwin/99-client.cfg
