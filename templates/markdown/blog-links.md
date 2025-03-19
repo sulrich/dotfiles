@@ -6,16 +6,12 @@ author: steve ulrich
 tags: 
   - links
   - %%TAGYEAR%%
-showToc: false
-TocOpen: false
 draft: false
-hidemeta: false
-comments: false
 description: "%%DATELINK%% - links, etc. (%%HOSTNAME%%)"
-disableHLJS: false # to disable highlightjs
-disableShare: true
-disableHLJS: false
-searchHidden: true
+toc:
+  enable: false
+  auto: true
+comments: false
 ---
 
 ### links, etc
