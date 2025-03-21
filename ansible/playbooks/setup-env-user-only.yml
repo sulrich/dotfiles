@@ -1,0 +1,247 @@
+---
+# setup-environment-user-only.yml - ansible playbook to bootstrap a user environment
+# without requiring root/sudo access on the target host
+
+- name: bootstrap user environment (no root required)
+  hosts: all
+  vars:
+    go_version: "{{ lookup('url', 'https://golang.org/VERSION?m=text') }}"
+    go_os: "{{ ansible_system | lower }}"
+    go_arch: "{{ 'amd64' if ansible_architecture == 'x86_64' else ('386' if ansible_architecture in ['i386', 'i686'] else ansible_architecture) }}"
+    python2_ver: "2.7.18"
+    python3_ver: "3.12.7"
+    home_dir: "{{ ansible_env.HOME }}"
+    dotfiles_map:
+      - { src: "Xdefaults", dest: ".Xdefaults" }
+      - { src: "ansible.cfg", dest: ".ansible.cfg" }
+      - { src: "cloginrc", dest: ".cloginrc" }
+      - { src: "digrc", dest: ".digrc" }
+      - { src: "flake8", dest: ".flake8" }
+      - { src: "git/gitconfig", dest: ".gitconfig" }
+      - { src: "git/gitconfig-personal", dest: ".gitconfig-personal" }
+      - { src: "git/gitignore", dest: ".gitignore" }
+      - { src: "mailcap", dest: ".mailcap" }
+      - { src: "markdownlint.json", dest: ".markdownlintrc" }
+      - { src: "octaverc", dest: ".octaverc" }
+      - { src: "ruff.toml", dest: ".ruff.toml" }
+      - { src: "screenrc", dest: ".screenrc" }
+      - { src: "sqliterc", dest: ".sqliterc" }
+      - { src: "templates", dest: ".templates" }
+      - { src: "tmux.conf", dest: ".tmux.conf" }
+      - { src: "urlview", dest: ".urlview" }
+      - { src: "vale.ini", dest: ".vale.ini" }
+      - { src: "zshrc", dest: ".zshrc" }
+      - { src: "zsh/zlogin", dest: ".zlogin" }
+      - { src: "zsh/zshenv", dest: ".zshenv" }
+      - { src: "ssh/config", dest: ".ssh/config" }
+    pub_keys:
+      - { name: "nh", url: "https://github.com/sulrich-nexthop.keys" }
+      - { name: "github", url: "https://github.com/sulrich.keys" }
+      - { name: "botwerks", url: "https://botwerks.net/sulrich.keys" }
+  tasks:
+    - name: detect os family
+      set_fact:
+        is_debian: "{{ ansible_os_family == 'Debian' }}"
+        is_redhat: "{{ ansible_os_family == 'RedHat' }}"
+        is_macos: "{{ ansible_os_family == 'Darwin' }}"
+
+    - name: create basic directories
+      file:
+        path: "{{ item }}"
+        state: directory
+        mode: 0755
+      loop:
+        - "{{ home_dir }}/.ssh"
+        - "{{ home_dir }}/.ssh/tmp"
+        - "{{ home_dir }}/.credentials"
+        - "{{ home_dir }}/.snmp"
+        - "{{ home_dir }}/.local/share"
+        - "{{ home_dir }}/.local/bin"
+        - "{{ home_dir }}/.config"
+        - "{{ home_dir }}/go/bin"
+        - "{{ home_dir }}/go/src"
+        - "{{ home_dir }}/go/pkg"
+        - "{{ home_dir }}/src/personal"
+
+    # secure the credentials directory
+    - name: set permissions on credentials directory
+      file:
+        path: "{{ home_dir }}/.credentials"
+        mode: 0700
+
+    - name: clone dotfiles repository
+      git:
+        repo: "https://github.com/sulrich/dotfiles.git"  # adjust this to your actual dotfiles repo URL
+        dest: "{{ home_dir }}/src/personal/dotfiles"
+        clone: yes
+
+    - name: create .home symlink to dotfiles
+      file:
+        src: "{{ home_dir }}/src/personal/dotfiles"
+        dest: "{{ home_dir }}/.home"
+        state: link
+
+    - name: clone git repos
+      git:
+        repo: "{{ item.repo }}"
+        dest: "{{ item.dest }}"
+        clone: yes
+      loop:
+        - { repo: "https://github.com/sulrich/xdg-config-home.git", dest: "{{ home_dir }}/.config" }
+        - { repo: "https://github.com/sulrich/nvim.git", dest: "{{ home_dir }}/.config/nvim" }
+        - { repo: "https://github.com/sulrich/home-bin.git", dest: "{{ home_dir }}/bin" }
+        - { repo: "https://github.com/tmux-plugins/tpm", dest: "{{ home_dir }}/.tmux/plugins/tpm" }
+
+    - name: install fzf
+      git:
+        repo: https://github.com/junegunn/fzf.git
+        dest: "{{ home_dir }}/.fzf"
+        depth: 1
+      register: fzf_clone
+
+    - name: install fzf binaries
+      shell: "{{ home_dir }}/.fzf/install --all"
+      when: fzf_clone.changed
+
+    - name: create ssh symlink for platform
+      file:
+        src: "{{ home_dir }}/.home/ssh/{{ ansible_system | lower }}"
+        dest: "{{ home_dir }}/.ssh/conf.d"
+        state: link
+
+    - name: set ssh directory permissions
+      file:
+        path: "{{ home_dir }}/.home/ssh"
+        mode: 0755
+        recurse: yes
+
+    - name: create dotfile symlinks
+      file:
+        src: "{{ home_dir }}/.home/{{ item.src }}"
+        dest: "{{ home_dir }}/{{ item.dest }}"
+        state: link
+      loop: "{{ dotfiles_map }}"
+
+    - name: check if go is already installed locally
+      stat:
+        path: "{{ home_dir }}/.local/go/bin/go"
+      register: go_binary
+
+    - name: install go to user local directory
+      block:
+        - name: download go
+          get_url:
+            url: "https://dl.google.com/go/{{ go_version }}.{{ go_os }}-{{ go_arch }}.tar.gz"
+            dest: "/tmp/{{ go_version }}.{{ go_os }}-{{ go_arch }}.tar.gz"
+
+        - name: create local go directory
+          file:
+            path: "{{ home_dir }}/.local/go"
+            state: directory
+            mode: 0755
+
+        - name: extract go
+          unarchive:
+            src: "/tmp/{{ go_version }}.{{ go_os }}-{{ go_arch }}.tar.gz"
+            dest: "{{ home_dir }}/.local"
+            remote_src: yes
+
+        - name: cleanup go tarball
+          file:
+            path: "/tmp/{{ go_version }}.{{ go_os }}-{{ go_arch }}.tar.gz"
+            state: absent
+      when: not go_binary.stat.exists
+
+    - name: sync public ssh keys
+      block:
+        - name: download public keys
+          get_url:
+            url: "{{ item.url }}"
+            dest: "/tmp/{{ item.name }}.keys"
+          loop: "{{ pub_keys }}"
+
+        - name: concat keys to authorized_keys
+          shell: cat /tmp/{{ item.name }}.keys >> {{ home_dir }}/.ssh/authorized_keys
+          loop: "{{ pub_keys }}"
+
+        - name: remove duplicate keys
+          shell: sort -u {{ home_dir }}/.ssh/authorized_keys > /tmp/auth_keys_uniq && mv /tmp/auth_keys_uniq {{ home_dir }}/.ssh/authorized_keys
+
+        - name: set authorized_keys permissions
+          file:
+            path: "{{ home_dir }}/.ssh/authorized_keys"
+            mode: 0755
+
+        - name: cleanup temp key files
+          file:
+            path: "/tmp/{{ item.name }}.keys"
+            state: absent
+          loop: "{{ pub_keys }}"
+
+    - name: check if nodejs/npm is available
+      command: which npm
+      register: npm_available
+      ignore_errors: yes
+      changed_when: false
+
+    - name: install nvm when npm not available
+      block:
+        - name: download nvm installation script
+          get_url:
+            url: https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.5/install.sh
+            dest: /tmp/nvm-install.sh
+            mode: 0755
+
+        - name: run nvm installation script
+          shell: bash /tmp/nvm-install.sh
+          args:
+            creates: "{{ home_dir }}/.nvm/nvm.sh"
+
+        - name: cleanup nvm installer
+          file:
+            path: /tmp/nvm-install.sh
+            state: absent
+
+        - name: install node with nvm
+          shell: |
+            export NVM_DIR="{{ home_dir }}/.nvm"
+            [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+            nvm install 16
+          args:
+            executable: /bin/bash
+      when: npm_available.rc != 0
+
+    - name: install pyright when npm is available
+      shell: |
+        export PATH="$PATH:{{ home_dir }}/.nvm/versions/node/v16.*/bin:{{ home_dir }}/.local/bin"
+        npm install -g pyright
+      args:
+        executable: /bin/bash
+      register: pyright_install
+      changed_when: "'added' in pyright_install.stdout"
+      ignore_errors: yes
+      when: npm_available.rc == 0 or (npm_available.rc != 0 and ansible_check_mode == false)
+
+    - name: install gopls
+      shell: |
+        export PATH="$PATH:{{ home_dir }}/.local/go/bin"
+        go install golang.org/x/tools/gopls@latest
+      args:
+        executable: /bin/bash
+      ignore_errors: yes
+      changed_when: false
+
+    - name: install uv python package manager
+      shell: curl -LsSf https://astral.sh/uv/install.sh | sh
+      args:
+        creates: "{{ home_dir }}/.local/bin/uv"
+
+    - name: display setup completion message
+      debug:
+        msg: |
+          user-only setup complete!
+          remember to:
+          1. install your preferred python versions with: "uv python install {{ python3_ver }}"
+          2. start tmux and press "c-t + i" to install tmux plugins
+          3. copy any needed credentials to ~/.credentials
+          4. source shell config or log in again to use the updated path

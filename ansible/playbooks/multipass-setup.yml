@@ -1,0 +1,75 @@
+---
+- name: deploy baseline utils in multipass ubuntu volumes
+  hosts: all
+  gather_facts: true
+  become: yes
+
+  vars:
+    # on the controller machine
+    local_home: "{{ lookup('env', 'HOME') }}"
+    # on the target this is {{ ansible_env.HOME }}
+
+  tasks:
+
+  ## install containerlab
+  - name: add containerlab repo
+    apt_repository:
+      # TODO: track this repo carefully.  the [trusted=yes] value seems a
+      # little dicey broadly.
+      repo: deb [trusted=yes] https://netdevops.fury.site/apt/ /
+      state: present
+
+  - name: update apt cache and install containerlab
+    apt:
+      name: containerlab
+      state: latest
+      update_cache: true
+
+  # note that ~/src should be automounted as part of the multipass machine
+  # setup process.
+  - name: make dotfiles symlinks
+    ansible.builtin.file:
+      src: '/home/sulrich/{{ item.src }}'
+      dest: '/home/sulrich/{{ item.dest }}'
+      state: link
+      owner: sulrich
+      group: staff
+    loop:
+      - { src: "src/personal/dotfiles", dest: ".home" }
+      - { src: "src/nexthop/dotfiles", dest: ".dotfiles" }
+
+
+  ## run install.sh to make majority of config symlinks
+  - name: run install.sh to make .home symlinks
+    shell: /home/sulrich/.home/install.sh make-symlinks
+    become: true
+    become_user: sulrich
+
+  ## install uv
+  - name: run install.sh to install uv
+    shell: /home/sulrich/.home/install.sh install-uv
+    become: true
+    become_user: sulrich
+
+  ## do the fixup symlinks
+  # - name: do symlink fixups
+  #   ansible.builtin.file:
+  #     src: '/home/sulrich/{{ item.src }}'
+  #     dest: '/home/sulrich/{{ item.dest }}'
+  #     state: link
+  #     owner: sulrich
+  #     group: staff
+  #   loop:
+  #     - { src: "src/nexthop/dotfiles/ssh/01-work.cfg", dest: ".ssh/conf.d/01-work.cfg" }
+
+  ## inject public keys in to the local .ssh directory
+  - name: copy ssh public keys
+    ansible.builtin.copy:
+      src: "{{ local_home }}/{{ item.src }}"
+      dest: "/home/sulrich/{{ item.dest }}"
+      owner: sulrich
+      group: sulrich
+      mode: 0600 # use ansible mode format!
+    loop:
+      - { src: ".ssh/sulrich-botwerks.pub", dest: ".ssh/sulrich-botwerks.pub" }
+      - { src: ".ssh/sulrich-nexthop.pub", dest: ".ssh/sulrich-nexthop.pub" }
