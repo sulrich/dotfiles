@@ -1,7 +1,9 @@
 multipass:
   hosts: 
-    ansible-test: 
+    sulrich-dev-vm: 
       ansible_host: sulrich-dev-vm.local.
+    sulrich-sim-vm: 
+      ansible_host: sulrich-sim-vm.local.
 
 servers: 
   children:

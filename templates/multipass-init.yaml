@@ -1,4 +1,6 @@
-hostname: sulrich-dev-vm
+# note: multipass will set the hostname from the -n flag automatically.  the
+# hostname is being included here for reference.
+# hostname: sulrich-vm
 package_update: true
 package_upgrade: true
 
@@ -18,8 +20,9 @@ packages:
   - ca-certificates
   - curl
   - gnupg
-  - linix-generic
+  - linux-generic
   - lsb-release
+  - neovim
   - unattended-upgrades
   - zsh
 
