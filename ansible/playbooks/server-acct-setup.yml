@@ -1,0 +1,70 @@
+---
+- name: deploy baseline utils in multipass ubuntu volumes
+  hosts: all
+  gather_facts: true
+  become: yes
+
+  vars:
+    # on the controller machine
+    local_home: "{{ lookup('env', 'HOME') }}"
+    # on the target this is {{ ansible_env.HOME }}
+
+  tasks:
+  # checkout personal dotfiles for bootstrapping
+  - name: checkout personal dotfiles
+    ansible.builtin.git:
+      repo: https://github.com/sulrich/dotfiles.git
+      dest: /home/sulrich/src/personal/dotfiles
+
+  - name: make dotfiles symlinks
+    ansible.builtin.file:
+      src: '/home/sulrich/{{ item.src }}'
+      dest: '/home/sulrich/{{ item.dest }}'
+      state: link
+      owner: sulrich
+      group: sulrich 
+    loop:
+      - { src: "src/personal/dotfiles", dest: ".home" }
+
+  ## run install.sh to make majority of config symlinks
+  - name: run install.sh to make .home symlinks
+    shell: /home/sulrich/.home/install.sh make-symlinks
+    become: true
+    become_user: sulrich
+
+  ## install uv
+  - name: run install.sh to install uv
+    shell: /home/sulrich/.home/install.sh install-uv
+    become: true
+    become_user: sulrich
+
+  ## inject public keys in to the local .ssh directory
+  - name: copy ssh public keys
+    ansible.builtin.copy:
+      src: "{{ local_home }}/{{ item.src }}"
+      dest: "/home/sulrich/{{ item.dest }}"
+      owner: sulrich
+      group: sulrich
+      mode: 0600 # use ansible mode format!
+    loop:
+      - { src: ".ssh/sulrich-botwerks.pub", dest: ".ssh/sulrich-botwerks.pub" }
+      - { src: ".ssh/sulrich-nexthop.pub", dest: ".ssh/sulrich-nexthop.pub" }
+
+  ## checkout work dotfiles
+  - name: checkout work dotfiles
+    ansible.builtin.git:
+      repo: git@github.com:sulrich-nexthop/dotfiles.git
+      dest: /home/sulrich/src/nexthop/dotfiles
+      key_file: "/home/sulrich/.ssh/sulrich-nexthop.pub"
+
+  ## do the fixup symlinks
+  - name: do symlink fixups
+    ansible.builtin.file:
+      src: '/home/sulrich/{{ item.src }}'
+      dest: '/home/sulrich/{{ item.dest }}'
+      state: link
+      owner: sulrich
+      group: sulrich
+    loop:
+      - { src: "src/nexthop/dotfiles", dest: ".dotfiles" }
+
