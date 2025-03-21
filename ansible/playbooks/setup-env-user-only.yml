@@ -215,6 +215,15 @@
             state: absent
           loop: "{{ pub_keys }}"
 
+    - name: copy specific ssh public keys from controller
+      copy:
+        src: "{{ lookup('env', 'HOME') }}/.ssh/{{ item }}"
+        dest: "{{ home_dir }}/.ssh/{{ item }}"
+        mode: 0600
+      loop:
+        - "sulrich-botwerks.pub"
+        - "sulrich-nexthop.pub"
+
     - name: install uv python package manager
       shell: curl -LsSf https://astral.sh/uv/install.sh | sh
       args:
