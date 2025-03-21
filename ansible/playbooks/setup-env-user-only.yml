@@ -5,9 +5,10 @@
 - name: bootstrap user environment (no root required)
   hosts: all
   vars:
-    go_version: "{{ lookup('url', 'https://golang.org/VERSION?m=text') }}"
+    # hardcoded go version instead of dynamically fetching it
+    go_version: "go1.22.0"
     go_os: "{{ ansible_system | lower }}"
-    go_arch: "{{ 'amd64' if ansible_architecture == 'x86_64' else ('386' if ansible_architecture in ['i386', 'i686'] else ansible_architecture) }}"
+    go_arch: "{{ 'amd64' if ansible_architecture == 'x86_64' else ('arm64' if ansible_architecture == 'aarch64' else ('386' if ansible_architecture in ['i386', 'i686'] else ansible_architecture)) }}"
     python2_ver: "2.7.18"
     python3_ver: "3.12.7"
     home_dir: "{{ ansible_env.HOME }}"
@@ -38,6 +39,11 @@
       - { name: "nh", url: "https://github.com/sulrich-nexthop.keys" }
       - { name: "github", url: "https://github.com/sulrich.keys" }
       - { name: "botwerks", url: "https://botwerks.net/sulrich.keys" }
+    git_repos:
+      - { repo: "https://github.com/sulrich/xdg-config-home.git", dest: "{{ home_dir }}/.config", ssh_url: "github-sulrich:/sulrich/xdg-config-home.git" }
+      - { repo: "https://github.com/sulrich/nvim.git", dest: "{{ home_dir }}/.config/nvim", ssh_url: "github-sulrich:/sulrich/nvim.git" }
+      - { repo: "https://github.com/sulrich/home-bin.git", dest: "{{ home_dir }}/bin", ssh_url: "github-sulrich:/sulrich/home-bin.git" }
+      - { repo: "https://github.com/tmux-plugins/tpm", dest: "{{ home_dir }}/.tmux/plugins/tpm", ssh_url: "github-sulrich:/tmux-plugins/tpm" }
   tasks:
     - name: detect os family
       set_fact:
@@ -54,7 +60,7 @@
         - "{{ home_dir }}/.ssh"
         - "{{ home_dir }}/.ssh/tmp"
         - "{{ home_dir }}/.credentials"
-        - "{{ home_dir }}/.snmp"
+
         - "{{ home_dir }}/.local/share"
         - "{{ home_dir }}/.local/bin"
         - "{{ home_dir }}/.config"
@@ -74,6 +80,13 @@
         repo: "https://github.com/sulrich/dotfiles.git"  # adjust this to your actual dotfiles repo URL
         dest: "{{ home_dir }}/src/personal/dotfiles"
         clone: yes
+      register: dotfiles_clone
+
+    - name: update dotfiles repository remote URL
+      shell: |
+        cd {{ home_dir }}/src/personal/dotfiles
+        git remote set-url origin github-sulrich:/sulrich/dotfiles.git
+      when: dotfiles_clone.changed
 
     - name: create .home symlink to dotfiles
       file:
@@ -86,11 +99,17 @@
         repo: "{{ item.repo }}"
         dest: "{{ item.dest }}"
         clone: yes
-      loop:
-        - { repo: "https://github.com/sulrich/xdg-config-home.git", dest: "{{ home_dir }}/.config" }
-        - { repo: "https://github.com/sulrich/nvim.git", dest: "{{ home_dir }}/.config/nvim" }
-        - { repo: "https://github.com/sulrich/home-bin.git", dest: "{{ home_dir }}/bin" }
-        - { repo: "https://github.com/tmux-plugins/tpm", dest: "{{ home_dir }}/.tmux/plugins/tpm" }
+      loop: "{{ git_repos }}"
+      register: git_clone_results
+
+    - name: update git remote URLs
+      shell: |
+        cd {{ item.item.dest }}
+        git remote set-url origin {{ item.item.ssh_url }}
+      loop: "{{ git_clone_results.results }}"
+      when: item.changed
+      loop_control:
+        label: "{{ item.item.dest }}"
 
     - name: install fzf
       git:
@@ -114,6 +133,24 @@
         path: "{{ home_dir }}/.home/ssh"
         mode: 0755
         recurse: yes
+
+    - name: check for existing zshrc file
+      stat:
+        path: "{{ home_dir }}/.zshrc"
+      register: zshrc_file
+
+    - name: backup existing zshrc file if it exists
+      copy:
+        src: "{{ home_dir }}/.zshrc"
+        dest: "{{ home_dir }}/.zshrc.bak"
+        remote_src: yes
+      when: zshrc_file.stat.exists and zshrc_file.stat.islnk == false
+
+    - name: remove existing zshrc file
+      file:
+        path: "{{ home_dir }}/.zshrc"
+        state: absent
+      when: zshrc_file.stat.exists and zshrc_file.stat.islnk == false
 
     - name: create dotfile symlinks
       file:
@@ -178,49 +215,49 @@
             state: absent
           loop: "{{ pub_keys }}"
 
-    - name: check if nodejs/npm is available
-      command: which npm
-      register: npm_available
-      ignore_errors: yes
-      changed_when: false
+    - name: install uv python package manager
+      shell: curl -LsSf https://astral.sh/uv/install.sh | sh
+      args:
+        creates: "{{ home_dir }}/.local/bin/uv"
 
-    - name: install nvm when npm not available
-      block:
-        - name: download nvm installation script
-          get_url:
-            url: https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.5/install.sh
-            dest: /tmp/nvm-install.sh
-            mode: 0755
-
-        - name: run nvm installation script
-          shell: bash /tmp/nvm-install.sh
-          args:
-            creates: "{{ home_dir }}/.nvm/nvm.sh"
-
-        - name: cleanup nvm installer
-          file:
-            path: /tmp/nvm-install.sh
-            state: absent
-
-        - name: install node with nvm
-          shell: |
-            export NVM_DIR="{{ home_dir }}/.nvm"
-            [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-            nvm install 16
-          args:
-            executable: /bin/bash
-      when: npm_available.rc != 0
-
-    - name: install pyright when npm is available
+    - name: install python3 using uv
       shell: |
-        export PATH="$PATH:{{ home_dir }}/.nvm/versions/node/v16.*/bin:{{ home_dir }}/.local/bin"
-        npm install -g pyright
+        {{ home_dir }}/.local/bin/uv python install {{ python3_ver }}
       args:
         executable: /bin/bash
-      register: pyright_install
-      changed_when: "'added' in pyright_install.stdout"
-      ignore_errors: yes
-      when: npm_available.rc == 0 or (npm_available.rc != 0 and ansible_check_mode == false)
+        creates: "{{ home_dir }}/.uv/pythons/{{ python3_ver }}"
+
+    - name: install ruff using uv
+      shell: |
+        {{ home_dir }}/.local/bin/uv tool install ruff
+      args:
+        executable: /bin/bash
+        creates: "{{ home_dir }}/.local/bin/ruff"
+
+    - name: install pyright using uv
+      shell: |
+        {{ home_dir }}/.local/bin/uv tool install pyright
+      args:
+        executable: /bin/bash
+        creates: "{{ home_dir }}/.local/bin/pyright"
+
+    - name: set up neovim python environment with uv
+      block:
+        - name: create neovim python venv
+          shell: |
+            cd {{ home_dir }}/.config/nvim
+            {{ home_dir }}/.local/bin/uv venv
+          args:
+            creates: "{{ home_dir }}/.config/nvim/.venv"
+          
+        - name: install neovim python dependencies
+          shell: |
+            cd {{ home_dir }}/.config/nvim
+            source .venv/bin/activate
+            {{ home_dir }}/.local/bin/uv pip install neovim pynvim
+            {{ home_dir }}/.local/bin/uv pip install ruff pyright
+          args:
+            executable: /bin/bash
 
     - name: install gopls
       shell: |
@@ -231,17 +268,11 @@
       ignore_errors: yes
       changed_when: false
 
-    - name: install uv python package manager
-      shell: curl -LsSf https://astral.sh/uv/install.sh | sh
-      args:
-        creates: "{{ home_dir }}/.local/bin/uv"
-
     - name: display setup completion message
       debug:
         msg: |
-          user-only setup complete!
-          remember to:
-          1. install your preferred python versions with: "uv python install {{ python3_ver }}"
-          2. start tmux and press "c-t + i" to install tmux plugins
-          3. copy any needed credentials to ~/.credentials
-          4. source shell config or log in again to use the updated path
+          User-only setup complete!
+          Remember to:
+          1. Start tmux and press "C-t + I" to install tmux plugins
+          2. Copy any needed credentials to ~/.credentials
+          3. a neovim python environment has been set up with pynvim, ruff, and pyright installed
