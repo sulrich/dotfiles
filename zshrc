@@ -215,6 +215,36 @@ function git-pull-all-branches() {
     done
 }
 
+function github-https2ssh() {
+  # get the current directory's git remote origin url
+  local origin_url=$(git config --get remote.origin.url)
+
+  # check if it's an https url
+  if [[ $origin_url == https://github.com/* ]]; then
+    # extract username and repo name from the https url
+    local username_repo=${origin_url#https://github.com/}
+    username_repo=${username_repo%.git}
+
+    # generate the new ssh url with custom profile
+    local new_url="github-sulrich:/${username_repo}.git"
+
+    # prompt for confirmation
+    echo "current origin url: $origin_url"
+    echo "new origin url: $new_url"
+    read -q "REPLY?change the remote origin url? [Y/n] "
+    echo ""
+
+    if [[ $REPLY =~ ^[Yy]$ || $REPLY = "" ]]; then
+      git remote set-url origin $new_url
+      echo "origin url updated to: $(git config --get remote.origin.url)"
+    else
+      echo "operation cancelled"
+    fi
+  else
+    echo "current origin url is not https: $origin_url"
+  fi
+}
+
 # 1password CLI functions
 OP_ACCOUNT_NAME="botzinski"
 function 1p-on() {
