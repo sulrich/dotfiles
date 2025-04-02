@@ -98,6 +98,8 @@ setaliases() {
   # the right flags to snarf the cert/signing elements from a DER formatted file
   alias ov-parse="openssl asn1parse -inform der -in $1"
 
+  alias hh="hopperhelper"
+
   if [ $+commands[nvim] == "1" ]
   then
     alias vim="nvim"  # always use nvim where possible
