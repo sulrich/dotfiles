@@ -2,7 +2,7 @@
 # host specific environment configuration
 
 # blog base directory
-export HUGO_DIR="${HOME}/src/botwerks-site"
+export HUGO_DIR="${HOME}/src/personal/botwerks-site"
 
 # amazon AWS vars
 export AWS_DEFAULT_PROFILE="sulrich@botwerks.org"
