@@ -1,0 +1,7 @@
+{
+  "gdocstring": {
+    "prefix": "gdocstring",
+    "body": ["\"\"\" description of function\n\nparameters:\n    var_name (type): description\n\nreturns:\n    type: description\n\"\"\""],
+    "description": "stub meeting notes"
+  }
+}
