@@ -21,4 +21,5 @@ export ICLOUD="${HOME}/Library/Mobile Documents/com~apple~CloudDocs"
 export SULRICH_BKUP_RPATH="/home/archive/backups/${HOSTNAME}-backup/"
 export SULRICH_BKUP_EXCLUDE="${HOME}/.home/backup/${HOSTNAME}-backup-exclude-list.txt"
 # note that the following is sensitive to the naming inside 1password
-export SULRICH_BKUP_1P="restic-${HOSTNAME}"
+export SULRICH_BKUP_1P="op://Private/restic-${HOSTNAME}/password"
+

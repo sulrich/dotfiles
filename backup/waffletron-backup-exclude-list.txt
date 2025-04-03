@@ -25,3 +25,4 @@ Public
 Virtual Machines.localized
 Zotero
 clab
+src/sonic/*
