@@ -71,10 +71,10 @@ setaliases() {
   alias git-set-filemode="git config core.filemode false"
 
   alias ll="ls -lh"
+  alias lla="ls -lha"
   alias lld="ls -ld -- */"
   alias ls="ls -CF"
   alias quickhttp="python3 -m http.server 4000"   # use python3 by default
-  alias quickhttp2="python2 -m SimpleHTTPServer 4000"
   alias rm="rm -f"
   alias vi="vim"
   alias mutt="neomutt"   # mutt is dead, long live mutt.
