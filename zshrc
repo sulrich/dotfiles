@@ -355,7 +355,7 @@ fi
 # fi
 
 # load the direnv overrides
-# if [ $+commands[direnv] == "1" ]
-# then
-#   eval "$(direnv hook zsh)"
-# fi
+if [ $+commands[direnv] == "1" ]
+then
+  eval "$(direnv hook zsh)"
+fi
