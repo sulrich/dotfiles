@@ -1,3 +1,4 @@
+
 # the following is useful when you need to resolve various aliases in funky
 # resolution environments.  for standard personal use, i don't need this.
 #
@@ -13,4 +14,6 @@ Compression     yes
 ServerAliveInterval 5
 ServerAliveCountMax 1
 
+# config includes
+Include ~/.config/colima/ssh_config
 Include ~/.ssh/conf.d/*.cfg
