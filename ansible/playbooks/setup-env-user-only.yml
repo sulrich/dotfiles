@@ -75,18 +75,30 @@
         path: "{{ home_dir }}/.credentials"
         mode: 0700
 
-    - name: clone dotfiles repository
+    - name: check if dotfiles repository exists
+      stat:
+        path: "{{ home_dir }}/src/personal/dotfiles/.git"
+      register: dotfiles_stat
+
+    - name: clone dotfiles repository if not exists
       git:
         repo: "https://github.com/sulrich/dotfiles.git"  # adjust this to your actual dotfiles repo URL
         dest: "{{ home_dir }}/src/personal/dotfiles"
         clone: yes
       register: dotfiles_clone
+      when: not dotfiles_stat.stat.exists
 
-    - name: update dotfiles repository remote URL
+    # Skip pull for existing dotfiles repository - just check presence
+    - name: register dotfiles repository exists
+      set_fact:
+        dotfiles_exists: true
+      when: dotfiles_stat.stat.exists
+
+    - name: update dotfiles repository remote URL for new clone only
       shell: |
         cd {{ home_dir }}/src/personal/dotfiles
         git remote set-url origin github-sulrich:/sulrich/dotfiles.git
-      when: dotfiles_clone.changed
+      when: dotfiles_clone is defined and dotfiles_clone.changed
 
     - name: create .home symlink to dotfiles
       file:
@@ -94,33 +106,72 @@
         dest: "{{ home_dir }}/.home"
         state: link
 
-    - name: clone git repos
-      git:
-        repo: "{{ item.repo }}"
-        dest: "{{ item.dest }}"
-        clone: yes
+    - name: check if git repos exist
+      stat:
+        path: "{{ item.dest }}/.git"
       loop: "{{ git_repos }}"
-      register: git_clone_results
+      register: git_repos_stat
 
-    - name: update git remote URLs
-      shell: |
-        cd {{ item.item.dest }}
-        git remote set-url origin {{ item.item.ssh_url }}
-      loop: "{{ git_clone_results.results }}"
-      when: item.changed
+    - name: clone git repos if not exist
+      git:
+        repo: "{{ item.item.repo }}"
+        dest: "{{ item.item.dest }}"
+        clone: yes
+      loop: "{{ git_repos_stat.results }}"
+      when: not item.stat.exists
+      register: git_clone_results
       loop_control:
         label: "{{ item.item.dest }}"
 
-    - name: install fzf
+    # Skip pull for existing git repos - just check presence
+    - name: register git repos exist
+      debug:
+        msg: "Repository exists at {{ item.item.dest }}"
+      loop: "{{ git_repos_stat.results }}"
+      when: item.stat.exists
+      loop_control:
+        label: "{{ item.item.dest }}"
+
+    # Skip git remote updates entirely
+    # This avoids any SSH agent dependency for subsequent runs
+    - name: check for newly cloned git repos
+      set_fact:
+        any_repos_cloned: "{{ git_clone_results.results | default([]) | selectattr('changed', 'defined') | selectattr('changed') | list | length > 0 }}"
+      when: git_clone_results is defined
+
+    - name: update git remote URLs for newly cloned repos only
+      shell: |
+        cd {{ item.item.dest }}
+        git remote set-url origin {{ item.item.ssh_url }}
+      loop: "{{ git_clone_results.results | default([]) }}"
+      when:
+        - git_clone_results is defined
+        - item.changed | default(false)
+      loop_control:
+        label: "{{ item.item.dest | default('unknown') }}"
+
+    - name: check if fzf exists
+      stat:
+        path: "{{ home_dir }}/.fzf/.git"
+      register: fzf_stat
+
+    - name: install fzf if not exists
       git:
         repo: https://github.com/junegunn/fzf.git
         dest: "{{ home_dir }}/.fzf"
         depth: 1
       register: fzf_clone
+      when: not fzf_stat.stat.exists
+
+    # Skip pull for existing fzf - just check presence
+    - name: register fzf exists
+      set_fact:
+        fzf_exists: true
+      when: fzf_stat.stat.exists
 
     - name: install fzf binaries
       shell: "{{ home_dir }}/.fzf/install --all"
-      when: fzf_clone.changed
+      when: fzf_clone is defined and fzf_clone.changed
 
     - name: create ssh symlink for platform
       file:
@@ -224,10 +275,21 @@
         - "sulrich-botwerks.pub"
         - "sulrich-nexthop.pub"
 
+    - name: check if uv is installed
+      stat:
+        path: "{{ home_dir }}/.local/bin/uv"
+      register: uv_binary
+
     - name: install uv python package manager
       shell: curl -LsSf https://astral.sh/uv/install.sh | sh
       args:
         creates: "{{ home_dir }}/.local/bin/uv"
+      when: not uv_binary.stat.exists
+
+    - name: check if python3 is installed via uv
+      stat:
+        path: "{{ home_dir }}/.uv/pythons/{{ python3_ver }}"
+      register: uv_python3
 
     - name: install python3 using uv
       shell: |
@@ -235,6 +297,12 @@
       args:
         executable: /bin/bash
         creates: "{{ home_dir }}/.uv/pythons/{{ python3_ver }}"
+      when: not uv_python3.stat.exists
+
+    - name: check if ruff is installed
+      stat:
+        path: "{{ home_dir }}/.local/bin/ruff"
+      register: ruff_binary
 
     - name: install ruff using uv
       shell: |
@@ -242,6 +310,12 @@
       args:
         executable: /bin/bash
         creates: "{{ home_dir }}/.local/bin/ruff"
+      when: not ruff_binary.stat.exists
+
+    - name: check if pyright is installed
+      stat:
+        path: "{{ home_dir }}/.local/bin/pyright"
+      register: pyright_binary
 
     - name: install pyright using uv
       shell: |
@@ -249,6 +323,12 @@
       args:
         executable: /bin/bash
         creates: "{{ home_dir }}/.local/bin/pyright"
+      when: not pyright_binary.stat.exists
+
+    - name: check if neovim python venv exists
+      stat:
+        path: "{{ home_dir }}/.config/nvim/.venv"
+      register: nvim_venv
 
     - name: set up neovim python environment with uv
       block:
@@ -258,7 +338,7 @@
             {{ home_dir }}/.local/bin/uv venv
           args:
             creates: "{{ home_dir }}/.config/nvim/.venv"
-          
+
         - name: install neovim python dependencies
           shell: |
             cd {{ home_dir }}/.config/nvim
@@ -267,21 +347,34 @@
             {{ home_dir }}/.local/bin/uv pip install ruff pyright
           args:
             executable: /bin/bash
+      when: not nvim_venv.stat.exists
+
+    - name: check if gopls is installed
+      shell: |
+        export PATH="{{ home_dir }}/.local/go/bin:$PATH:{{ home_dir }}/go/bin"
+        which gopls
+      args:
+        executable: /bin/bash
+      register: gopls_check
+      ignore_errors: yes
+      changed_when: false
+      failed_when: false
 
     - name: install gopls
       shell: |
-        export PATH="$PATH:{{ home_dir }}/.local/go/bin"
-        go install golang.org/x/tools/gopls@latest
+        export PATH="{{ home_dir }}/.local/go/bin:$PATH"
+        {{ home_dir }}/.local/go/bin/go install golang.org/x/tools/gopls@latest
       args:
         executable: /bin/bash
+      when: gopls_check.rc != 0
       ignore_errors: yes
       changed_when: false
 
     - name: display setup completion message
       debug:
         msg: |
-          User-only setup complete!
-          Remember to:
-          1. Start tmux and press "C-t + I" to install tmux plugins
-          2. Copy any needed credentials to ~/.credentials
+          user-only setup complete!
+          remember to:
+          1. start tmux and press "c-t + i" to install tmux plugins
+          2. copy any needed credentials to ~/.credentials
           3. a neovim python environment has been set up with pynvim, ruff, and pyright installed
