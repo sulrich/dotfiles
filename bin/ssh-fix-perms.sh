@@ -16,7 +16,7 @@ if [ -d "${SSH_HOME_DIR}" ]; then
   echo "setting permissions on ${SSH_HOME_DIR}"
   find "${SSH_HOME_DIR}" -type d -exec chmod 700 {} \;
   find "${SSH_HOME_DIR}" -type f -name "config*" -exec chmod 600 {} \;
-  find "${SSH_HOME_DIR}" -type f -name "*.pub" -exec chmod 644 {} \;
+  find "${SSH_HOME_DIR}" -type f -name "*.pub" -exec chmod 600 {} \;
   find "${SSH_HOME_DIR}" -type f -name "known_hosts" -exec chmod 644 {} \;
   find "${SSH_HOME_DIR}" -type f -not -name "*.pub" -not -name "config*" -not -name "known_hosts" -exec chmod 600 {} \;
 fi
@@ -39,7 +39,7 @@ if [ -d "${SSH_DIR}" ]; then
   find "${SSH_DIR}" -type f -not -name "*.pub" -not -name "known_hosts" -not -name "config*" -not -name "authorized_keys" -exec chmod 600 {} \;
   
   # fix public keys
-  find "${SSH_DIR}" -type f -name "*.pub" -exec chmod 644 {} \;
+  find "${SSH_DIR}" -type f -name "*.pub" -exec chmod 600 {} \;
   
   # fix known_hosts
   if [ -f "${SSH_DIR}/known_hosts" ]; then
