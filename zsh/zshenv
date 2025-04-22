@@ -74,6 +74,11 @@ setpath() {
   then
     LOCAL_PATH="/usr/local/go/bin:${LOCAL_PATH}"
   fi
+  # if go isn't installed globally on a linux host ...
+  if [[ -d "${HOME}/.local/go/bin" ]];
+  then
+    LOCAL_PATH="${HOME}/.local/go/bin:${LOCAL_PATH}"
+  fi
 
   # inject rust cargo into the path as appropriate
   if [[ -d "${CARGO_DIR}" ]];
@@ -83,7 +88,7 @@ setpath() {
     CARGO_PATH=""
   fi
 
-# set path to address OS/arch  specific binaries within home directory
+  # set path to address OS/arch  specific binaries within home directory
   # OSPATH=`uname -ms | sed 's| |/|g'`
   export PATH="${CARGO_PATH}${LOCAL_PATH}:${HOME}/bin:${PATH}:."
   export MANPATH="/usr/local/man:/usr/man:/usr/share/man:"
@@ -123,7 +128,6 @@ then
     source "${HOME}/.home/zsh/hosts/${HOSTNAME}-env.zsh"
   fi
 
-
   # include credentials which are embedded in environment variables.
   # THIS MUST NOT BE INCLUDED IN GIT REPOS
   if [ -f "${HOME}/.credentials/00-api-creds.env" ];
@@ -152,7 +156,6 @@ export VISUAL=${EDITOR}
 # if there are host-specific environment variables that we don't want in version
 # control, these can be added to the ~/.host-env file.  note that these will
 # override anything established above.
-#
 if [ -f "${HOME}/.host-env" ];
 then
   source "${HOME}/.host-env"

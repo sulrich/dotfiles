@@ -1,13 +1,13 @@
 ---
-title: "%%DATELINK%% - links, etc."
+title: "XXXCLEVER_TITLE_HEREXXZ (%%DATEFMT%%)"
 date: %%TIMESTAMP%%
 layout: post
 author: steve ulrich
-tags: 
+tags:
   - links
   - %%TAGYEAR%%
 draft: false
-description: "%%DATELINK%% - links, etc. (%%HOSTNAME%%)"
+description: "DESCRIPTION_HEREZ"
 toc:
   enable: false
   auto: true

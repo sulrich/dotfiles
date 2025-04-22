@@ -345,15 +345,6 @@ then
   source "${HOME}/.config/op/plugins.sh"
 fi
 
-# if [[ $TERM != "dumb" && -z "${INSIDE_EMACS}" ]];
-# then
-#   # enable iterm zsh integration if it's available
-#   # exclude dumb terminals so that tramp for emacs, etc. works
-#   # also exclude from inside of emacs so that ansi-term, etc. works.
-#   test -e "${HOME}/.iterm2_shell_integration.zsh" && \
-#     source "${HOME}/.iterm2_shell_integration.zsh"
-# fi
-
 # load the direnv overrides
 if [ $+commands[direnv] == "1" ]
 then
