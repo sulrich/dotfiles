@@ -8,11 +8,6 @@ package_upgrade: true
 groups:
   - docker
 
-apt:
-  sources:
-    neovim-ppa:
-      source: "ppa:neovim-ppa/unstable"
-
 packages:
   - apt-transport-https
   - avahi-daemon
@@ -22,8 +17,8 @@ packages:
   - gnupg
   - linux-generic
   - lsb-release
-  - neovim
   - unattended-upgrades
+  - sudo
   - zsh
 
 users:
@@ -33,9 +28,13 @@ users:
     shell: /bin/zsh
     sudo: ALL=(ALL) NOPASSWD:ALL
     ssh_authorized_keys:
-      - ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIIPC2wOrtWOlnIJu0k1z3ffvGKkkWrIghqdspN0bQI6i
+      - ssh-ed25519 {{ op://Private/sulrich-nexthop/public key }}
+      - ssh-ed25519 {{ op://Private/sulrich-botwerks/public key }}
+      - ssh-ed25519 {{ op://Private/sulrich-blink/public key }}
 
+# install docker
 runcmd:
+  # docker installation
   - mkdir -p /etc/apt/keyrings
   - curl -fsSL https://download.docker.com/linux/ubuntu/gpg | gpg --dearmor -o /etc/apt/keyrings/docker.gpg
   - echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | tee /etc/apt/sources.list.d/docker.list > /dev/null
@@ -43,3 +42,26 @@ runcmd:
   - apt-get install -y docker-ce docker-ce-cli containerd.io docker-compose-plugin
   - systemctl enable docker
   - systemctl start docker
+
+   # containerlab installation
+  - curl -sL https://get.containerlab.dev | sudo bash
+
+  # # neovim installation with architecture detection
+  # - |
+  #   ARCH=$(uname -m)
+  #   if [ "$ARCH" = "aarch64" ]; then
+  #     NVIM_ARCH="arm64"
+  #   elif [ "$ARCH" = "x86_64" ]; then
+  #     NVIM_ARCH="$ARCH"
+  #   else
+  #     echo "Unsupported architecture: $ARCH"
+  #     exit 1
+  #   fi
+  #
+  #   NVIM_URL="https://github.com/neovim/neovim/releases/latest/download/nvim-linux-${NVIM_ARCH}.appimage"
+  #   curl -LO "$NVIM_URL"
+  #   chmod u+x nvim-linux-${NVIM_ARCH}.appimage
+  #   sudo mv nvim-linux-${NVIM_ARCH}.appimage /usr/local/bin/nvim
+  #   sudo chmod 0755 /usr/local/bin/nvim
+  #   # the following is optional
+  #   sudo ln -s /usr/local/bin/nvim /usr/local/bin/vim  

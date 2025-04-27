@@ -275,6 +275,7 @@
       loop:
         - "sulrich-botwerks.pub"
         - "sulrich-nexthop.pub"
+        - "sulrich-blink.pub"
 
     - name: check if uv is installed
       stat:
