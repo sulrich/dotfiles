@@ -7,6 +7,7 @@ package_upgrade: true
 
 groups:
   - docker
+  - admins
 
 packages:
   - apt-transport-https
@@ -24,13 +25,13 @@ packages:
 users:
   - default
   - name: sulrich
-    groups: [docker]
+    groups: [docker, admins]
     shell: /bin/zsh
     sudo: ALL=(ALL) NOPASSWD:ALL
     ssh_authorized_keys:
-      - ssh-ed25519 {{ op://Private/sulrich-nexthop/public key }}
-      - ssh-ed25519 {{ op://Private/sulrich-botwerks/public key }}
-      - ssh-ed25519 {{ op://Private/sulrich-blink/public key }}
+      - {{ op://Private/sulrich-nexthop/public key }}
+      - {{ op://Private/sulrich-botwerks/public key }}
+      - {{ op://Private/sulrich-blink/public key }}
 
 # install docker
 runcmd:
