@@ -6,7 +6,7 @@
   hosts: all
   vars:
     # hardcoded go version instead of dynamically fetching it
-    go_version: "go1.22.0"
+    go_version: "go1.24.3"
     go_os: "{{ ansible_system | lower }}"
     go_arch: "{{ 'amd64' if ansible_architecture == 'x86_64' else ('arm64' if ansible_architecture == 'aarch64' else ('386' if ansible_architecture in ['i386', 'i686'] else ansible_architecture)) }}"
     python2_ver: "2.7.18"
