@@ -1,13 +1,15 @@
 fix = true
 
 [lint]
-# only enable isort autofixes
 select = [ "E", "F", "I"] 
+# only enable isort autofixes - note that these are to be "black" compatible,
+# per ruff's defaults
 fixable = [ "I" ]
 
 # initial application is to eliminate standalone isort dependency
 [lint.isort]
-force-single-line = true
+# does not group imports on aliases
+# force-single-line = true
 
 [format]
 # like black, use double quotes for strings. (default: double)
