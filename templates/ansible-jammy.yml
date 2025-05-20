@@ -1,0 +1,35 @@
+# note: multipass will set the hostname from the -n flag automatically.  the
+# hostname is being included here for reference.
+# hostname: sulrich-vm
+package_update: true
+package_upgrade: true
+
+
+groups:
+  - docker
+  - admins
+
+packages:
+  - apt-transport-https
+  - avahi-daemon
+  - build-essential
+  - ca-certificates
+  - curl
+  - gnupg
+  - linux-generic
+  - lsb-release
+  - unattended-upgrades
+  - sudo
+  - zsh
+
+users:
+  - default
+  - name: sulrich
+    groups: [docker, admins]
+    shell: /bin/zsh
+    sudo: ALL=(ALL) NOPASSWD:ALL
+    ssh_authorized_keys:
+      - {{ op://Private/sulrich-nexthop/public key }}
+      - {{ op://Private/sulrich-botwerks/public key }}
+      - {{ op://Private/sulrich-blink/public key }}
+
