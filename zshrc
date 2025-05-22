@@ -8,18 +8,50 @@ then
   cd $STARTPWD
 fi
 
-setopt	pushdtohome cdablevars autolist automenu alwayslastprompt \
-	autoparamkeys autoremoveslash chaselinks hashcmds \
-	hashdirs histignoredups nobeep \
-	longlistjobs alwaystoend \
-	nobadpattern nonomatch \
-	nohistbeep nohup notify path_dirs rm_star_silent \
-	histignoredups pushdsilent noclobber \
-	autopushd pushdminus rcquotes list_types
+setopt ALWAYSLASTPROMPT
+setopt ALWAYSTOEND
+setopt AUTOLIST
+setopt AUTOMENU
+setopt AUTOPARAMKEYS
+setopt AUTOPUSHD
+setopt AUTOREMOVESLASH
+setopt CDABLEVARS
+setopt CHASELINKS
+setopt HASHCMDS
+setopt HASHDIRS
+setopt HISTIGNOREDUPS
+setopt LIST_TYPES
+setopt LONGLISTJOBS
+setopt NOBADPATTERN
+setopt NOBEEP
+setopt NOCLOBBER
+setopt NOHISTBEEP
+setopt NOHUP
+setopt NONOMATCH
+setopt NOTIFY
+setopt PATH_DIRS
+setopt PUSHDMINUS
+setopt PUSHDSILENT
+setopt PUSHDTOHOME
+setopt RCQUOTES
+setopt RM_STAR_SILENT
 
-unsetopt bgnice correct correctall noflowcontrol markdirs pathdirs \
-         recexact mailwarning notify noclobber completeinword ignore_eof \
-         autocd cdablevars autoresume extendedglob
+unsetopt AUTOCD
+unsetopt AUTORESUME
+unsetopt BGNICE
+unsetopt CDABLEVARS
+unsetopt COMPLETEINWORD
+unsetopt CORRECT
+unsetopt CORRECTALL
+unsetopt EXTENDEDGLOB
+unsetopt IGNORE_EOF
+unsetopt MAILWARNING
+unsetopt MARKDIRS
+unsetopt NOCLOBBER
+unsetopt NOFLOWCONTROL
+unsetopt NOTIFY
+unsetopt PATHDIRS
+unsetopt RECEXACT
 
 autoload edit-command-line
 zle -N edit-command-line
@@ -32,6 +64,7 @@ umask 002
 
 
 ## misc prompt frobbing - mostly so i can hint the status of git
+# this replaced the only useful thing i had in oh-my-zsh
 autoload -U colors && colors  # enable colors in prompts
 autoload -Uz vcs_info
 zstyle ':vcs_info:*' enable git
@@ -48,12 +81,18 @@ PS1="%m(%2~)\${vcs_info_msg_0_}%% "
 
 
 ## history handling
-setopt extended_history       # record timestamp of command in HISTFILE
-setopt hist_expire_dups_first # delete duplicates first when HISTFILE size exceeds HISTSIZE
-setopt hist_ignore_dups       # ignore duplicated commands history list
-setopt hist_ignore_space      # ignore commands that start with space
-setopt hist_verify            # show command with history expansion to user before running it
-setopt share_history          # share command history data
+setopt APPEND_HISTORY            # append to history file
+setopt EXTENDED_HISTORY          # Write the history file in the ':start:elapsed;command' format.
+setopt HIST_EXPIRE_DUPS_FIRST    # expire a duplicate event first when trimming history.
+setopt HIST_FIND_NO_DUPS         # do not display a previously found event.
+setopt HIST_IGNORE_ALL_DUPS      # delete an old recorded event if a new event is a duplicate.
+setopt HIST_IGNORE_DUPS          # do not record an event that was just recorded again.
+setopt HIST_IGNORE_SPACE         # do not record an event starting with a space.
+setopt HIST_NO_STORE             # don't store history commands
+setopt HIST_SAVE_NO_DUPS         # do not write a duplicate event to the history file.
+setopt HIST_VERIFY               # do not execute immediately upon history expansion.
+setopt INC_APPEND_HISTORY        # write to the history file immediately, not when the shell exits.
+setopt SHARE_HISTORY             # share history between all sessions.
 
 
 #---------------------------------------------------------------------

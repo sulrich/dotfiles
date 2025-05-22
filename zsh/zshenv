@@ -8,9 +8,10 @@ export SKIP_GLOBAL_COMPINIT=1
 # shell specific vars
 export DIRSTACKSIZE=20
 
-export HISTSIZE=500
-export HISTFILE="${HOME}/.zsh_history"
-[ -z "$HISTFILE" ] && HISTFILE="${HOME}/.zsh_history"
+HISTSIZE=500
+HISTFILE="${HOME}/.zsh_history"
+SAVEHIST=500
+# [ -z "$HISTFILE" ] && HISTFILE="${HOME}/.zsh_history"
 
 export HOSTNAME=$HOST
 export PLATFORM=$(uname)
@@ -74,6 +75,7 @@ setpath() {
   then
     LOCAL_PATH="/usr/local/go/bin:${LOCAL_PATH}"
   fi
+
   # if go isn't installed globally on a linux host ...
   if [[ -d "${HOME}/.local/go/bin" ]];
   then
