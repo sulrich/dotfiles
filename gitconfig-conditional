@@ -1,2 +1,11 @@
-[include]
+[includeIf "gitdir:~/src/nexthop/"]
+  path = ~/.gitconfig-work
+
+[includeIf "gitdir:~/src/sonic/"]
+  path = ~/.gitconfig-work
+
+[includeIf "gitdir:~/src/openconfig/"]
+  path = ~/.gitconfig-personal
+
+[includeIf "gitdir:~/src/personal/"]
   path = ~/.gitconfig-personal
