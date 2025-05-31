@@ -230,6 +230,12 @@ function pyang-path () {
 }
 
 # misc. git functions
+# create a uniquely named branch for blog PRs - to be run from $HUGO_DIR
+function blog-branch() {
+  local BRANCH_NAME="$(date +"%Y%m%d")-${HOSTNAME}-updates"
+  git co -b "${BRANCH_NAME}"
+}
+
 function git-upstream-sync() {
   # for stuff that i am actively working on with others, work off of my fork and
   # update my $default_branch with the contents of the upstream. this is a
