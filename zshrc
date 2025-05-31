@@ -160,18 +160,12 @@ fi
 #---------------------------------------------------------------------
 # functions
 #
-
 # misc. handy one liners
 #function strip-blank () { cat $1 | awk '$0!~/^$/ {print $0}' }
 function strip-blank () { sed '/^[[:space:]]*$/d' < $1 }
 function debug() { [ "$DEBUG" ] && echo ">>> $*"; }
 function mwhois { whois -h `whois "domain $@" | sed '/^.*Whois Server:/!d;s///'` "$@" }
 function asnwhois { whois -h whois.cymru.com " -v AS$1" }
-
-# note: this assumes that the URL has been remapped to /prometheus and the
-# web-command elements are enabled to trigger reloads. applicable to home
-# prometheus operation
-function prom-reload { curl -X POST http://localhost:9090/prometheus/-/reload }
 
 SU==su
 su () {
@@ -198,7 +192,7 @@ function date-diff() {
 # get a list of the google netblocks.  not necessarily definitive, but gives
 # you a good idea of what you should be seeing.
 function google-nets () {
-  GOOG_BLOCKS=(
+  local GOOG_BLOCKS=(
     _netblocks.google.com
     _netblocks2.google.com
     _netblocks3.google.com
@@ -207,6 +201,25 @@ function google-nets () {
   foreach NET ("${GOOG_BLOCKS[@]}")
     nslookup -q=TXT ${NET} 8.8.8.8;
   end
+}
+
+# personal configuration update
+function personal-config-update()  {
+  # pull updates from git to keep things in sync
+  local CONFIG_DIRS=(
+    "${HOME}/.home"
+    "${HOME}/.config/nvim"
+    "${HOME}/bin"
+  )
+
+  foreach CONFIG_DIR ("${CONFIG_DIRS[@]}")
+    echo "${CONFIG_DIR} - sync"
+    cd "${CONFIG_DIR}"
+    git pull 
+  end
+  
+  # ensure that ssh files have the right permissions
+  ${HOME}/.home/bin/ssh-fix-perms.sh
 }
 
 # output yang models in the unfurled path format.  this requires anees' nifty
@@ -317,6 +330,7 @@ setaliases # load the aliases
 # these aren't necessarily going to be available everywhere.
 #
 # enable misc. completions from various sources
+# note that $fpath is a list, not a colon-delimited string
 fpath=(/opt/homebrew/share/zsh-completions  ${HOME}/.home/zsh/completions $fpath)
 
 # note that zsh requires the completion directories be reasonably secured. check
