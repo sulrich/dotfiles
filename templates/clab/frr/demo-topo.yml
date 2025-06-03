@@ -9,36 +9,41 @@ topology:
   nodes:
     r1:
       kind: linux
-      image: quay.io/frrouting/frr:10.2.2
+      image: quay.io/frrouting/frr:master
       binds:
         - ./r1:/etc/frr
         - ./daemons:/etc/frr/daemons
+      # mgmt-ipv4: 172.20.20.xx
 
     r2:
       kind: linux
-      image: quay.io/frrouting/frr:10.2.2
+      image: quay.io/frrouting/frr:master
       binds:
         - ./r2:/etc/frr
         - ./daemons:/etc/frr/daemons
+      # mgmt-ipv4: 172.20.20.xx
 
     r3:
       kind: linux
-      image: quay.io/frrouting/frr:10.2.2
+      image: quay.io/frrouting/frr:master
       binds:
         - ./r3:/etc/frr
         - ./daemons:/etc/frr/daemons
+      # mgmt-ipv4: 172.20.20.xx
 
     host1:
       kind: linux
       image: wbitt/network-multitool:latest
       binds:
         - ${HOME}/src/tmp/tools:/tools
+      # mgmt-ipv4: 172.20.20.xx
 
     host2:
       kind: linux
       image: wbitt/network-multitool:latest
       binds:
         - ${HOME}/src/tmp/tools:/tools
+      # mgmt-ipv4: 172.20.20.xx
 
   links:
     - endpoints: ["r1:eth1", "r2:eth1"]
