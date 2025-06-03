@@ -11,6 +11,13 @@ killall () {
 
 function xterm-title () { print -Pn "\e]0;${1}: %\a" }
 
+# note: this assumes that the URL has been remapped to /prometheus and the
+# web-command elements are enabled to trigger reloads. applicable to home
+# prometheus operation
+#
+# this is to be used on linux hosts with prometheus installed
+function prom-reload { curl -X POST http://localhost:9090/prometheus/-/reload }
+
 # the following are particularly handy for working with qemu overlay images
 # images
 gen-kvm-overlay () {

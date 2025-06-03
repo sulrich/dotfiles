@@ -9,6 +9,8 @@ alias topc="top -o cpu"
 alias loc="less ${OC_PATH_DUMP}"
 # useful for doing ubuntu stuff on my laptops
 alias mp="multipass" 
+# macos free-ish replacement
+alias mfree="top -l 1 -s 0 | egrep '^(PhysMem|VM):'"
 
 # open a manpage in a new iterm window with a specific theme
 function xman() { open x-man-page://$@ ; }
