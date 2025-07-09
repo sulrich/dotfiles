@@ -1,6 +1,8 @@
 .Trash
+.cache/*
 .colima/*
 .config/*
+.local/*
 .notes
 .ollama/*
 .vagrant.d
@@ -27,4 +29,9 @@ Public
 Virtual Machines.localized
 Zotero
 clab
+src/nexthop/*
+src/personal/*
+src/openconfig/*
 src/sonic/*
+src/tmp/*
+src/yang/*

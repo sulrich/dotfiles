@@ -11,12 +11,35 @@ alias loc="less ${OC_PATH_DUMP}"
 alias mp="multipass" 
 # macos free-ish replacement
 alias mfree="top -l 1 -s 0 | egrep '^(PhysMem|VM):'"
+alias claude="${HOME}/.claude/local/claude"
 
 # open a manpage in a new iterm window with a specific theme
 function xman() { open x-man-page://$@ ; }
 function set_volume() { sudo osascript -e "set Volume $1" }
 function ql () { qlmanage -p "$@" >& /dev/null & }
 function iterm-title () { echo -ne "\033]0;"${1}"\007" }
+
+# google seems to want all of my standard google auth biz to be coupled to a
+# google cloud project. fuck that.  i guess i'll just leak the environment
+# variable.
+function gemini-sandbox() {
+  docker run -it --rm \
+    -e GEMINI_API_KEY="${GEMINI_API_KEY}" \
+    -v $(pwd):/app:rw \
+    --net=host  gemini-sandbox
+}
+
+# this uses the claude subscription auth mounted int he noted mountpoints to let
+# me run claude-code in a docker container while not having to re-authentication
+# every time. these may need to be periodically refreshed.  also, this is quite
+# dependent on the path structure of my container.
+function claude-sandbox() {
+  docker run -it --rm \
+    -v $(pwd):/app:rw \
+    -v ${HOME}/.credentials/claude:/home/claude/.claude:rw \
+    -v ${HOME}/.claude.json:/home/claude/.claude.json:rw \
+    --net=host claude-sandbox
+}
 
 # sometimes we want to install something using the homebrew version of python.
 # this is expecially useful when dealing with things that happen to be linked
