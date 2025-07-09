@@ -167,10 +167,12 @@ function debug() { [ "$DEBUG" ] && echo ">>> $*"; }
 function mwhois { whois -h `whois "domain $@" | sed '/^.*Whois Server:/!d;s///'` "$@" }
 function asnwhois { whois -h whois.cymru.com " -v AS$1" }
 
-function update-tmux-ssh() {
+update-tmux-ssh () {
   if [[ -n "$TMUX" ]]; then
-        eval "$(tmux show-environment | grep '^SSH_')"
-    fi
+    while IFS='=' read -r key value; do
+      [[ -n "$value" ]] && export "$key"="$value"
+    done < <(tmux show-environment | grep '^SSH_.*=')
+  fi
 }
 
 SU==su
