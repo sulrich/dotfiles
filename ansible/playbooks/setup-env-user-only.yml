@@ -275,7 +275,7 @@
       loop:
         - "sulrich-botwerks.pub"
         - "sulrich-nexthop.pub"
-        - "sulrich-blink.pub"
+        # - "sulrich-blink.pub"
 
     - name: check if uv is installed
       stat:
@@ -326,6 +326,103 @@
         executable: /bin/bash
         creates: "{{ home_dir }}/.local/bin/pyright"
       when: not pyright_binary.stat.exists
+
+    - name: check if 1password cli is installed
+      stat:
+        path: "{{ home_dir }}/.local/bin/op"
+      register: op_binary
+
+    - name: set 1password cli architecture
+      set_fact:
+        op_arch: >-
+          {{ 'amd64' if ansible_architecture == 'x86_64'
+             else 'arm64' if ansible_architecture == 'aarch64'
+             else '386' if ansible_architecture in ['i386', 'i686']
+             else ansible_architecture }}
+
+    - name: install 1password cli
+      block:
+        - name: download 1password cli
+          get_url:
+            url: "https://cache.agilebits.com/dist/1P/op2/pkg/v{{ op_latest_version | default('2.30.0') }}/op_linux_{{ op_arch }}_v{{ op_latest_version | default('2.30.0') }}.zip"
+            dest: "/tmp/op_linux_{{ op_arch }}.zip"
+            mode: 0644
+
+        - name: extract 1password cli
+          unarchive:
+            src: "/tmp/op_linux_{{ op_arch }}.zip"
+            dest: "{{ home_dir }}/.local/bin"
+            remote_src: yes
+            creates: "{{ home_dir }}/.local/bin/op"
+            mode: 0755
+
+        - name: cleanup 1password cli zip
+          file:
+            path: "/tmp/op_linux_{{ op_arch }}.zip"
+            state: absent
+      when: not op_binary.stat.exists
+
+    - name: check if github cli is installed
+      stat:
+        path: "{{ home_dir }}/.local/bin/gh"
+      register: gh_binary
+
+    - name: get latest github cli version
+      shell: |
+        curl -s https://api.github.com/repos/cli/cli/releases/latest | grep '"tag_name":' | cut -d '"' -f 4 | sed 's/^v//'
+      register: gh_latest_version_result
+      changed_when: false
+      when: not gh_binary.stat.exists
+
+    - name: set github cli version fact
+      set_fact:
+        gh_latest_version: "{{ gh_latest_version_result.stdout }}"
+      when: not gh_binary.stat.exists
+
+    - name: set github cli architecture
+      set_fact:
+        gh_arch: >-
+          {{ 'amd64' if ansible_architecture == 'x86_64'
+             else 'arm64' if ansible_architecture == 'aarch64'
+             else '386' if ansible_architecture in ['i386', 'i686']
+             else ansible_architecture }}
+      when: not gh_binary.stat.exists
+
+    - name: install github cli
+      block:
+        - name: download github cli
+          get_url:
+            url: "https://github.com/cli/cli/releases/download/v{{ gh_latest_version }}/gh_{{ gh_latest_version }}_linux_{{ gh_arch }}.tar.gz"
+            dest: "/tmp/gh_linux_{{ gh_arch }}.tar.gz"
+            mode: 0644
+
+        - name: create temp extraction directory
+          file:
+            path: "/tmp/gh_extract"
+            state: directory
+            mode: 0755
+
+        - name: extract github cli
+          unarchive:
+            src: "/tmp/gh_linux_{{ gh_arch }}.tar.gz"
+            dest: "/tmp/gh_extract"
+            remote_src: yes
+
+        - name: copy gh binary to local bin
+          copy:
+            src: "/tmp/gh_extract/gh_{{ gh_latest_version | default('2.67.0') }}_linux_{{ gh_arch }}/bin/gh"
+            dest: "{{ home_dir }}/.local/bin/gh"
+            mode: 0755
+            remote_src: yes
+
+        - name: cleanup github cli files
+          file:
+            path: "{{ item }}"
+            state: absent
+          loop:
+            - "/tmp/gh_linux_{{ gh_arch }}.tar.gz"
+            - "/tmp/gh_extract"
+      when: not gh_binary.stat.exists
 
     - name: check if neovim python venv exists
       stat:
