@@ -410,7 +410,7 @@
 
         - name: copy gh binary to local bin
           copy:
-            src: "/tmp/gh_extract/gh_{{ gh_latest_version | default('2.67.0') }}_linux_{{ gh_arch }}/bin/gh"
+            src: "/tmp/gh_extract/gh_{{ gh_latest_version }}_linux_{{ gh_arch }}/bin/gh"
             dest: "{{ home_dir }}/.local/bin/gh"
             mode: 0755
             remote_src: yes
