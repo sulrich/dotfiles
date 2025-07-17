@@ -1,0 +1,68 @@
+# note: multipass will set the hostname from the -n flag automatically.  the
+# hostname is being included here for reference.
+# hostname: sulrich-vm
+package_update: true
+package_upgrade: true
+
+
+groups:
+  - docker
+  - admins
+
+packages:
+  - apt-transport-https
+  - avahi-daemon
+  - build-essential
+  - ca-certificates
+  - curl
+  - gnupg
+  - linux-generic
+  - lsb-release
+  - unattended-upgrades
+  - sudo
+  - zsh
+
+users:
+  - default
+  - name: sulrich
+    groups: [docker, admins]
+    shell: /bin/zsh
+    sudo: ALL=(ALL) NOPASSWD:ALL
+    ssh_authorized_keys:
+      - ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIIEH28Wvy5maGZ6f9MJYMgnQfI7uEEutHTyVugNEXpog
+      - ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIIPC2wOrtWOlnIJu0k1z3ffvGKkkWrIghqdspN0bQI6i
+      - ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIAQf+nYszdBP8qRvLFF543gB6N3yLZ16oS6oRRH+5/lS
+
+# install docker
+runcmd:
+  # docker installation
+  - mkdir -p /etc/apt/keyrings
+  - curl -fsSL https://download.docker.com/linux/ubuntu/gpg | gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+  - echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | tee /etc/apt/sources.list.d/docker.list > /dev/null
+  - apt-get update
+  - apt-get install -y docker-ce docker-ce-cli containerd.io docker-compose-plugin
+  - systemctl enable docker
+  - systemctl start docker
+
+   # containerlab installation
+  - curl -sL https://get.containerlab.dev | sudo bash
+
+  # # neovim installation with architecture detection
+  # - |
+  #   ARCH=$(uname -m)
+  #   if [ "$ARCH" = "aarch64" ]; then
+  #     NVIM_ARCH="arm64"
+  #   elif [ "$ARCH" = "x86_64" ]; then
+  #     NVIM_ARCH="$ARCH"
+  #   else
+  #     echo "Unsupported architecture: $ARCH"
+  #     exit 1
+  #   fi
+  #
+  #   NVIM_URL="https://github.com/neovim/neovim/releases/latest/download/nvim-linux-${NVIM_ARCH}.appimage"
+  #   curl -LO "$NVIM_URL"
+  #   chmod u+x nvim-linux-${NVIM_ARCH}.appimage
+  #   sudo mv nvim-linux-${NVIM_ARCH}.appimage /usr/local/bin/nvim
+  #   sudo chmod 0755 /usr/local/bin/nvim
+  #   # the following is optional
+  #   sudo ln -s /usr/local/bin/nvim /usr/local/bin/vim  

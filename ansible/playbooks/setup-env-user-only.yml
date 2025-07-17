@@ -5,14 +5,20 @@
 - name: bootstrap user environment (no root required)
   hosts: all
   vars:
-    # hardcoded go version instead of dynamically fetching it
-    go_version: "go1.24.3"
+    # User configuration - can be overridden via extra-vars
+    target_user: "{{ ansible_user | default(ansible_env.USER) }}"
+    github_username: "{{ github_user | default('sulrich') }}"
+
+    # Tool versions - centralized for easy updates
+    go_version: "{{ go_ver | default('go1.24.3') }}"
+    python3_ver: "{{ python3_version | default('3.12.7') }}"
+    nvim_version: "{{ neovim_version | default('0.11.0') }}"
+    op_version: "{{ onepassword_version | default('2.30.0') }}"
+
+    # Architecture mappings
     go_os: "{{ ansible_system | lower }}"
     go_arch: "{{ 'amd64' if ansible_architecture == 'x86_64' else ('arm64' if ansible_architecture == 'aarch64' else ('386' if ansible_architecture in ['i386', 'i686'] else ansible_architecture)) }}"
-    python2_ver: "2.7.18"
-    python3_ver: "3.12.7"
     home_dir: "{{ ansible_env.HOME }}"
-    nvim_version: "0.11.0"
     dotfiles_map:
       - { src: "Xdefaults", dest: ".Xdefaults" }
       - { src: "ansible.cfg", dest: ".ansible.cfg" }
@@ -46,35 +52,67 @@
       - { repo: "https://github.com/sulrich/home-bin.git", dest: "{{ home_dir }}/bin", ssh_url: "github-sulrich:/sulrich/home-bin.git" }
       - { repo: "https://github.com/tmux-plugins/tpm", dest: "{{ home_dir }}/.tmux/plugins/tpm", ssh_url: "github-sulrich:/tmux-plugins/tpm" }
   tasks:
-    - name: detect os family
+    - name: validate required variables
+      assert:
+        that:
+          - ansible_env.HOME is defined
+          - ansible_env.HOME != ""
+          - target_user is defined
+          - github_username is defined
+        fail_msg: "Required variables are not properly defined"
+        success_msg: "All required variables are present"
+
+    - name: detect os family and set facts
       set_fact:
         is_debian: "{{ ansible_os_family == 'Debian' }}"
         is_redhat: "{{ ansible_os_family == 'RedHat' }}"
         is_macos: "{{ ansible_os_family == 'Darwin' }}"
+        is_linux: "{{ ansible_system == 'Linux' }}"
+
+    - name: check internet connectivity
+      uri:
+        url: "https://github.com"
+        method: HEAD
+        timeout: 10
+      register: connectivity_check
+      failed_when: false
+      changed_when: false
+
+    - name: fail if no internet connectivity
+      fail:
+        msg: "Internet connectivity is required for this playbook"
+      when: connectivity_check.status != 200
 
     - name: create basic directories
       file:
         path: "{{ item }}"
         state: directory
         mode: 0755
-      loop:
-        - "{{ home_dir }}/.ssh"
-        - "{{ home_dir }}/.ssh/tmp"
-        - "{{ home_dir }}/.credentials"
+      loop: "{{ directory_structure | default(default_directories) }}"
+      vars:
+        default_directories:
+          - "{{ home_dir }}/.ssh"
+          - "{{ home_dir }}/.ssh/tmp"
+          - "{{ home_dir }}/.credentials"
+          - "{{ home_dir }}/.local/share"
+          - "{{ home_dir }}/.local/bin"
+          - "{{ home_dir }}/.config"
+          - "{{ home_dir }}/go/bin"
+          - "{{ home_dir }}/go/src"
+          - "{{ home_dir }}/go/pkg"
+          - "{{ home_dir }}/src/personal"
+      tags:
+        - setup
+        - directories
 
-        - "{{ home_dir }}/.local/share"
-        - "{{ home_dir }}/.local/bin"
-        - "{{ home_dir }}/.config"
-        - "{{ home_dir }}/go/bin"
-        - "{{ home_dir }}/go/src"
-        - "{{ home_dir }}/go/pkg"
-        - "{{ home_dir }}/src/personal"
-
-    # secure the credentials directory
     - name: set permissions on credentials directory
       file:
         path: "{{ home_dir }}/.credentials"
         mode: 0700
+      tags:
+        - setup
+        - directories
+        - security
 
     - name: check if dotfiles repository exists
       stat:
@@ -222,6 +260,9 @@
           get_url:
             url: "https://dl.google.com/go/{{ go_version }}.{{ go_os }}-{{ go_arch }}.tar.gz"
             dest: "/tmp/{{ go_version }}.{{ go_os }}-{{ go_arch }}.tar.gz"
+            timeout: 30
+            validate_certs: yes
+          register: go_download
 
         - name: create local go directory
           file:
@@ -234,12 +275,44 @@
             src: "/tmp/{{ go_version }}.{{ go_os }}-{{ go_arch }}.tar.gz"
             dest: "{{ home_dir }}/.local"
             remote_src: yes
+            creates: "{{ home_dir }}/.local/go/bin/go"
 
+        - name: verify go installation
+          command: "{{ home_dir }}/.local/go/bin/go version"
+          register: go_version_check
+          changed_when: false
+
+        - name: display go version
+          debug:
+            msg: "Installed Go: {{ go_version_check.stdout }}"
+
+      rescue:
+        - name: cleanup failed go installation
+          file:
+            path: "{{ item }}"
+            state: absent
+          loop:
+            - "/tmp/{{ go_version }}.{{ go_os }}-{{ go_arch }}.tar.gz"
+            - "{{ home_dir }}/.local/go"
+          ignore_errors: yes
+
+        - name: fail with helpful message
+          fail:
+            msg: "Go installation failed. Please check network connectivity and try again."
+
+      always:
         - name: cleanup go tarball
           file:
             path: "/tmp/{{ go_version }}.{{ go_os }}-{{ go_arch }}.tar.gz"
             state: absent
-      when: not go_binary.stat.exists
+          ignore_errors: yes
+
+      when:
+        - not go_binary.stat.exists
+        - not (skip_go_install | default(false))
+      tags:
+        - go
+        - development-tools
 
     - name: sync public ssh keys
       block:

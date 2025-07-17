@@ -1,0 +1,59 @@
+---
+# User Configuration Template
+# Copy this file to user-config.yml and customize for your environment
+# Usage: ansible-playbook -e @vars/user-config.yml setup-env-user-only.yml
+
+# Personal Information
+github_username: "your-github-username"
+target_user: "your-username"
+
+# Tool Versions (override defaults)
+go_ver: "go1.24.3"
+python3_version: "3.12.7"
+neovim_version: "0.11.0"
+onepassword_version: "2.30.0"
+
+# Repository URLs (customize for your repos)
+dotfiles_repo: "https://github.com/your-username/dotfiles.git"
+dotfiles_ssh_url: "git@github.com:your-username/dotfiles.git"
+
+# Additional repositories to clone
+extra_repositories:
+  - repo: "https://github.com/your-username/scripts.git"
+    dest: "{{ ansible_env.HOME }}/scripts"
+    ssh_url: "git@github.com:your-username/scripts.git"
+
+# SSH Key Sources (URLs that provide public keys)
+custom_ssh_key_sources:
+  - name: "github"
+    url: "https://github.com/your-username.keys"
+  - name: "custom-server"
+    url: "https://your-server.com/your-username.keys"
+
+# Local SSH keys to copy from controller
+custom_local_ssh_keys:
+  - "your-key-name.pub"
+  - "another-key.pub"
+
+# Additional Python tools to install
+extra_python_tools:
+  - black
+  - mypy
+  - pytest
+
+# Additional Go tools to install
+extra_go_tools:
+  - github.com/golangci/golangci-lint/cmd/golangci-lint@latest
+
+# Skip certain installation steps (set to true to skip)
+skip_go_install: false
+skip_python_install: false
+skip_neovim_install: false
+skip_ssh_keys: false
+skip_dotfiles: false
+
+# Custom dotfiles mapping (override default)
+custom_dotfiles_map:
+  - { src: "gitconfig", dest: ".gitconfig" }
+  - { src: "zshrc", dest: ".zshrc" }
+  - { src: "tmux.conf", dest: ".tmux.conf" }

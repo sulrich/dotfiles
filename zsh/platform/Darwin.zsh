@@ -26,7 +26,15 @@ function gemini-sandbox() {
   docker run -it --rm \
     -e GEMINI_API_KEY="${GEMINI_API_KEY}" \
     -v $(pwd):/app:rw \
+    -v ${HOME}/.gemini:/home/gemini/.gemini:rw \
     --net=host  gemini-sandbox
+}
+
+function augment-sandbox() {
+  docker run -it --rm \
+    -v $(pwd):/app:rw \
+    -v ${HOME}/.augment:/home/augment/.augment:rw \
+    --net=host  augment-sandbox
 }
 
 # this uses the claude subscription auth mounted at the following mountpoints to
