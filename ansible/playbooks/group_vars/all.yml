@@ -1,0 +1,79 @@
+---
+# Default configuration for all hosts
+# These can be overridden via command line with --extra-vars
+
+# User configuration
+default_github_username: "sulrich"
+default_target_user: "{{ ansible_user | default(ansible_env.USER) }}"
+
+# Tool versions - update these as needed
+versions:
+  go: "go1.24.3"
+  python3: "3.12.7"
+  neovim: "0.11.0"
+  onepassword: "2.30.0"
+
+# Repository configurations
+repositories:
+  dotfiles:
+    url: "https://github.com/{{ github_username | default(default_github_username) }}/dotfiles.git"
+    ssh_url: "github-{{ github_username | default(default_github_username) }}:/{{ github_username | default(default_github_username) }}/dotfiles.git"
+  
+  config_repos:
+    - name: "xdg-config-home"
+      url: "https://github.com/{{ github_username | default(default_github_username) }}/xdg-config-home.git"
+      dest: "{{ ansible_env.HOME }}/.config"
+      ssh_url: "github-{{ github_username | default(default_github_username) }}:/{{ github_username | default(default_github_username) }}/xdg-config-home.git"
+    
+    - name: "nvim"
+      url: "https://github.com/{{ github_username | default(default_github_username) }}/nvim.git"
+      dest: "{{ ansible_env.HOME }}/.config/nvim"
+      ssh_url: "github-{{ github_username | default(default_github_username) }}:/{{ github_username | default(default_github_username) }}/nvim.git"
+    
+    - name: "home-bin"
+      url: "https://github.com/{{ github_username | default(default_github_username) }}/home-bin.git"
+      dest: "{{ ansible_env.HOME }}/bin"
+      ssh_url: "github-{{ github_username | default(default_github_username) }}:/{{ github_username | default(default_github_username) }}/home-bin.git"
+    
+    - name: "tmux-tpm"
+      url: "https://github.com/tmux-plugins/tpm"
+      dest: "{{ ansible_env.HOME }}/.tmux/plugins/tpm"
+      ssh_url: "github-{{ github_username | default(default_github_username) }}:/tmux-plugins/tpm"
+
+# SSH public key sources
+ssh_key_sources:
+  - name: "github-main"
+    url: "https://github.com/{{ github_username | default(default_github_username) }}.keys"
+  - name: "github-nh"
+    url: "https://github.com/{{ github_username | default(default_github_username) }}-nexthop.keys"
+  - name: "botwerks"
+    url: "https://botwerks.net/{{ github_username | default(default_github_username) }}.keys"
+
+# Local SSH keys to copy (these should exist on the controller)
+local_ssh_keys:
+  - "{{ github_username | default(default_github_username) }}-botwerks.pub"
+  - "{{ github_username | default(default_github_username) }}-nexthop.pub"
+
+# Python tools to install via uv
+python_tools:
+  - ruff
+  - pyright
+  - neovim
+  - pynvim
+
+# Go tools to install
+go_tools:
+  - golang.org/x/tools/gopls@latest
+
+# Directory structure to create
+directory_structure:
+  - "{{ ansible_env.HOME }}/.ssh"
+  - "{{ ansible_env.HOME }}/.ssh/tmp"
+  - "{{ ansible_env.HOME }}/.credentials"
+  - "{{ ansible_env.HOME }}/.local/share"
+  - "{{ ansible_env.HOME }}/.local/bin"
+  - "{{ ansible_env.HOME }}/.config"
+  - "{{ ansible_env.HOME }}/go/bin"
+  - "{{ ansible_env.HOME }}/go/src"
+  - "{{ ansible_env.HOME }}/go/pkg"
+  - "{{ ansible_env.HOME }}/src/personal"
