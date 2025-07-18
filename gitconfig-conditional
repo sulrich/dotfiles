@@ -19,3 +19,7 @@
 
 [includeIf "gitdir:/work/sulrich/src/personal/"]
   path = ~/.gitconfig-personal
+
+[includeIf "gitdir:~/prod/"]
+  path = ~/.gitconfig-personal
+
