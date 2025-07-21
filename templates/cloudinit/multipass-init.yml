@@ -18,8 +18,9 @@ packages:
   - gnupg
   - linux-generic
   - lsb-release
-  - unattended-upgrades
   - sudo
+  - unattended-upgrades
+  - unzip 
   - zsh
 
 users:

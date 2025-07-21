@@ -20,18 +20,26 @@ function ql () { qlmanage -p "$@" >& /dev/null & }
 function iterm-title () { echo -ne "\033]0;"${1}"\007" }
 
 # google seems to want all of my standard google auth biz to be coupled to a
-# google cloud project. fuck that.  i guess i'll just leak the environment
+# google cloud project. f*ck that.  i guess i'll just leak the environment
 # variable.
 function gemini-sandbox() {
   docker run -it --rm \
     -e GEMINI_API_KEY="${GEMINI_API_KEY}" \
     -v $(pwd):/app:rw \
+    -v ${HOME}/.gemini:/home/gemini/.gemini:rw \
     --net=host  gemini-sandbox
 }
 
-# this uses the claude subscription auth mounted int he noted mountpoints to let
-# me run claude-code in a docker container while not having to re-authentication
-# every time. these may need to be periodically refreshed.  also, this is quite
+function augment-sandbox() {
+  docker run -it --rm \
+    -v $(pwd):/app:rw \
+    -v ${HOME}/.augment:/home/augment/.augment:rw \
+    --net=host  augment-sandbox
+}
+
+# this uses the claude subscription auth mounted at the following mountpoints to
+# let me run claude-code in a docker container while not having to re-auth every
+# time. these may need to be periodically refreshed.  also, this is quite
 # dependent on the path structure of my container.
 function claude-sandbox() {
   docker run -it --rm \

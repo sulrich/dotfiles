@@ -41,6 +41,14 @@ the `playbooks/` directory contains the following automation:
   - installs uv package manager
   - copies public keys
 
+## setup your venv
+
+```bash
+uv venv ~/.venvs/ansible
+source .venvs/ansible/bin/activate
+uv pip install ansible passlib
+```
+
 ## usage
 
 run playbooks with:
