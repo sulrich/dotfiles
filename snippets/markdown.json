@@ -1,7 +1,0 @@
-{
-  "mmtg": {
-    "prefix": "mmtg",
-    "body": ["## ${CURRENT_YEAR}${CURRENT_MONTH}${CURRENT_DATE}\n\n### attendees\n\n\n- XXX:\n- nexthop:\n- location: [ in-person | hangout | zoom ]\n\n### discussion notes\n\n-\n\n### action items / next steps\n\n-\n\n### tags\n\n  #notes #nexthop"],
-    "description": "stub meeting notes"
-  }
-}

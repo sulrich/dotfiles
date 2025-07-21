@@ -2,8 +2,8 @@
 # gNMI target user name; CLI flag `--username`
 username: admin
 # gNMI target user password; CLI flag `--password`
-password: arista
+# password: arista
 # connection mode; CLI flag `--insecure`
-insecure: true
+# insecure: true
 # log file location; CLI flag `--log-file`
 log-file: /Users/sulrich/tmp/gnmic.log
