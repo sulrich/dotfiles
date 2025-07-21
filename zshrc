@@ -167,12 +167,19 @@ function debug() { [ "$DEBUG" ] && echo ">>> $*"; }
 function mwhois { whois -h `whois "domain $@" | sed '/^.*Whois Server:/!d;s///'` "$@" }
 function asnwhois { whois -h whois.cymru.com " -v AS$1" }
 
-update-tmux-ssh () {
+function update-tmux-ssh () {
   if [[ -n "$TMUX" ]]; then
     while IFS='=' read -r key value; do
       [[ -n "$value" ]] && export "$key"="$value"
     done < <(tmux show-environment | grep '^SSH_.*=')
   fi
+}
+
+function upgrade-uv-tools() {
+  uv self update
+  foreach i ($(uv tool list | egrep -iv '^-' | awk '{print $1}')) 
+    uv tool install $i --upgrade; 
+  end
 }
 
 SU==su
