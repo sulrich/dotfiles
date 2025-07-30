@@ -14,6 +14,4 @@ ServerAliveInterval 5
 ServerAliveCountMax 1
 
 # config includes
-Include ~/.colima/ssh_config
-Include ~/.config/colima/ssh_config
 Include ~/.ssh/conf.d/*.cfg

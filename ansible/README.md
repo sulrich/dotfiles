@@ -45,7 +45,7 @@ the `playbooks/` directory contains the following automation:
 
 ```bash
 uv venv ~/.venvs/ansible
-source .venvs/ansible/bin/activate
+source ~/.venvs/ansible/bin/activate
 uv pip install ansible passlib
 ```
 
