@@ -77,6 +77,6 @@ koff () {
 }
 
 # Ghostty shell integration for Bash. This should be at the top of your bashrc!
-if [ -n "${GHOSTTY_RESOURCES_DIR}" ]; then
+if [[ -n "${GHOSTTY_RESOURCES_DIR}" ]]; then
   source ${GHOSTTY_RESOURCES_DIR}/shell-integration/zsh/ghostty-integration
 fi
