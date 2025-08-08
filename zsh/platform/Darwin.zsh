@@ -11,7 +11,6 @@ alias loc="less ${OC_PATH_DUMP}"
 alias mp="multipass" 
 # macos free-ish replacement
 alias mfree="top -l 1 -s 0 | egrep '^(PhysMem|VM):'"
-alias claude="${HOME}/.claude/local/claude"
 
 # open a manpage in a new iterm window with a specific theme
 function xman() { open x-man-page://$@ ; }
