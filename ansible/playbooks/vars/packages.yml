@@ -1,0 +1,86 @@
+---
+# package lists for ubuntu/debian systems
+# this file can be imported into other playbooks as needed
+
+# lite package list - essential tools only
+packages_lite:
+  - curl
+  - wget
+  - git
+  - neovim
+  - htop
+  - tree
+  - unzip
+  - zip
+  - rsync
+  - ssh
+  - ca-certificates
+  - gnupg
+  - lsb-release
+  - apt-transport-https
+  - software-properties-common
+
+# standard package list
+packages_standard:
+  # essential tools (from lite list)
+  - curl
+  - wget
+  - git
+  - vim
+  - htop
+  - tree
+  - unzip
+  - zip
+  - rsync
+  - ssh
+  - ca-certificates
+  - gnupg
+  - lsb-release
+  - apt-transport-https
+  - software-properties-common
+
+  # development tools
+  - build-essential
+  - make
+  - cmake
+  - gcc
+  - g++
+  - gdb
+
+  # network tools
+  - net-tools
+  - netcat-openbsd
+  - nmap
+  - tcpdump
+  - dnsutils
+  - iputils-ping
+  - traceroute
+  - whois
+  - telnet
+
+  # system monitoring and management
+  - iftop
+  - tmux
+  - lsof
+  - psmisc
+  - procps
+  - sysstat
+  - acct
+
+  # text processing and editors
+  - jq
+  - yq
+
+  # archive and compression
+  - p7zip-full
+  - rar
+  - unrar
+  - bzip2
+  - xz-utils
+
+  # Python development
+  - python3
+  - python3-pip
+  - python3-venv
+  - python3-dev
+  - python-is-python3
