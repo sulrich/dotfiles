@@ -23,3 +23,5 @@ export SULRICH_BKUP_EXCLUDE="${HOME}/.home/backup/${HOSTNAME}-backup-exclude-lis
 # note that the following is sensitive to the naming inside 1password
 export SULRICH_BKUP_1P="op://Private/restic-${HOSTNAME}/password"
 
+# obsidian shit
+export OBSIDIAN_HOME="${HOME}/src/personal/obsidian/personal-journal"
