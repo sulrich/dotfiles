@@ -49,6 +49,81 @@
           package installation complete
           packages installed/updated: {{ package_install_result.changed | default(false) }}
 
+    # docker installation following official ubuntu docs
+    - name: remove conflicting docker packages
+      apt:
+        name:
+          - docker.io
+          - docker-doc
+          - docker-compose
+          - docker-compose-v2
+          - podman-docker
+          - containerd
+          - runc
+        state: absent
+
+    - name: create docker keyring directory
+      file:
+        path: /etc/apt/keyrings
+        state: directory
+        mode: '0755'
+
+    - name: download docker gpg key
+      get_url:
+        url: https://download.docker.com/linux/ubuntu/gpg
+        dest: /etc/apt/keyrings/docker.asc
+        mode: '0644'
+
+    - name: get system architecture
+      command: dpkg --print-architecture
+      register: system_arch
+      changed_when: false
+
+    - name: add docker repository
+      apt_repository:
+        repo: "deb [arch={{ system_arch.stdout }} signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu {{ ansible_distribution_release }} stable"
+        state: present
+        filename: docker
+
+    - name: update apt cache for docker
+      apt:
+        update_cache: yes
+
+    - name: install docker packages
+      apt:
+        name: "{{ packages_docker }}"
+        state: latest
+
+    - name: start and enable docker service
+      systemd:
+        name: docker
+        state: started
+        enabled: yes
+
+    - name: add user to docker group
+      user:
+        name: "{{ ansible_user }}"
+        groups: docker
+        append: yes
+      when: ansible_user is defined
+
+    - name: verify docker installation
+      command: docker --version
+      register: docker_version
+      changed_when: false
+
+    - name: verify docker compose installation
+      command: docker compose version
+      register: docker_compose_version
+      changed_when: false
+
+    - name: display docker installation results
+      debug:
+        msg: |
+          docker installation complete:
+          {{ docker_version.stdout }}
+          {{ docker_compose_version.stdout }}
+
     - name: clean up apt cache
       apt:
         autoclean: yes

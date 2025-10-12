@@ -459,24 +459,24 @@
         path: "{{ home_dir }}/.config/nvim/.venv"
       register: nvim_venv
 
-    - name: set up neovim python environment with uv
-      block:
-        - name: create neovim python venv
-          shell: |
-            cd {{ home_dir }}/.config/nvim
-            {{ home_dir }}/.local/bin/uv venv
-          args:
-            creates: "{{ home_dir }}/.config/nvim/.venv"
-
-        - name: install neovim python dependencies
-          shell: |
-            cd {{ home_dir }}/.config/nvim
-            source .venv/bin/activate
-            {{ home_dir }}/.local/bin/uv pip install neovim pynvim
-            {{ home_dir }}/.local/bin/uv pip install ruff basedpyright
-          args:
-            executable: /bin/bash
-        when: not nvim_venv.stat.exists
+    # - name: set up neovim python environment with uv
+    #   block:
+    #     - name: create neovim python venv
+    #       shell: |
+    #         cd {{ home_dir }}/.config/nvim
+    #         {{ home_dir }}/.local/bin/uv venv
+    #       args:
+    #         creates: "{{ home_dir }}/.config/nvim/.venv"
+    #
+    #     - name: install neovim python dependencies
+    #       shell: |
+    #         cd {{ home_dir }}/.config/nvim
+    #         source .venv/bin/activate
+    #         {{ home_dir }}/.local/bin/uv pip install neovim pynvim
+    #         {{ home_dir }}/.local/bin/uv pip install ruff basedpyright
+    #       args:
+    #         executable: /bin/bash
+    #     when: not nvim_venv.stat.exists
 
     - name: check if gopls is installed
       shell: |
