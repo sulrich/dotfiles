@@ -182,6 +182,23 @@ function upgrade-uv-tools() {
   end
 }
 
+# when run from the current repo gets list of the current nexthop PRs that are
+# open and generates a markdown table of the list.  additional query options can
+# be shimmed into the standard `gh` command.
+function get-nh-prs() {
+  gh pr list --limit 100 --json "id,author,title,url,number,state" "$@" \
+    --jq '
+    "| pr # | author | state | title |",
+    "|:----:|:------:|:-----:|:------|",
+    (.[] |
+     select(.author.login | endswith("-nexthop")) |
+     "| [\(.number)](\(.url)) | \(.author.login)" +
+     (if .author.name != "" then " (\(.author.name))" else "" end) +
+     " | \(.state) | \(.title) |"
+    )
+  '
+}
+
 SU==su
 su () {
   if [ "$1" = "" ]
