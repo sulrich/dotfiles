@@ -19,8 +19,8 @@ export PLATFORM=$(uname)
 #---------------------------------------------------------------------
 # generic environment variables
 export PYTHON2_VER="2.7.18"
-export PYTHON3_MAJOR="python3.12"
-export PYTHON3_VER="3.12.4"
+export PYTHON3_MAJOR="python3.13"
+export PYTHON3_VER="3.13.9"
 
 # i have mixed feelings about the following.  if i were in a consistent
 # development mode of operation would probably need to enable this.
@@ -39,7 +39,6 @@ export LESS="$LESS -eFRX -i -x2"
 export GPG_TTY=$(tty)
 export OC_PATH_DUMP="${HOME}/.home/openconfig/oc-path-list.txt"
 export PATHREPORT_LATEST="${HOME}/.home/openconfig/pathreport-latest.csv"
-export CLAB_DIR="${HOME}/clab"
 
 # localization info
 export LC_ALL=en_US.UTF-8

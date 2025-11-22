@@ -1,0 +1,62 @@
+---
+# package-management.yml - ansible playbook for installing/updating
+# ubuntu/debian packages supports both "lite" and "standard" package lists via
+# command line flag
+
+- name: install and update ubuntu/debian packages
+  hosts: all
+  become: yes
+  vars_files:
+    - vars/packages.yml
+  vars:
+    # default to standard packages unless overridden
+    lite_packages: false
+    # determine which package list to use
+    selected_packages: "{{ packages_lite if lite_packages else packages_standard }}"
+
+  tasks:
+    - name: detect os family
+      set_fact:
+        is_debian: "{{ ansible_os_family == 'Debian' }}"
+        is_ubuntu: "{{ ansible_distribution == 'Ubuntu' }}"
+
+    - name: fail if not debian/ubuntu
+      fail:
+        msg: "this playbook only supports debian/ubuntu systems"
+      when: not is_debian
+
+    - name: display package installation mode
+      debug:
+        msg: |
+          installing {{ 'lite' if lite_packages else 'standard' }} package set
+          total packages: {{ selected_packages | length }}
+
+    - name: update apt cache
+      apt:
+        update_cache: yes
+        cache_valid_time: 3600
+
+    - name: install/update selected packages
+      apt:
+        name: "{{ selected_packages }}"
+        state: latest
+        install_recommends: no
+      register: package_install_result
+
+    - name: display installation results
+      debug:
+        msg: |
+          package installation complete
+          packages installed/updated: {{ package_install_result.changed | default(false) }}
+
+    - name: clean up apt cache
+      apt:
+        autoclean: yes
+        autoremove: yes
+
+    - name: display completion message
+      debug:
+        msg: |
+          package management complete!
+          {{ selected_packages | length }} packages processed
+          use 'dpkg -l | grep ^ii | wc -l' to see total installed packages

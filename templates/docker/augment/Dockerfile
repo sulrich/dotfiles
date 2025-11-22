@@ -17,7 +17,7 @@ WORKDIR /app
 
 RUN chown -R augment:augment /app
 
-COPY /augment.mjs /home/augment/augment.mjs
+RUN npm install -g @augmentcode/auggie
 
 USER augment
 
