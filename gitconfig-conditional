@@ -4,9 +4,9 @@
 [includeIf "gitdir:/work/sulrich/src/nexthop/"]
   path = ~/.gitconfig-work
 
-
 [includeIf "gitdir:~/src/sonic/"]
   path = ~/.gitconfig-work
+
 
 [includeIf "gitdir:~/src/openconfig/"]
   path = ~/.gitconfig-personal
@@ -22,4 +22,3 @@
 
 [includeIf "gitdir:~/prod/"]
   path = ~/.gitconfig-personal
-
