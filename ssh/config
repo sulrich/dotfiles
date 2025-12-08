@@ -1,7 +1,7 @@
 # the following is useful when you need to resolve various aliases in funky
 # resolution environments.  for standard personal use, i don't need this.
 #
-CanonicalDomains botwerks.net internal.nexthop.ai
+CanonicalDomains botwerks.net internal.nexthop.ai dev.us-west-1.nexthop.ai
 CanonicalizeFallbackLocal yes
 CanonicalizeHostname yes
 

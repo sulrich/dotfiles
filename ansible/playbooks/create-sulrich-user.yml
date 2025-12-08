@@ -1,0 +1,61 @@
+---
+- name: configure sulrich user
+  hosts: all
+  become: true
+  remote_user: ubuntu
+
+  vars:
+    username: sulrich
+    user_groups:
+      - docker
+      - admins
+    user_shell: /bin/zsh
+    ssh_keys:
+      - "{{ lookup('community.general.onepassword', 'sulrich-nexthop', field='public key', vault='Private') }}"
+      - "{{ lookup('community.general.onepassword', 'sulrich-botwerks', field='public key', vault='Private') }}"
+      - "{{ lookup('community.general.onepassword', 'sulrich-blink', field='public key', vault='Private') }}"
+
+  tasks:
+    - name: ensure required groups exist
+      ansible.builtin.group:
+        name: "{{ item }}"
+        state: present
+      loop: "{{ user_groups }}"
+
+    - name: ensure zsh is installed
+      ansible.builtin.apt:
+        name: zsh
+        state: present
+        update_cache: true
+
+    - name: create user
+      ansible.builtin.user:
+        name: "{{ username }}"
+        groups: "{{ user_groups }}"
+        shell: "{{ user_shell }}"
+        append: true
+        create_home: true
+        state: present
+
+    - name: configure passwordless sudo
+      ansible.builtin.lineinfile:
+        path: /etc/sudoers.d/{{ username }}
+        line: "{{ username }} ALL=(ALL) NOPASSWD:ALL"
+        create: true
+        mode: '0440'
+        validate: 'visudo -cf %s'
+
+    - name: ensure .ssh directory exists
+      ansible.builtin.file:
+        path: "/home/{{ username }}/.ssh"
+        state: directory
+        owner: "{{ username }}"
+        group: "{{ username }}"
+        mode: '0700'
+
+    - name: add authorized keys
+      ansible.builtin.authorized_key:
+        user: "{{ username }}"
+        key: "{{ item }}"
+        state: present
+      loop: "{{ ssh_keys }}"
