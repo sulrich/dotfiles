@@ -2,7 +2,7 @@
 # macos specific functions and aliases
 
 # i don't particularly like the placement of the XDG_CONFIG_HOME on mac os
-export XDG_CONFIG_HOME="${HOME}/.config" 
+export XDG_CONFIG_HOME="${HOME}/.config"
 
 # is vagrant even a thing anymore?
 #export VAGRANT_DEFAULT_PROVIDER="virtualbox"
@@ -10,7 +10,10 @@ export XDG_CONFIG_HOME="${HOME}/.config"
 #export VAGRANT_VMWARE_CLONE_DIRECTORY="/Volumes/JetDrive/vagrant-clone"
 
 # this addresses some ansible hassles on mac os when using the get_url module.
-export OBJC_DISABLE_INITIALIZE_FORK_SAFETY=YES
+# 20251215(sulrich) - disabling this since i forgot what it broke.  but broadly
+# speaking, this was tickled by some APIs that i was using with the requests
+# python module
+# export OBJC_DISABLE_INITIALIZE_FORK_SAFETY=YES
 
 # convenience environment variable to get to the iCloud root directory
 export ICLOUD="${HOME}/Library/Mobile Documents/com~apple~CloudDocs"
