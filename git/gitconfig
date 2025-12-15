@@ -48,6 +48,7 @@
 
 [push]
   default = matching
+	autoSetupRemote = true
 
 # experiments in color
 [color]
