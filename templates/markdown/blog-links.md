@@ -8,10 +8,10 @@ tags:
   - %%TAGYEAR%%
 draft: false
 description: "DESCRIPTION_HEREZ"
+comments: false
 toc:
   enable: false
   auto: true
-comments: false
 ---
 
 ### links, etc
