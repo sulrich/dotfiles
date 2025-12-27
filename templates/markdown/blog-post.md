@@ -13,7 +13,6 @@ description: "__descriptive text here__"
 toc:
   enable: false
   auto: true
-comments: false
 ---
 
 
