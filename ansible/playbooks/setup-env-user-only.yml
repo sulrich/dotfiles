@@ -316,18 +316,18 @@
         creates: "{{ home_dir }}/.local/bin/ruff"
       when: not ruff_binary.stat.exists
 
-    - name: check if basedpyright is installed
+    - name: check if ty is installed
       stat:
-        path: "{{ home_dir }}/.local/bin/basedpyright"
-      register: basedpyright_binary
+        path: "{{ home_dir }}/.local/bin/ty"
+      register: ty_binary
 
-    - name: install basedpyright using uv
+    - name: install ty using uv
       shell: |
-        {{ home_dir }}/.local/bin/uv tool install basedpyright
+        {{ home_dir }}/.local/bin/uv tool install ty
       args:
         executable: /bin/bash
-        creates: "{{ home_dir }}/.local/bin/basedpyright"
-      when: not pyright_binary.stat.exists
+        creates: "{{ home_dir }}/.local/bin/ty"
+      when: not ty_binary.stat.exists
 
     - name: check if 1password cli is installed
       stat:
