@@ -53,15 +53,15 @@ unsetopt NOTIFY
 unsetopt PATHDIRS
 unsetopt RECEXACT
 
-autoload edit-command-line
-zle -N edit-command-line
-
-bindkey '^Xe' edit-command-line
 bindkey -e
+
+autoload -Uz edit-command-line
+zle -N edit-command-line
+bindkey '^x^e' edit-command-line
+
 bindkey '^];' spell-word
 
 umask 002
-
 
 ## misc prompt frobbing - mostly so i can hint the status of git
 # this replaced the only useful thing i had in oh-my-zsh
@@ -79,7 +79,6 @@ precmd() {
 setopt prompt_subst
 PS1="%m(%2~)\${vcs_info_msg_0_}%% "
 
-
 ## history handling
 setopt APPEND_HISTORY            # append to history file
 setopt EXTENDED_HISTORY          # Write the history file in the ':start:elapsed;command' format.
@@ -94,16 +93,19 @@ setopt HIST_VERIFY               # do not execute immediately upon history expan
 setopt INC_APPEND_HISTORY        # write to the history file immediately, not when the shell exits.
 setopt SHARE_HISTORY             # share history between all sessions.
 
-
 #---------------------------------------------------------------------
 # aliases
 #
 setaliases() {
-  alias -g L=" 2>&1|less"  #  page through the output, inluding STDERR
+  alias -g L=" 2>&1 | less"  #  page through the output, inluding STDERR
+  # redirect stderr to /dev/null
+  alias -g NE="2>/dev/null"
+  # redirect stdout to /dev/null
+  alias -g NO=">/dev/null"
+  # redirect both stdout and stderr to /dev/null
   alias -g NUL="> /dev/null 2>&1"
-  alias -g TL="| tail -20"
 
-  # git aliases for misc. stuff i do
+  # misc. git aliases 
   alias gitdiff-lastone="git diff HEAD^^ $1"
   alias gitlog-lastone="git log -p -n 1 $1"
   alias gitlog-short='git log --graph --date=short --pretty="%h %cd %cn %ce"'
@@ -180,23 +182,6 @@ function upgrade-uv-tools() {
   foreach i ($(uv tool list | egrep -iv '^-' | awk '{print $1}')) 
     uv tool install $i --upgrade; 
   end
-}
-
-# when run from the current repo gets list of the current nexthop PRs that are
-# open and generates a markdown table of the list.  additional query options can
-# be shimmed into the standard `gh` command.
-function get-nh-prs() {
-  gh pr list --limit 100 --json "id,author,title,url,number,state" "$@" \
-    --jq '
-    "| pr # | author | state | title |",
-    "|:----:|:------:|:-----:|:------|",
-    (.[] |
-     select(.author.login | endswith("-nexthop")) |
-     "| [\(.number)](\(.url)) | \(.author.login)" +
-     (if .author.name != "" then " (\(.author.name))" else "" end) +
-     " | \(.state) | \(.title) |"
-    )
-  '
 }
 
 SU==su
