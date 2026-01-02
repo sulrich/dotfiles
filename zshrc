@@ -105,7 +105,7 @@ setaliases() {
   # redirect both stdout and stderr to /dev/null
   alias -g NUL="> /dev/null 2>&1"
 
-  # misc. git aliases 
+  # misc. git aliases
   alias gitdiff-lastone="git diff HEAD^^ $1"
   alias gitlog-lastone="git log -p -n 1 $1"
   alias gitlog-short='git log --graph --date=short --pretty="%h %cd %cn %ce"'
@@ -179,8 +179,8 @@ function update-tmux-ssh () {
 
 function upgrade-uv-tools() {
   uv self update
-  foreach i ($(uv tool list | egrep -iv '^-' | awk '{print $1}')) 
-    uv tool install $i --upgrade; 
+  foreach i ($(uv tool list | egrep -iv '^-' | awk '{print $1}'))
+    uv tool install $i --upgrade;
   end
 }
 
@@ -232,9 +232,9 @@ function personal-config-update()  {
   foreach CONFIG_DIR ("${CONFIG_DIRS[@]}")
     echo "${CONFIG_DIR} - sync"
     cd "${CONFIG_DIR}"
-    git pull 
+    git pull
   end
-  
+
   # ensure that ssh files have the right permissions
   ${HOME}/.home/bin/ssh-fix-perms.sh
 }
@@ -361,7 +361,8 @@ fpath=(/opt/homebrew/share/zsh-completions  ${HOME}/.home/zsh/completions $fpath
 # ownership accordingly
 
 # tickle the completion elements in zsh
-autoload -U compinit && compinit
+autoload bashcompinit && bashcompinit
+autoload -Uz compinit && compinit
 zmodload -i zsh/complist
 compctl -c type
 compctl -g '*(-/) .*(-/)' cd rmdir
@@ -369,8 +370,13 @@ compctl -g '*(-/) .*(-/)' cd rmdir
 unsetopt menu_complete   # do not autoselect the first completion entry
 unsetopt flowcontrol
 setopt auto_menu         # show completion menu on successive tab press
-setopt complete_in_word
+setopt complete_in_word  # i love this
 setopt always_to_end
+
+if [ $+commands[aws_completer] == "1" ]
+then
+  complete -C 'aws_completer' aws
+fi
 
 # :completion:<function>:<completer>:<command>:<argument>:<tag>
 # define completers
