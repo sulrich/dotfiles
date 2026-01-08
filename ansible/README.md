@@ -92,3 +92,11 @@ ansible-playbook -i "hostname.example.com," playbooks/package-management.yml
 # run against a single host with lite packages
 ansible-playbook -i "hostname.example.com," playbooks/package-management.yml -e "lite_packages=true"
 ```
+
+when we only want to run a playbook from a specific task onward, use the
+`--start-at-task` flag.
+
+```shell
+ansible-playbook -i "sulrich-fml," playbooks/setup-env-user-only.yml \
+  --start-at-task="check if cargo is already installed"
+```
