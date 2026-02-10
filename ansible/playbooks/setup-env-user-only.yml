@@ -10,7 +10,7 @@
     go_os: "{{ ansible_system | lower }}"
     go_arch: "{{ 'amd64' if ansible_architecture == 'x86_64' else ('arm64' if ansible_architecture == 'aarch64' else ('386' if ansible_architecture in ['i386', 'i686'] else ansible_architecture)) }}"
     python2_ver: "2.7.18"
-    python3_ver: "3.13.9"
+    python3_ver: "3.13.12"
     home_dir: "{{ ansible_env.HOME }}"
     nvim_version: "0.11.4"
     install_lsps: false  # default to not installing LSPs
