@@ -12,6 +12,10 @@ function clab-start() {
       ghcr.io/srl-labs/clab bash
 }
 
+if [ -e "${HOME}/.clawdock/clawdock-helpers.sh" ]
+then
+  source "${HOME}/.clawdock/clawdock-helpers.sh"
+fi
 
 ## i really only want ssh-add enabled on select macos hosts
 if [ -z "$SSH_AUTH_SOCK" ]; then
