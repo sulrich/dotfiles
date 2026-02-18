@@ -220,6 +220,13 @@ function google-nets () {
   end
 }
 
+# pb-nh
+function pb-nh() {
+  jq -Rns '{text: inputs}' | \
+    curl  -s -H 'Content-Type: application/json' --data-binary @- ${WBIN_API_URL}/ | \
+    jq -r '. | "'${WBIN_API_URL}'\(.path)"'
+}
+
 # personal configuration update
 function personal-config-update()  {
   # pull updates from git to keep things in sync
