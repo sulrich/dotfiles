@@ -4,21 +4,21 @@
 
 # lite package list - essential tools only
 packages_lite:
+  - apt-transport-https
+  - ca-certificates
   - curl
-  - wget
   - git
-  - neovim
+  - gnupg
   - htop
+  - lsb-release
+  - neovim
+  - rsync
+  - software-properties-common
+  - ssh
   - tree
   - unzip
+  - wget
   - zip
-  - rsync
-  - ssh
-  - ca-certificates
-  - gnupg
-  - lsb-release
-  - apt-transport-https
-  - software-properties-common
 
 # standard package list
 packages_standard:
