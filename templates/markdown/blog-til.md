@@ -1,5 +1,5 @@
 ---
-title: "TIL: %%TITLE%%"
+title: "%%TITLE%%"
 date: %%TIMESTAMP%%
 layout: post
 author: steve ulrich
