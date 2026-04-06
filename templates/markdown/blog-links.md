@@ -1,5 +1,5 @@
 ---
-title: "XXXCLEVER_TITLE_HEREXXZ (%%DATEFMT%%)"
+title: "%%TITLE%%"
 date: %%TIMESTAMP%%
 layout: post
 author: steve ulrich
@@ -7,7 +7,7 @@ tags:
   - links
   - %%TAGYEAR%%
 draft: false
-description: "DESCRIPTION_HEREZ"
+description: "DESCRIPTION_HERE"
 comments: false
 toc:
   enable: false
