@@ -2,16 +2,13 @@
 
 ## philosophy
 
-### key precepts
-
-- **focus on incremental progress** - make small changes which make incremental progress to an objective
-- **learning from existing code** - review the current state of the code base and assemble a plan before implementing
-- **pragmatic over dogmatic** - adapt to project reality
-- **clarity over cleverness** - be clear and obvious, avoid creating code we won't understand in a month
+- make small changes which make incremental progress to an objective
+- review the current state of the code base and assemble a plan before implementing
+- adapt to project reality, be pragmatic
+- be clear and obvious, avoid creating code we won't understand in a month
 
 ### simplicity
 
-- single responsibility per function/class
 - avoid premature abstractions
 - no clever tricks - choose the boring solution
 - if you need to explain it to me, it's too complex
@@ -41,7 +38,7 @@ end time: [completion time for the task]
 
 - update status as you progress
 - include a log of the commits at the bottom of the file.
-- append the `IMPLEMENTATION-PLAN.md` file to the `WORKLOG.md` file at the root of the project.  
+- append the `IMPLEMENTATION-PLAN.md` file to the `WORKLOG.md` file at the root of the project.
 
 ### 2. implementation flow
 
@@ -75,7 +72,6 @@ end time: [completion time for the task]
    - remove abstraction instead of adding?
 
 ## technical standards
-
 ### architecture principles
 
 - **explicit over implicit** - clear data flow and dependencies
@@ -95,14 +91,12 @@ end time: [completion time for the task]
   - ensure commit message explains "why"
 
 ### error handling
-
 - fail fast with descriptive messages
 - include context for debugging
 - handle errors at appropriate level
 - never silently swallow exceptions
 
 ## decision framework
-
 when multiple valid approaches exist, choose based on:
 
 1. **testability** - can i easily test this?
@@ -114,14 +108,11 @@ when multiple valid approaches exist, choose based on:
 ## project integration
 
 ### learning the codebase
-
-- find 3 similar features/components
 - identify common patterns and conventions
-- use same libraries/utilities when possible
+- use the same libraries/utilities when possible
 - follow existing test patterns
 
 ### tooling
-
 - use existing project build system
 - use the project test framework
 - use the project formatter/linter settings
@@ -136,7 +127,7 @@ when multiple valid approaches exist, choose based on:
 - [ ] no linter/formatter warnings
 - [ ] commit messages are clear
 - [ ] implementation matches plan
-- [ ] no TODOs without issue numbers
+- [ ] no TODOs without details regarding follow-up
 
 ### test guidelines
 
