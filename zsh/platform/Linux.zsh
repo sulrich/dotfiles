@@ -4,6 +4,7 @@
 # this is a poor man's pbcopy on a linux box.  requires a reasonably modern
 # terminal with support for `OSC 52` - this doesn't seem to be mac os terminal
 # at the moment (20260526)
+# usage:  command with text output | pbcopy
 function pbcopy() {
   printf '\033]52;c;%s\a' "$(base64 | tr -d '\n')"
 }
