@@ -185,6 +185,18 @@ function upgrade-uv-tools() {
   end
 }
 
+
+# this will populate the necessary environment variables and fire up claude to
+# use the deepseek models (v4 as of this writing)
+function claude-deepseek() {
+  source "${HOME}/.credentials/claude-fireworks.env"
+  # 20260526(sulrich) claude code will bitch about there being an auth problem,
+  # unset this to shut it up
+  unset ANTHROPIC_API_KEY # you know you're going to forget to do this anyways
+  echo "NOTE: re-source the relevant env files to populate the $ANTHROPIC_API_KEY when complete"
+  claude
+}
+
 SU==su
 su () {
   if [ "$1" = "" ]
