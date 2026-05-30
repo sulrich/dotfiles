@@ -6,6 +6,7 @@ author: steve ulrich
 tags:
   - links
   - %%TAGYEAR%%
+  # - syndicate    # uncomment to mastodon/bluesky cross-post this roundup
 draft: false
 description: "DESCRIPTION_HERE"
 comments: false

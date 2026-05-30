@@ -4,6 +4,7 @@ date: %%TIMESTAMP%%
 layout: post
 author: steve ulrich
 tags: [%%YEAR%%, %%TAGS%%]
+# syndicate: false  # uncomment to skip mastodon/bluesky cross-post
 # weight: 1
 # aliases: ["/first"]
 draft: true

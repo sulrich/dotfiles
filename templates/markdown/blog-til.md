@@ -6,6 +6,7 @@ author: steve ulrich
 tags:
 - %%YEAR%%
 - TIL
+# syndicate: false  # uncomment to skip mastodon/bluesky cross-post
 # weight: 1
 # aliases: ["/first"]
 draft: false
