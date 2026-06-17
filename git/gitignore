@@ -9,3 +9,5 @@
 *.pyc
 *.elc
 *.swp
+
+**/.claude/settings.local.json

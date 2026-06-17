@@ -57,6 +57,9 @@ fi
 export YANG_MODPATH=${HOME}/src/yang/standard:${HOME}/src/openconfig/public/release
 export YANG_PLUGINS="${HOME}/.pyang"
 
+# gws tooling
+export GOOGLE_WORKSPACE_CLI_KEYRING_BACKEND="file"
+
 setpath() {
   LOCAL_PATH="${HOME}/.local/bin"
 
@@ -102,7 +105,7 @@ setpath() {
   # personal stash.
   export MIBDIRS="/usr/share/snmp/mibs:${HOME}/.snmp/mibs/cisco:${HOME}/.snmp/mibs/juniper"
   export MIBDIRS="${MIBDIRS}:${HOME}/.snmp/mibs/std:${HOME}/.snmp/mibs/misc:."
-  
+
   # pull in the gcloud sdk tools
   if [ -f "${HOME}/src/google-cloud-sdk/path.zsh.inc" ]
   then
