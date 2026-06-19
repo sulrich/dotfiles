@@ -5,18 +5,15 @@
 - name: bootstrap user environment (no root required)
   hosts: all
   vars:
-    # hardcoded go version instead of dynamically fetching it
-    go_version: "go1.24.3"
     go_os: "{{ ansible_system | lower }}"
     go_arch: "{{ 'amd64' if ansible_architecture == 'x86_64' else ('arm64' if ansible_architecture == 'aarch64' else ('386' if ansible_architecture in ['i386', 'i686'] else ansible_architecture)) }}"
     python2_ver: "2.7.18"
     python3_ver: "3.13"
     home_dir: "{{ ansible_env.HOME }}"
-    nvim_version: "0.11.4"
+    nvim_version: "0.12.3"
     op_version: "2.30.0"  # 1password cli - bump to upgrade
     install_lsps: false  # default to not installing LSPs
     dotfiles_map:
-      - {src: "Xdefaults", dest: ".Xdefaults"}
       - {src: "ansible.cfg", dest: ".ansible.cfg"}
       - {src: "cloginrc", dest: ".cloginrc"}
       - {src: "digrc", dest: ".digrc"}
@@ -26,7 +23,6 @@
       - {src: "git/gitignore", dest: ".gitignore"}
       - {src: "mailcap", dest: ".mailcap"}
       - {src: "markdownlint.json", dest: ".markdownlintrc"}
-      - {src: "octaverc", dest: ".octaverc"}
       - {src: "ruff.toml", dest: ".ruff.toml"}
       - {src: "screenrc", dest: ".screenrc"}
       - {src: "sqliterc", dest: ".sqliterc"}
@@ -92,7 +88,7 @@
       register: dotfiles_clone
       when: not dotfiles_stat.stat.exists
 
-    # Skip pull for existing dotfiles repository - just check presence
+    # skip pull for existing dotfiles repository - just check presence
     - name: register dotfiles repository exists
       set_fact:
         dotfiles_exists: true
@@ -219,12 +215,37 @@
         path: "{{ home_dir }}/.local/go/bin/go"
       register: go_binary
 
-    - name: install go to user local directory
+    - name: get installed go version
+      shell: |
+        {{ home_dir }}/.local/go/bin/go version | awk '{print $3}'
+      register: go_installed_version_result
+      changed_when: false
+      failed_when: false
+      when: go_binary.stat.exists
+
+    - name: get latest go version
+      shell: |
+        curl -s https://go.dev/VERSION?m=text | head -1
+      register: go_latest_version_result
+      changed_when: false
+
+    - name: set go version facts
+      set_fact:
+        go_latest_version: "{{ go_latest_version_result.stdout | trim }}"
+        go_installed_version: "{{ go_installed_version_result.stdout | default('') | trim }}"
+
+    - name: install or update go
       block:
         - name: download go
           get_url:
-            url: "https://dl.google.com/go/{{ go_version }}.{{ go_os }}-{{ go_arch }}.tar.gz"
-            dest: "/tmp/{{ go_version }}.{{ go_os }}-{{ go_arch }}.tar.gz"
+            url: "https://dl.google.com/go/{{ go_latest_version }}.{{ go_os }}-{{ go_arch }}.tar.gz"
+            dest: "/tmp/{{ go_latest_version }}.{{ go_os }}-{{ go_arch }}.tar.gz"
+
+        - name: remove existing go installation
+          file:
+            path: "{{ home_dir }}/.local/go"
+            state: absent
+          when: go_binary.stat.exists
 
         - name: create local go directory
           file:
@@ -234,15 +255,15 @@
 
         - name: extract go
           unarchive:
-            src: "/tmp/{{ go_version }}.{{ go_os }}-{{ go_arch }}.tar.gz"
+            src: "/tmp/{{ go_latest_version }}.{{ go_os }}-{{ go_arch }}.tar.gz"
             dest: "{{ home_dir }}/.local"
             remote_src: true
 
         - name: cleanup go tarball
           file:
-            path: "/tmp/{{ go_version }}.{{ go_os }}-{{ go_arch }}.tar.gz"
+            path: "/tmp/{{ go_latest_version }}.{{ go_os }}-{{ go_arch }}.tar.gz"
             state: absent
-      when: not go_binary.stat.exists
+      when: not go_binary.stat.exists or go_installed_version != go_latest_version
 
     - name: sync public ssh keys
       block:
@@ -391,9 +412,10 @@
 
     - name: get latest github cli version
       shell: |
-        curl -s https://api.github.com/repos/cli/cli/releases/latest | grep '"tag_name":' | cut -d '"' -f 4 | sed 's/^v//'
+        curl -sL -o /dev/null -w '%{url_effective}' https://github.com/cli/cli/releases/latest | sed 's|.*/v||'
       register: gh_latest_version_result
       changed_when: false
+      failed_when: gh_latest_version_result.stdout | length == 0
 
     - name: set github cli version facts
       set_fact:
@@ -551,6 +573,14 @@
         creates: "{{ home_dir }}/.cargo/bin/cargo"
         executable: /bin/bash
       when: not cargo_binary.stat.exists
+
+    - name: update rust toolchain to latest stable
+      shell: |
+        {{ home_dir }}/.cargo/bin/rustup update stable
+      args:
+        executable: /bin/bash
+      when: cargo_binary.stat.exists
+      changed_when: false
 
     - name: display setup completion message
       debug:
