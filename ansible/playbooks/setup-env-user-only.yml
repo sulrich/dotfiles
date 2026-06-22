@@ -582,6 +582,114 @@
       when: cargo_binary.stat.exists
       changed_when: false
 
+    # node.js / npm - install from pre-built binary so we get a modern version
+    # regardless of what apt has available on the target host.
+    # npm prefix is set to ~/.local so `npm install -g` works without root.
+    - name: check if node is installed
+      stat:
+        path: "{{ home_dir }}/.local/bin/node"
+      register: node_binary
+
+    - name: get installed node version
+      shell: |
+        {{ home_dir }}/.local/bin/node --version | sed 's/^v//'
+      register: node_installed_version_result
+      changed_when: false
+      failed_when: false
+      when: node_binary.stat.exists
+
+    - name: get latest node lts version
+      uri:
+        url: https://nodejs.org/dist/index.json
+        return_content: true
+      register: nodejs_versions_response
+
+    - name: set node version facts
+      set_fact:
+        node_lts_version: "{{ (nodejs_versions_response.json | selectattr('lts', 'truthy') | first).version | regex_replace('^v', '') }}"
+        node_installed_version: "{{ node_installed_version_result.stdout | default('') | trim }}"
+
+    - name: set node architecture
+      set_fact:
+        node_arch: >-
+          {{ 'x64' if ansible_architecture == 'x86_64'
+             else 'arm64' if ansible_architecture == 'aarch64'
+             else ansible_architecture }}
+
+    - name: install or update node lts
+      block:
+        - name: download node lts tarball
+          get_url:
+            url: "https://nodejs.org/dist/v{{ node_lts_version }}/node-v{{ node_lts_version }}-linux-{{ node_arch }}.tar.gz"
+            dest: "/tmp/node-v{{ node_lts_version }}-linux-{{ node_arch }}.tar.gz"
+            mode: 0644
+
+        - name: remove existing node installation
+          file:
+            path: "{{ home_dir }}/.local/nodejs"
+            state: absent
+          when: node_binary.stat.exists
+
+        - name: create node installation directory
+          file:
+            path: "{{ home_dir }}/.local/nodejs"
+            state: directory
+            mode: 0755
+
+        - name: extract node lts
+          unarchive:
+            src: "/tmp/node-v{{ node_lts_version }}-linux-{{ node_arch }}.tar.gz"
+            dest: "{{ home_dir }}/.local/nodejs"
+            remote_src: true
+            extra_opts:
+              - "--strip-components=1"
+
+        - name: symlink node to local bin
+          file:
+            src: "{{ home_dir }}/.local/nodejs/bin/node"
+            dest: "{{ home_dir }}/.local/bin/node"
+            state: link
+            force: true
+
+        - name: symlink npm to local bin
+          file:
+            src: "{{ home_dir }}/.local/nodejs/bin/npm"
+            dest: "{{ home_dir }}/.local/bin/npm"
+            state: link
+            force: true
+
+        - name: symlink npx to local bin
+          file:
+            src: "{{ home_dir }}/.local/nodejs/bin/npx"
+            dest: "{{ home_dir }}/.local/bin/npx"
+            state: link
+            force: true
+
+        - name: cleanup node tarball
+          file:
+            path: "/tmp/node-v{{ node_lts_version }}-linux-{{ node_arch }}.tar.gz"
+            state: absent
+      when: not node_binary.stat.exists or node_installed_version != node_lts_version
+
+    - name: configure npm prefix for user-local global installs
+      shell: |
+        {{ home_dir }}/.local/bin/npm config set prefix {{ home_dir }}/.local
+      args:
+        executable: /bin/bash
+      changed_when: false
+
+    - name: check if claude code is installed
+      stat:
+        path: "{{ home_dir }}/.local/bin/claude"
+      register: claude_binary
+
+    - name: install claude code via native installer
+      shell: curl -fsSL https://claude.ai/install.sh | bash
+      args:
+        executable: /bin/bash
+        creates: "{{ home_dir }}/.local/bin/claude"
+      when: not claude_binary.stat.exists
+
     - name: display setup completion message
       debug:
         msg: |
