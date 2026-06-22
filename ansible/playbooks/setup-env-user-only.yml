@@ -678,6 +678,18 @@
         executable: /bin/bash
       changed_when: false
 
+    - name: check if claude code is installed
+      stat:
+        path: "{{ home_dir }}/.local/bin/claude"
+      register: claude_binary
+
+    - name: install claude code via native installer
+      shell: curl -fsSL https://claude.ai/install.sh | bash
+      args:
+        executable: /bin/bash
+        creates: "{{ home_dir }}/.local/bin/claude"
+      when: not claude_binary.stat.exists
+
     - name: display setup completion message
       debug:
         msg: |
