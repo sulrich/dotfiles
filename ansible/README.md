@@ -18,10 +18,18 @@ the `playbooks/` directory contains the following automation:
   root. installs:
   - dotfiles (from personal github)
   - go environment
-  - python environment with uv package manager
-  - neovim configuration
+  - python environment with uv package manager (uv, ruff, ty)
+  - neovim (appimage + python venv)
+  - rust toolchain (rustup)
+  - node.js lts + npm
+  - 1password cli (`op`)
+  - github cli (`gh`)
+  - claude code
   - ssh configuration
   - public keys
+
+  each tool group is tagged so it can be installed/updated on its own without a
+  full run. see [updating individual tools](#updating-individual-tools) below.
 
 ### server setup
 
@@ -100,3 +108,45 @@ when we only want to run a playbook from a specific task onward, use the
 ansible-playbook -i "sulrich-fml," playbooks/setup-env-user-only.yml \
   --start-at-task="check if cargo is already installed"
 ```
+
+### updating individual tools
+
+the tools installed by `setup-env-user-only.yml` are grouped by ansible tags, so
+a single tool can be installed or updated without running the whole playbook.
+each tag runs that tool's version check and its install/update logic, so it will
+upgrade in place when a newer version is available.
+
+available tags:
+
+- `go`
+- `nvim`
+- `rust`
+- `op`
+- `gh`
+- `node`
+- `python`
+- `claude`
+- `lsp`
+
+```shell
+# update a single tool
+ansible-playbook -i "hostname.example.com," playbooks/setup-env-user-only.yml \
+  --tags go
+
+# update several at once
+ansible-playbook -i "hostname.example.com," playbooks/setup-env-user-only.yml \
+  --tags nvim,rust,go
+
+# list every available tag
+ansible-playbook playbooks/setup-env-user-only.yml --list-tags
+```
+
+a full run (no `--tags`) still installs/updates everything as before.
+
+notes:
+
+- `python` covers the uv-managed toolchain: uv, python3, ruff, and ty.
+- tags do not bootstrap runtime dependencies. `--tags lsp` installs `gopls`,
+  which needs go already present, and `--tags nvim`'s python venv step needs
+  `uv`. on an already bootstrapped host these exist; run a full setup first on a
+  fresh host.
