@@ -54,11 +54,13 @@ else
 fi
 
 # pyang specific variables, etc.
-export YANG_MODPATH=${HOME}/src/yang/standard:${HOME}/src/openconfig/public/release
-export YANG_PLUGINS="${HOME}/.pyang"
+# 20260708(sulrich): haven't needed this in ages
+# export YANG_MODPATH=${HOME}/src/yang/standard:${HOME}/src/openconfig/public/release
+# export YANG_PLUGINS="${HOME}/.pyang"
 
 # gws tooling
 export GOOGLE_WORKSPACE_CLI_KEYRING_BACKEND="file"
+export GOOGLE_WORKSPACE_CLI_CREDENTIALS_FILE="${HOME}/.credentials/gws-credentials.json"
 
 setpath() {
   LOCAL_PATH="${HOME}/.local/bin"
