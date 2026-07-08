@@ -147,14 +147,14 @@
 
     - name: update git remote URLs for newly cloned repos only
       shell: |
-        cd {{ item.item.dest }}
-        git remote set-url origin {{ item.item.ssh_url }}
+        cd {{ item.item.item.dest }}
+        git remote set-url origin {{ item.item.item.ssh_url }}
       loop: "{{ git_clone_results.results | default([]) }}"
       when:
         - git_clone_results is defined
         - item.changed | default(false)
       loop_control:
-        label: "{{ item.item.dest | default('unknown') }}"
+        label: "{{ item.item.item.dest | default('unknown') }}"
 
     - name: check if fzf exists
       stat:
