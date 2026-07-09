@@ -5,7 +5,7 @@
 # individual tools can be installed/updated on their own via tags, e.g.:
 #   ansible-playbook setup-env-user-only.yml --tags go
 #   ansible-playbook setup-env-user-only.yml --tags nvim,rust
-# available tool tags: go nvim rust op gh node python claude lsp
+# available tool tags: go nvim rust tree-sitter gws acli op gh node python claude lsp
 # list all tags with: ansible-playbook setup-env-user-only.yml --list-tags
 
 - name: bootstrap user environment (no root required)
@@ -45,9 +45,9 @@
       - {name: "github", url: "https://github.com/sulrich.keys"}
       - {name: "botwerks", url: "https://botwerks.net/sulrich.keys"}
     git_repos:
-      - {repo: "https://github.com/sulrich/xdg-config-home.git", dest: "{{ home_dir }}/.config", ssh_url: "github-sulrich:/sulrich/xdg-config-home.git"}
-      - {repo: "https://github.com/sulrich/nvim.git", dest: "{{ home_dir }}/.config/nvim", ssh_url: "github-sulrich:/sulrich/nvim.git"}
-      - {repo: "https://github.com/sulrich/home-bin.git", dest: "{{ home_dir }}/bin", ssh_url: "github-sulrich:/sulrich/home-bin.git"}
+      - {repo: "https://github.com/sulrich/xdg-config-home.git", dest: "{{ home_dir }}/src/personal/config", ssh_url: "github-sulrich:/sulrich/xdg-config-home.git"}
+      - {repo: "https://github.com/sulrich/nvim.git", dest: "{{ home_dir }}/src/personal/nvim", ssh_url: "github-sulrich:/sulrich/nvim.git"}
+      - {repo: "https://github.com/sulrich/home-bin.git", dest: "{{ home_dir }}/src/personal/bin", ssh_url: "github-sulrich:/sulrich/home-bin.git"}
       - {repo: "https://github.com/tmux-plugins/tpm", dest: "{{ home_dir }}/.tmux/plugins/tpm", ssh_url: "github-sulrich:/tmux-plugins/tpm"}
   tasks:
     - name: detect os family
@@ -65,10 +65,8 @@
         - "{{ home_dir }}/.ssh"
         - "{{ home_dir }}/.ssh/tmp"
         - "{{ home_dir }}/.credentials"
-
         - "{{ home_dir }}/.local/share"
         - "{{ home_dir }}/.local/bin"
-        - "{{ home_dir }}/.config"
         - "{{ home_dir }}/go/bin"
         - "{{ home_dir }}/go/src"
         - "{{ home_dir }}/go/pkg"
@@ -105,12 +103,6 @@
         cd {{ home_dir }}/src/personal/dotfiles
         git remote set-url origin github-sulrich:/sulrich/dotfiles.git
       when: dotfiles_clone is defined and dotfiles_clone.changed
-
-    - name: create .home symlink to dotfiles
-      file:
-        src: "{{ home_dir }}/src/personal/dotfiles"
-        dest: "{{ home_dir }}/.home"
-        state: link
 
     - name: check if git repos exist
       stat:
@@ -155,6 +147,24 @@
         - item.changed | default(false)
       loop_control:
         label: "{{ item.item.item.dest | default('unknown') }}"
+
+    # expose the ~/src/personal working copies at their conventional locations
+    # via symlinks. these run after the git repos are cloned so the symlink
+    # targets exist. ordering within the loop is sequential and matters: .config
+    # must be created before .config/nvim, since ~/.config/nvim resolves through
+    # the .config symlink into the config repo.
+    - name: create personal tree symlinks
+      file:
+        src: "{{ item.src }}"
+        dest: "{{ item.dest }}"
+        state: link
+      loop:
+        - {src: "{{ home_dir }}/src/personal/dotfiles", dest: "{{ home_dir }}/.home"}
+        - {src: "{{ home_dir }}/src/personal/bin", dest: "{{ home_dir }}/bin"}
+        - {src: "{{ home_dir }}/src/personal/config", dest: "{{ home_dir }}/.config"}
+        - {src: "{{ home_dir }}/src/personal/nvim", dest: "{{ home_dir }}/.config/nvim"}
+      loop_control:
+        label: "{{ item.dest }}"
 
     - name: check if fzf exists
       stat:
@@ -496,6 +506,85 @@
       when: not gh_binary.stat.exists or gh_installed_version != gh_latest_version
       tags: [gh]
 
+    - name: set acli architecture
+      set_fact:
+        acli_arch: >-
+          {{ 'amd64' if ansible_architecture == 'x86_64'
+             else 'arm64' if ansible_architecture == 'aarch64'
+             else ansible_architecture }}
+      when: ansible_system == 'Linux'
+      tags: [acli]
+
+    # acli - atlassian cli. the download URL always resolves to the latest
+    # release, so force:true re-fetches each run and only reports changed when
+    # the binary actually differs - this keeps it fresh like our pinned neovim.
+    - name: install or update acli
+      get_url:
+        url: "https://acli.atlassian.com/linux/latest/acli_linux_{{ acli_arch }}/acli"
+        dest: "{{ home_dir }}/.local/bin/acli"
+        mode: 0755
+        force: true
+      when: ansible_system == 'Linux'
+      tags: [acli]
+
+    # rust/cargo must be installed before neovim so cargo-based tooling
+    # (tree-sitter-cli) is available for neovim's treesitter setup.
+    - name: check if cargo is already installed
+      stat:
+        path: "{{ home_dir }}/.cargo/bin/cargo"
+      register: cargo_binary
+      tags: [rust]
+
+    - name: install rust toolchain via rustup
+      shell: curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+      args:
+        creates: "{{ home_dir }}/.cargo/bin/cargo"
+        executable: /bin/bash
+      when: not cargo_binary.stat.exists
+      tags: [rust]
+
+    - name: update rust toolchain to latest stable
+      shell: |
+        {{ home_dir }}/.cargo/bin/rustup update stable
+      args:
+        executable: /bin/bash
+      when: cargo_binary.stat.exists
+      changed_when: false
+      tags: [rust]
+
+    # tree-sitter-cli is installed via cargo before neovim so neovim's
+    # treesitter tooling can build and manage parsers.
+    - name: check if tree-sitter-cli is installed
+      stat:
+        path: "{{ home_dir }}/.cargo/bin/tree-sitter"
+      register: tree_sitter_binary
+      tags: [rust, tree-sitter]
+
+    - name: install tree-sitter-cli via cargo
+      shell: |
+        {{ home_dir }}/.cargo/bin/cargo install tree-sitter-cli
+      args:
+        executable: /bin/bash
+        creates: "{{ home_dir }}/.cargo/bin/tree-sitter"
+      when: not tree_sitter_binary.stat.exists
+      tags: [rust, tree-sitter]
+
+    # gws - google workspace cli, installed from git via cargo
+    - name: check if gws is installed
+      stat:
+        path: "{{ home_dir }}/.cargo/bin/gws"
+      register: gws_binary
+      tags: [gws]
+
+    - name: install gws via cargo
+      shell: |
+        {{ home_dir }}/.cargo/bin/cargo install --git https://github.com/googleworkspace/cli --locked
+      args:
+        executable: /bin/bash
+        creates: "{{ home_dir }}/.cargo/bin/gws"
+      when: not gws_binary.stat.exists
+      tags: [gws]
+
     - name: check if neovim exists
       stat:
         path: "{{ home_dir }}/.local/bin/nvim"
@@ -601,29 +690,6 @@
         msg: "LSP tools (gopls) have been installed"
       when: install_lsps | bool
       tags: [lsp]
-
-    - name: check if cargo is already installed
-      stat:
-        path: "{{ home_dir }}/.cargo/bin/cargo"
-      register: cargo_binary
-      tags: [rust]
-
-    - name: install rust toolchain via rustup
-      shell: curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
-      args:
-        creates: "{{ home_dir }}/.cargo/bin/cargo"
-        executable: /bin/bash
-      when: not cargo_binary.stat.exists
-      tags: [rust]
-
-    - name: update rust toolchain to latest stable
-      shell: |
-        {{ home_dir }}/.cargo/bin/rustup update stable
-      args:
-        executable: /bin/bash
-      when: cargo_binary.stat.exists
-      changed_when: false
-      tags: [rust]
 
     # node.js / npm - install from pre-built binary so we get a modern version
     # regardless of what apt has available on the target host.

@@ -92,7 +92,7 @@ for package management:
 ansible-playbook -i inventory/multipass.yaml playbooks/package-management.yml
 
 # install lite package set only
-ansible-playbook -i inventory/multipass.yaml playbooks/package-management.yml -e "ite_packages=true"
+ansible-playbook -i inventory/multipass.yaml playbooks/package-management.yml -e "lite_packages=true"
 
 # run against a single host
 ansible-playbook -i "hostname.example.com," playbooks/package-management.yml
