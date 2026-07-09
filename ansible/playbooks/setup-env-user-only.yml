@@ -46,7 +46,7 @@
       - {name: "botwerks", url: "https://botwerks.net/sulrich.keys"}
     git_repos:
       - {repo: "https://github.com/sulrich/xdg-config-home.git", dest: "{{ home_dir }}/src/personal/config", ssh_url: "github-sulrich:/sulrich/xdg-config-home.git"}
-      - {repo: "https://github.com/sulrich/nvim.git", dest: "{{ home_dir }}/.config/nvim", ssh_url: "github-sulrich:/sulrich/nvim.git"}
+      - {repo: "https://github.com/sulrich/nvim.git", dest: "{{ home_dir }}/src/personal/nvim", ssh_url: "github-sulrich:/sulrich/nvim.git"}
       - {repo: "https://github.com/sulrich/home-bin.git", dest: "{{ home_dir }}/src/personal/bin", ssh_url: "github-sulrich:/sulrich/home-bin.git"}
       - {repo: "https://github.com/tmux-plugins/tpm", dest: "{{ home_dir }}/.tmux/plugins/tpm", ssh_url: "github-sulrich:/tmux-plugins/tpm"}
   tasks:
@@ -104,21 +104,6 @@
         git remote set-url origin github-sulrich:/sulrich/dotfiles.git
       when: dotfiles_clone is defined and dotfiles_clone.changed
 
-    - name: create .home symlink to dotfiles
-      file:
-        src: "{{ home_dir }}/src/personal/dotfiles"
-        dest: "{{ home_dir }}/.home"
-        state: link
-
-    # keep the xdg config tree under ~/src/personal/config and expose it at the
-    # conventional ~/.config location via symlink. this must exist before the
-    # git repos clone so nvim lands under ~/.config/nvim (i.e. the config repo).
-    - name: create .config symlink to ~/src/personal/config
-      file:
-        src: "{{ home_dir }}/src/personal/config"
-        dest: "{{ home_dir }}/.config"
-        state: link
-
     - name: check if git repos exist
       stat:
         path: "{{ item.dest }}/.git"
@@ -162,6 +147,24 @@
         - item.changed | default(false)
       loop_control:
         label: "{{ item.item.item.dest | default('unknown') }}"
+
+    # expose the ~/src/personal working copies at their conventional locations
+    # via symlinks. these run after the git repos are cloned so the symlink
+    # targets exist. ordering within the loop is sequential and matters: .config
+    # must be created before .config/nvim, since ~/.config/nvim resolves through
+    # the .config symlink into the config repo.
+    - name: create personal tree symlinks
+      file:
+        src: "{{ item.src }}"
+        dest: "{{ item.dest }}"
+        state: link
+      loop:
+        - {src: "{{ home_dir }}/src/personal/dotfiles", dest: "{{ home_dir }}/.home"}
+        - {src: "{{ home_dir }}/src/personal/bin", dest: "{{ home_dir }}/bin"}
+        - {src: "{{ home_dir }}/src/personal/config", dest: "{{ home_dir }}/.config"}
+        - {src: "{{ home_dir }}/src/personal/nvim", dest: "{{ home_dir }}/.config/nvim"}
+      loop_control:
+        label: "{{ item.dest }}"
 
     - name: check if fzf exists
       stat:
