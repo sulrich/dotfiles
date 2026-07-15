@@ -21,20 +21,17 @@
     install_lsps: false  # default to not installing LSPs
     dotfiles_map:
       - {src: "ansible.cfg", dest: ".ansible.cfg"}
-      - {src: "cloginrc", dest: ".cloginrc"}
       - {src: "digrc", dest: ".digrc"}
       - {src: "flake8", dest: ".flake8"}
       - {src: "git/gitconfig", dest: ".gitconfig"}
       - {src: "git/gitconfig-personal", dest: ".gitconfig-personal"}
       - {src: "git/gitignore", dest: ".gitignore"}
-      - {src: "mailcap", dest: ".mailcap"}
       - {src: "markdownlint.json", dest: ".markdownlintrc"}
       - {src: "ruff.toml", dest: ".ruff.toml"}
       - {src: "screenrc", dest: ".screenrc"}
       - {src: "sqliterc", dest: ".sqliterc"}
       - {src: "templates", dest: ".templates"}
       - {src: "tmux.conf", dest: ".tmux.conf"}
-      - {src: "urlview", dest: ".urlview"}
       - {src: "vale.ini", dest: ".vale.ini"}
       - {src: "zshrc", dest: ".zshrc"}
       - {src: "zsh/zlogin", dest: ".zlogin"}

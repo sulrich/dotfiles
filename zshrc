@@ -219,6 +219,11 @@ function date-diff() {
   echo $DIFF
 }
 
+# extracts codeblocks from markdown files
+function md-xtract-code() {
+  gsed -n '/^```/,/^```/ p' < "${1}" | sed '/^```/ d'
+}
+
 # get a list of the google netblocks.  not necessarily definitive, but gives
 # you a good idea of what you should be seeing.
 function google-nets () {
