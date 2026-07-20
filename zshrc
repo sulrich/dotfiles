@@ -238,6 +238,10 @@ function google-nets () {
   end
 }
 
+function open-jira() {
+  open "${JIRA_URL}/browse/${1}"
+}
+
 # pb-nh
 function pb-nh() {
   jq -Rns '{text: inputs}' | \
