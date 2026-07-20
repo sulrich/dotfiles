@@ -132,7 +132,6 @@ setaliases() {
   # makes logging into lab routers handy
   alias ago="TERM=vt100 ssh -l admin -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null"
   # when logging into netlab or sonic devices with the standard credentials.
-  alias fgo="TERM=vt100 sshpass -f ${HOME}/.credentials/fboss-dut-pass.txt ssh $@"
   alias ngo="TERM=vt100 sshpass -f ${HOME}/.credentials/nh-dut-pass.txt ssh $@"
   alias sgo="TERM=vt100 sshpass -f ${HOME}/.credentials/sonic-pass.txt ssh $@"
 
@@ -170,21 +169,30 @@ function debug() { [ "$DEBUG" ] && echo ">>> $*"; }
 function mwhois { whois -h `whois "domain $@" | sed '/^.*Whois Server:/!d;s///'` "$@" }
 function asnwhois { whois -h whois.cymru.com " -v AS$1" }
 
-function update-tmux-ssh () {
-  if [[ -n "$TMUX" ]]; then
-    while IFS='=' read -r key value; do
-      [[ -n "$value" ]] && export "$key"="$value"
-    done < <(tmux show-environment | grep '^SSH_.*=')
+# 1password CLI functions
+OP_ACCOUNT_NAME="botzinski"
+function 1p-on() {
+  if [[ -z ${OP_SESSION_botzinski} ]]; then
+    # eval $(op signin "${OP_ACCOUNT_NAME}")
+    eval $(op signin)
   fi
 }
 
-function upgrade-uv-tools() {
-  uv self update
-  foreach i ($(uv tool list | egrep -iv '^-' | awk '{print $1}'))
-    uv tool install $i --upgrade;
-  end
+function 1p-off() {
+  op signout
+  unset OP_SESSION_botzinski
 }
 
+function get-1pass-passwd() {
+  1p-on
+  op get item "$1" --fields password
+}
+
+# API tokens use the credential field.
+function get-1pass-api-token() {
+  1p-on
+  op get item "$1" --fields credential
+}
 
 # this will populate the necessary environment variables and fire up claude to
 # use the deepseek models (v4 as of this writing)
@@ -197,21 +205,6 @@ function claude-deepseek() {
   claude
 }
 
-SU==su
-su () {
-  if [ "$1" = "" ]
-  then
-    ( export STARTPWD=$PWD ; cd / ; ${SU} root -c "exec zsh" )
-  else
-     ${SU} $*
-  fi
-} # end of su override
-
-# generate a random mac address
-function gen-mac-addr () {
-  printf 'DE:CA:FB:AD:%02X:%02X\n' $((RANDOM%256)) $((RANDOM%256))
-}
-
 # get the difference between to YYYYMMDD formatted dates. note,
 # requires gdate.
 function date-diff() {
@@ -219,9 +212,94 @@ function date-diff() {
   echo $DIFF
 }
 
-# extracts codeblocks from markdown files
-function md-xtract-code() {
-  gsed -n '/^```/,/^```/ p' < "${1}" | sed '/^```/ d'
+function fgo() {
+  local pass_file="${HOME}/.credentials/fboss-dut-pass.txt"
+  TERM=vt100 sshpass -f "$pass_file" ssh \
+      -o PreferredAuthentications=password \
+      -o PubkeyAuthentication=no \
+      "$@"
+}
+
+# generate a random mac address
+function gen-mac-addr () {
+  printf 'DE:CA:FB:AD:%02X:%02X\n' $((RANDOM%256)) $((RANDOM%256))
+}
+
+# misc. git functions
+# create a uniquely named branch for blog PRs - to be run from $HUGO_DIR
+function blog-branch() {
+  cd ${HUGO_DIR}
+  local BRANCH_NAME="$(date +"%Y%m%d")-${HOSTNAME}-updates"
+  git co -b "${BRANCH_NAME}"
+}
+
+function github-https2ssh() {
+  # get the current directory's git remote origin url
+  local origin_url=$(git config --get remote.origin.url)
+
+  # check if it's an https url
+  if [[ $origin_url == https://github.com/* ]]; then
+    # extract username and repo name from the https url
+    local username_repo=${origin_url#https://github.com/}
+    username_repo=${username_repo%.git}
+
+    # generate the new ssh url with custom profile
+    local new_url="github-sulrich:/${username_repo}.git"
+
+    # prompt for confirmation
+    echo "current origin url: $origin_url"
+    echo "new origin url: $new_url"
+    read -q "REPLY?change the remote origin url? [Y/n] "
+    echo ""
+
+    if [[ $REPLY =~ ^[Yy]$ || $REPLY = "" ]]; then
+      git remote set-url origin $new_url
+      echo "origin url updated to: $(git config --get remote.origin.url)"
+    else
+      echo "operation cancelled"
+    fi
+  else
+    echo "current origin url is not https: $origin_url"
+  fi
+}
+
+function git-pull-all-branches() {
+  git branch -r                     |\
+  grep -v '\->'                     |\
+  sed "s,\x1B\[[0-9;]*[a-zA-Z],,g"  |\
+    while read remote;               \
+    do                               \
+      git branch --track "${remote#origin/}" "$remote"; \
+    done
+}
+
+function git-upstream-sync() {
+  # for stuff that i am actively working on with others, work off of my fork and
+  # update my $default_branch with the contents of the upstream. this is a
+  # pretty common workflow.
+  # determine if the repo uses master/main as the default branch name
+  #
+  # i need to remember to set the upstream for this first. this done by adding
+  # the upstream a la "git remote add upstream <upstream-repo-url>
+  #
+  # make changes to the new branch by doing ...
+  # git checkout -b <my-new-branch>
+  # git push --set-upstream origin <my-new-branch>
+
+  local DEFAULT_BRANCH=$(git remote show upstream | grep 'HEAD branch' | awk '{print $NF}')
+  echo "default branch: ${DEFAULT_BRANCH}"
+
+  if [ -z "${DEFAULT_BRANCH}" ]; then
+    echo ""
+    echo "ERROR: the upstream rep is undefined, you will need to add an upstream"
+    echo "ERROR: repo to track git remote add upstream <upstream-url-here>"
+    echo ""
+  else
+    git checkout "${DEFAULT_BRANCH}"
+    git fetch upstream
+    git pull upstream "${DEFAULT_BRANCH}"
+    git push origin "${DEFAULT_BRANCH}"
+  fi
 }
 
 # get a list of the google netblocks.  not necessarily definitive, but gives
@@ -236,6 +314,17 @@ function google-nets () {
   foreach NET ("${GOOG_BLOCKS[@]}")
     nslookup -q=TXT ${NET} 8.8.8.8;
   end
+}
+
+
+
+
+
+
+
+# extracts codeblocks from markdown files
+function md-xtract-code() {
+  gsed -n '/^```/,/^```/ p' < "${1}" | sed '/^```/ d'
 }
 
 function open-jira() {
@@ -275,105 +364,29 @@ function pyang-path () {
   pyang --plugindir ${YANG_PLUGINS} --strip -f paths $*
 }
 
-# misc. git functions
-# create a uniquely named branch for blog PRs - to be run from $HUGO_DIR
-function blog-branch() {
-  local BRANCH_NAME="$(date +"%Y%m%d")-${HOSTNAME}-updates"
-  git co -b "${BRANCH_NAME}"
-}
-
-function git-upstream-sync() {
-  # for stuff that i am actively working on with others, work off of my fork and
-  # update my $default_branch with the contents of the upstream. this is a
-  # pretty common workflow.
-  # determine if the repo uses master/main as the default branch name
-  #
-  # i need to remember to set the upstream for this first. this done by adding
-  # the upstream a la "git remote add upstream <upstream-repo-url>
-  #
-  # make changes to the new branch by doing ...
-  # git checkout -b <my-new-branch>
-  # git push --set-upstream origin <my-new-branch>
-
-  local DEFAULT_BRANCH=$(git remote show upstream | grep 'HEAD branch' | awk '{print $NF}')
-  echo "default branch: ${DEFAULT_BRANCH}"
-
-  if [ -z "${DEFAULT_BRANCH}" ]; then
-    echo ""
-    echo "ERROR: the upstream rep is undefined, you will need to add an upstream"
-    echo "ERROR: repo to track git remote add upstream <upstream-url-here>"
-    echo ""
+SU==su
+su () {
+  if [ "$1" = "" ]
+  then
+    ( export STARTPWD=$PWD ; cd / ; ${SU} root -c "exec zsh" )
   else
-    git checkout "${DEFAULT_BRANCH}"
-    git fetch upstream
-    git pull upstream "${DEFAULT_BRANCH}"
-    git push origin "${DEFAULT_BRANCH}"
+     ${SU} $*
+  fi
+} # end of su override
+
+function update-tmux-ssh () {
+  if [[ -n "$TMUX" ]]; then
+    while IFS='=' read -r key value; do
+      [[ -n "$value" ]] && export "$key"="$value"
+    done < <(tmux show-environment | grep '^SSH_.*=')
   fi
 }
 
-function git-pull-all-branches() {
-  git branch -r                                        |\
-  grep -v '\->'                                        |\
-  sed "s,\x1B\[[0-9;]*[a-zA-Z],,g"                     |\
-    while read remote;                                  \
-    do                                                  \
-      git branch --track "${remote#origin/}" "$remote"; \
-    done
-}
-
-function github-https2ssh() {
-  # get the current directory's git remote origin url
-  local origin_url=$(git config --get remote.origin.url)
-
-  # check if it's an https url
-  if [[ $origin_url == https://github.com/* ]]; then
-    # extract username and repo name from the https url
-    local username_repo=${origin_url#https://github.com/}
-    username_repo=${username_repo%.git}
-
-    # generate the new ssh url with custom profile
-    local new_url="github-sulrich:/${username_repo}.git"
-
-    # prompt for confirmation
-    echo "current origin url: $origin_url"
-    echo "new origin url: $new_url"
-    read -q "REPLY?change the remote origin url? [Y/n] "
-    echo ""
-
-    if [[ $REPLY =~ ^[Yy]$ || $REPLY = "" ]]; then
-      git remote set-url origin $new_url
-      echo "origin url updated to: $(git config --get remote.origin.url)"
-    else
-      echo "operation cancelled"
-    fi
-  else
-    echo "current origin url is not https: $origin_url"
-  fi
-}
-
-# 1password CLI functions
-OP_ACCOUNT_NAME="botzinski"
-function 1p-on() {
-  if [[ -z ${OP_SESSION_botzinski} ]]; then
-    # eval $(op signin "${OP_ACCOUNT_NAME}")
-    eval $(op signin)
-  fi
-}
-
-function 1p-off() {
-  op signout
-  unset OP_SESSION_botzinski
-}
-
-function get-1pass-passwd() {
-  1p-on
-  op get item "$1" --fields password
-}
-
-# API tokens use the credential field.
-function get-1pass-api-token() {
-  1p-on
-  op get item "$1" --fields credential
+function upgrade-uv-tools() {
+  uv self update
+  foreach i ($(uv tool list | egrep -iv '^-' | awk '{print $1}'))
+    uv tool install $i --upgrade;
+  end
 }
 
 setaliases # load the aliases
