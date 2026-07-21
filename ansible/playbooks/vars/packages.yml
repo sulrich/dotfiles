@@ -32,7 +32,7 @@ packages_standard:
   - cmake
   - curl
   - direnv
-  - dnsutils
+  - bind9-dnsutils
   - ethtool
   - fzf
   - gdb
