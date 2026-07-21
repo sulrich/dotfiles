@@ -377,6 +377,21 @@
       when: not ty_binary.stat.exists
       tags: [python]
 
+    - name: check if yamllint is installed
+      stat:
+        path: "{{ home_dir }}/.local/bin/yamllint"
+      register: yamllint_binary
+      tags: [python]
+
+    - name: install yamllint using uv
+      shell: |
+        {{ home_dir }}/.local/bin/uv tool install yamllint
+      args:
+        executable: /bin/bash
+        creates: "{{ home_dir }}/.local/bin/yamllint"
+      when: not yamllint_binary.stat.exists
+      tags: [python]
+
     - name: check if 1password cli is installed
       stat:
         path: "{{ home_dir }}/.local/bin/op"
