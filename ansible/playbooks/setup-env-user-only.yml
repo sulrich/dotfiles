@@ -16,7 +16,11 @@
     python2_ver: "2.7.18"
     python3_ver: "3.13"
     home_dir: "{{ ansible_env.HOME }}"
+    # persistent build dir for cargo installs so repeated runs reuse compiled
+    # artifacts instead of rebuilding ~200 crates in a throwaway /tmp dir.
+    cargo_build_dir: "{{ ansible_env.HOME }}/.cache/cargo-build"
     nvim_version: "0.12.4"
+    tree_sitter_version: "0.26.11"  # tree-sitter cli - bump to upgrade
     op_version: "2.30.0"  # 1password cli - bump to upgrade
     install_lsps: false  # default to not installing LSPs
     dotfiles_map:
@@ -539,8 +543,7 @@
       when: ansible_system == 'Linux'
       tags: [acli]
 
-    # rust/cargo must be installed before neovim so cargo-based tooling
-    # (tree-sitter-cli) is available for neovim's treesitter setup.
+    # rust/cargo is needed for cargo-based tooling installed below (gws).
     - name: check if cargo is already installed
       stat:
         path: "{{ home_dir }}/.cargo/bin/cargo"
@@ -564,22 +567,67 @@
       changed_when: false
       tags: [rust]
 
-    # tree-sitter-cli is installed via cargo before neovim so neovim's
-    # treesitter tooling can build and manage parsers.
-    - name: check if tree-sitter-cli is installed
+    # tree-sitter-cli provides neovim's treesitter parser tooling. we install
+    # the prebuilt release binary rather than `cargo install` - building from
+    # source pulls 200+ crates and blows past disk quotas on constrained hosts.
+    - name: check if tree-sitter exists
       stat:
-        path: "{{ home_dir }}/.cargo/bin/tree-sitter"
+        path: "{{ home_dir }}/.local/bin/tree-sitter"
       register: tree_sitter_binary
-      tags: [rust, tree-sitter]
+      tags: [tree-sitter]
 
-    - name: install tree-sitter-cli via cargo
+    - name: get installed tree-sitter version
       shell: |
-        {{ home_dir }}/.cargo/bin/cargo install tree-sitter-cli
-      args:
-        executable: /bin/bash
-        creates: "{{ home_dir }}/.cargo/bin/tree-sitter"
-      when: not tree_sitter_binary.stat.exists
-      tags: [rust, tree-sitter]
+        {{ home_dir }}/.local/bin/tree-sitter --version | awk '{print $2}'
+      register: tree_sitter_installed_version_result
+      changed_when: false
+      failed_when: false
+      when: tree_sitter_binary.stat.exists
+      tags: [tree-sitter]
+
+    - name: set tree-sitter version fact
+      set_fact:
+        tree_sitter_installed_version: "{{ tree_sitter_installed_version_result.stdout | default('') | trim }}"
+      tags: [tree-sitter]
+
+    - name: set architecture for tree-sitter
+      set_fact:
+        tree_sitter_arch: >-
+          {{ 'x64' if ansible_architecture == 'x86_64'
+             else 'arm64' if ansible_architecture == 'aarch64'
+             else ansible_architecture }}
+      when: ansible_system == 'Linux'
+      tags: [tree-sitter]
+
+    - name: install or update tree-sitter cli
+      block:
+        - name: download tree-sitter cli
+          get_url:
+            url: "https://github.com/tree-sitter/tree-sitter/releases/download/v{{ tree_sitter_version }}/tree-sitter-linux-{{ tree_sitter_arch }}.gz"
+            dest: "/tmp/tree-sitter-linux-{{ tree_sitter_arch }}.gz"
+            mode: 0644
+            force: true
+
+        - name: decompress tree-sitter binary to local bin
+          shell: |
+            gunzip -c /tmp/tree-sitter-linux-{{ tree_sitter_arch }}.gz \
+              > {{ home_dir }}/.local/bin/tree-sitter
+          args:
+            executable: /bin/bash
+
+        - name: make tree-sitter executable
+          file:
+            path: "{{ home_dir }}/.local/bin/tree-sitter"
+            mode: 0755
+
+        - name: cleanup tree-sitter download
+          file:
+            path: "/tmp/tree-sitter-linux-{{ tree_sitter_arch }}.gz"
+            state: absent
+      when:
+        - ansible_system == 'Linux'
+        - not tree_sitter_binary.stat.exists or tree_sitter_installed_version != tree_sitter_version
+      tags: [tree-sitter]
 
     # gws - google workspace cli, installed from git via cargo
     - name: check if gws is installed
@@ -594,6 +642,8 @@
       args:
         executable: /bin/bash
         creates: "{{ home_dir }}/.cargo/bin/gws"
+      environment:
+        CARGO_BUILD_BUILD_DIR: "{{ cargo_build_dir }}"
       when: not gws_binary.stat.exists
       tags: [gws]
 
