@@ -29,10 +29,14 @@ packages_standard:
   - build-essential
   - bzip2
   - ca-certificates
+  # clang ships the compiler builtin headers (stdbool.h et al) in its resource
+  # dir; bindgen needs these to build cargo crates like rquickjs-sys, a
+  # transitive dep of tree-sitter-cli. build-essential's gcc headers don't count.
+  - clang
   - cmake
   - curl
   - direnv
-  - dnsutils
+  - bind9-dnsutils
   - ethtool
   - fzf
   - gdb
