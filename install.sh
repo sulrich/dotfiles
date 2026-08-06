@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # -*- mode: sh; fill-column: 78; comment-column: 50; tab-width: 2 -*-
 
-trap cleanup SIGINT SIGTERM ERR EXIT
+set -euo pipefail
 
 # note that the minimum bash version for this script is 4.0 to support
 # the associative arrays
@@ -19,15 +19,14 @@ trap cleanup SIGINT SIGTERM ERR EXIT
 # exist yet.
 BREWFILE="${HOME}/iCloud/src/configs/krustini/brew-file.txt"
 
-PYTHON2_VER="2.7.18"
-PYTHON3_VER="3.12.7"
-
+# map uname -m onto the arch strings go uses in its release filenames
 ARCH=""
 case $(uname -m) in
-    i386)   ARCH="386" ;;
-    i686)   ARCH="386" ;;
-    x86_64) ARCH="amd64" ;;
-    arm*)   ARCH="$(uname -m)"
+  i386|i686)     ARCH="386" ;;
+  x86_64)        ARCH="amd64" ;;
+  aarch64|arm64) ARCH="arm64" ;;
+  # go only publishes armv6l for 32-bit arm
+  armv6l|armv7l) ARCH="armv6l" ;;
 esac
 
 # TODO: provide an option for upgrading go on raspberry pi
@@ -38,19 +37,38 @@ esac
 # 3. rm -rf /usr/local/go
 # 3. run the install-go process
 
-## install-go (sudo): pull down the latest go releas and install
+## install-go (sudo): pull down the latest go release and install
 install-go() {
-  echo "installing go"
-  mkdir -p "${HOME}/go/bin"
-  mkdir -p "${HOME}/go/src"
-  mkdir -p "${HOME}/go/pkg"
-  local GO_VERSION=$(curl -s "https://golang.org/VERSION?m=text")
-  local GO_OS=$(uname -s | tr "[:upper:]" "[:lower:]")
-  local FILENAME="${GO_VERSION}.${GO_OS}-${ARCH}.tar.gz"
-  echo "https://dl.google.com/go/${FILENAME} -> ${FILENAME}"
-  curl -s "https://dl.google.com/go/${FILENAME}" -o "${FILENAME}"
-  sudo tar -C /usr/local -xzf "${FILENAME}"
-  rm -i "${FILENAME}"
+  if [ -z "${ARCH}" ]
+  then
+    echo "error: unsupported architecture $(uname -m)" >&2
+    return 1
+  fi
+
+  mkdir -p "${HOME}/go/bin" "${HOME}/go/src" "${HOME}/go/pkg"
+
+  local GO_VERSION GO_OS FILENAME GO_TMP
+  # note: golang.org/VERSION now redirects, and the response carries the
+  # version on the first line with a build timestamp on the second
+  GO_VERSION=$(curl -fsSL "https://go.dev/VERSION?m=text")
+  GO_VERSION=${GO_VERSION%%$'\n'*}
+  if [ -z "${GO_VERSION}" ]
+  then
+    echo "error: could not determine the latest go version" >&2
+    return 1
+  fi
+
+  GO_OS=$(uname -s | tr "[:upper:]" "[:lower:]")
+  FILENAME="${GO_VERSION}.${GO_OS}-${ARCH}.tar.gz"
+  GO_TMP=$(mktemp -d)
+
+  echo "installing ${GO_VERSION} (${GO_OS}-${ARCH})"
+  curl -fsSL "https://dl.google.com/go/${FILENAME}" -o "${GO_TMP}/${FILENAME}"
+  # unpacking over an existing tree leaves stale files behind - go's install
+  # instructions call for removing it first
+  sudo rm -rf /usr/local/go
+  sudo tar -C /usr/local -xzf "${GO_TMP}/${FILENAME}"
+  rm -rf "${GO_TMP}"
 }
 
 ## install-brew: new macs only. do the needful
@@ -69,7 +87,7 @@ install-brew-packages() {
   brew bundle --file="${BREWFILE}"
 }
 
-## install-language-servers (sudo): intall relevant lsps for nvim
+## install-language-servers (sudo): install relevant lsps for nvim
 install-language-servers() {
   # install python language server (pyright)
   npm install -g pyright
@@ -80,12 +98,13 @@ install-language-servers() {
 ## install-snmp-mibs: pull down the collection of mibs
 install-snmp-mibs() {
   mkdir -p "${HOME}/.snmp"
+  local MIB_TAR
+  MIB_TAR=$(mktemp)
   echo "downloading various SNMP mibs"
-  curl -s https://dyn.botwerks.net/mibs/mibs.tar.gz -o "${HOME}/.home/mibs.tar.gz"
+  curl -fsSL https://dyn.botwerks.net/mibs/mibs.tar.gz -o "${MIB_TAR}"
   echo "expanding mibs to ${HOME}/.snmp/mibs"
-  cd "${HOME}/.snmp" || return
-  tar xzf "${HOME}/.home/mibs.tar.gz"
-  rm -i "${HOME}/.home/mibs.tar.gz"
+  tar -C "${HOME}/.snmp" -xzf "${MIB_TAR}"
+  rm -f "${MIB_TAR}"
 }
 
 ## install-1pass-apt: install 1password in apt based systems
@@ -94,7 +113,7 @@ install-1pass-apt() {
   # install key
   curl -sS https://downloads.1password.com/linux/keys/1password.asc | \
     sudo gpg --dearmor --output /usr/share/keyrings/1password-archive-keyring.gpg
-  # install apt repo 
+  # install apt repo
   echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/1password-archive-keyring.gpg] https://downloads.1password.com/linux/debian/$(dpkg --print-architecture) stable main" | sudo tee /etc/apt/sources.list.d/1password.list
   # more debsig stuff
   sudo mkdir -p /etc/debsig/policies/AC2D62742012EA22/
@@ -150,17 +169,60 @@ install-docker-ubuntu() {
   sudo apt-get install docker-ce docker-ce-cli containerd.io
 }
 
-## make-symlinks: make the necessary symlinks
-make-symlinks() {
+# associative arrays need bash 4.0+, and macos still ships 3.2
+require-bash4() {
   if [ "${BASH_VERSINFO:-0}" -lt 4 ]
   then
-    echo "error: bash version too low (${BASH_VERSION})"
+    echo "error: bash 4.0+ required (running ${BASH_VERSION:-unknown})" >&2
     exit 1
   fi
+}
 
+# link-dotfile <source> <target>: symlink source -> target, idempotently.
+# a target already pointing at source is left alone, as is anything else
+# occupying the target.  a missing source is reported rather than linked, so we
+# don't litter the home directory with dangling symlinks.
+link-dotfile() {
+  local SRC="$1"
+  local DST="$2"
+
+  if [ ! -e "${SRC}" ]
+  then
+    echo "  ! ${DST} - missing source ${SRC}"
+    return 1
+  fi
+
+  if [ -L "${DST}" ]
+  then
+    local CURRENT
+    CURRENT=$(readlink "${DST}")
+    if [ "${CURRENT}" = "${SRC}" ]
+    then
+      echo "  = ${DST}"
+      return 0
+    fi
+    echo "  ! ${DST} - points at ${CURRENT}, leaving it alone"
+    return 1
+  fi
+
+  if [ -e "${DST}" ]
+  then
+    echo "  ! ${DST} - exists and is not a symlink, leaving it alone"
+    return 1
+  fi
+
+  mkdir -p "$(dirname "${DST}")"
+  ln -s "${SRC}" "${DST}"
+  echo "  + ${DST} -> ${SRC}"
+}
+
+## make-symlinks: make the necessary symlinks
+make-symlinks() {
+  require-bash4
+
+  # repo-relative path -> path relative to ${HOME}
   declare -A DOTFILES
   DOTFILES=(
-    ['Xdefaults']=".Xdefaults"
     ['ansible.cfg']=".ansible.cfg"
     ['cloginrc']=".cloginrc"
     ['digrc']=".digrc"
@@ -168,42 +230,56 @@ make-symlinks() {
     ['git/gitconfig']=".gitconfig"
     ['git/gitconfig-personal']=".gitconfig-personal"
     ['git/gitignore']=".gitignore"
-    ['mailcap']=".mailcap"
-    ['markdownlint.json']=".markdownlintrc"
-    ['octaverc']=".octaverc"
+    # .gitconfig is useless without this - it's an unconditional [include]
+    ['gitconfig-conditional']=".gitconfig-conditional"
+    ['markdownlint.json']=".markdownrc"
     ['ruff.toml']=".ruff.toml"
     ['screenrc']=".screenrc"
     ['sqliterc']=".sqliterc"
     ['templates']=".templates"
     ['tmux.conf']=".tmux.conf"
-    ['urlview']=".urlview"
     ['vale.ini']=".vale.ini"
+    ['vimrc']=".vimrc"
     ['zshrc']=".zshrc"
     ['zsh/zlogin']=".zlogin"
     ['zsh/zshenv']=".zshenv"
     ['ssh/config']=".ssh/config"
   )
 
-  # ssh specific elements
-  mkdir -p "${HOME}/.ssh/tmp"
-  # git isn't always great re: permissions
-  chmod -R 0755 "${HOME}/.home/ssh"
-  chmod 0755 "${HOME}/.ssh/tmp"
-  # put platform specific ssh elements into place
-  local BASEOS=$(uname -s | tr "[:upper:]" "[:lower:]")
-  ln -s "${HOME}/.home/ssh/${BASEOS}" "${HOME}/.ssh/conf.d"
+  local SKIPPED=0
 
   echo "making dotfile symlinks"
+  local DFILE
   for DFILE in "${!DOTFILES[@]}";
   do
-    echo  "- ${DFILE} -> ${DOTFILES[$DFILE]}"
-    ln -s "${HOME}/.home/${DFILE}" "${HOME}/${DOTFILES[$DFILE]}"
+    if ! link-dotfile "${HOME}/.home/${DFILE}" "${HOME}/${DOTFILES[$DFILE]}"
+    then
+      SKIPPED=$((SKIPPED + 1))
+    fi
   done
+
+  # ssh/config pulls in the platform fragments via "Include conf.d/*"
+  mkdir -p "${HOME}/.ssh/tmp"
+  local BASEOS
+  BASEOS=$(uname -s | tr "[:upper:]" "[:lower:]")
+  if ! link-dotfile "${HOME}/.home/ssh/${BASEOS}" "${HOME}/.ssh/conf.d"
+  then
+    SKIPPED=$((SKIPPED + 1))
+  fi
+
+  # git doesn't track the permissions ssh insists on
+  "${HOME}/.home/bin/ssh-fix-perms.sh"
 
   echo "making local ~/.credentials cache"
   mkdir -p "${HOME}/.credentials"
   chmod 0700 "${HOME}/.credentials"
-  echo "copy the necessary credentials into ~/.credentials"
+  echo "populate ~/.credentials with 'op inject' - see README.md"
+
+  if [ "${SKIPPED}" -gt 0 ]
+  then
+    echo "${SKIPPED} link(s) skipped - see the '!' lines above" >&2
+    return 1
+  fi
 }
 
 ## install-personal-bin: install personal binaries into home directory
@@ -212,9 +288,11 @@ install-personal-bin() {
   git clone https://github.com/sulrich/home-bin.git "${HOME}/bin"
 }
 
-## sync-public-ssh-keys: copy my authorized ssh public keys from the 
-##                     : appropriate repo (arista, github, botwerks)
+## sync-public-ssh-keys: copy my authorized ssh public keys from the
+##                     : appropriate repo (nexthop, github, botwerks)
 sync-public-ssh-keys() {
+  require-bash4
+
   mkdir -p "${HOME}/.ssh"
   chmod 0700 "${HOME}/.ssh"
 
@@ -224,16 +302,36 @@ sync-public-ssh-keys() {
     ['github']="https://github.com/sulrich.keys"
     ['botwerks']="https://botwerks.net/sulrich.keys"
   )
+
+  local AUTH_KEYS="${HOME}/.ssh/authorized_keys"
+  local NEW_KEYS
+  NEW_KEYS=$(mktemp)
+
+  # start from what's already there so locally added keys survive the sync
+  if [ -f "${AUTH_KEYS}" ]
+  then
+    cat "${AUTH_KEYS}" >> "${NEW_KEYS}"
+  fi
+
+  local KEY
   for KEY in "${!PUBKEYS[@]}";
   do
-    # get the public ssh key
-    curl -s ${PUBKEYS[$KEY]} >> "${HOME}/.ssh/authorized_keys"
+    echo "fetching ${KEY} keys"
+    if ! curl -fsS "${PUBKEYS[$KEY]}" >> "${NEW_KEYS}"
+    then
+      echo "error: could not fetch ${KEY} keys from ${PUBKEYS[$KEY]}" >&2
+      rm -f "${NEW_KEYS}"
+      return 1
+    fi
+    # not every source ends its output with a newline
+    echo >> "${NEW_KEYS}"
   done
-      
-  # remove dups
-  uniq "${HOME}/.ssh/authorized_keys" > "${HOME}/.ssh/tmp_keys"
-  mv "${HOME}/.ssh/tmp_keys" "${HOME}/.ssh/authorized_keys"
-  chmod 0755 "${HOME}/.ssh/authorized_keys"
+
+  # uniq only collapses *adjacent* duplicates and the keys arrive interleaved,
+  # so sort first.  key order in authorized_keys is not significant.
+  sort -u "${NEW_KEYS}" | sed '/^[[:space:]]*$/d' > "${AUTH_KEYS}"
+  rm -f "${NEW_KEYS}"
+  chmod 0600 "${AUTH_KEYS}"
 }
 
 ## install-min-packages-debian (sudo): install minimum set of tools (debian/ubuntu)
@@ -309,7 +407,7 @@ install-server-debian() {
 EOFMESSAGE
 }
 
-## bootstrap-deb-1 (sudo): install the elements to make server happy
+## bootstrap-debian-1 (sudo): install the elements to make server happy
 bootstrap-debian-1() {
   install-server-debian
   install-min-packages-debian
@@ -336,16 +434,25 @@ cleanup() {
     # script cleanup here, tmp files, etc.
 }
 
+# installed here rather than at the top of the file so an early failure can't
+# fire the trap before cleanup() is defined
+trap cleanup SIGINT SIGTERM ERR EXIT
+
 if [[ $# -lt 1 ]]; then
   help
   exit
 fi
 
-case $1 in
-  *)
-    # shift positional arguments so that arg 2 becomes arg 1, etc.
-    CMD=$1
-    shift 1
-    ${CMD} ${@} || help
-    ;;
-esac
+CMD="$1"
+shift
+
+# dispatch only to functions defined in this script, otherwise "install.sh rm"
+# would cheerfully run rm
+if ! declare -F "${CMD}" > /dev/null
+then
+  echo "error: unknown function '${CMD}'" >&2
+  help
+  exit 1
+fi
+
+"${CMD}" "$@"
