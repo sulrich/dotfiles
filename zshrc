@@ -194,6 +194,11 @@ function get-1pass-api-token() {
   op get item "$1" --fields credential
 }
 
+function gsw-freshen() {
+  gws auth login
+  gws auth export --unmasked > ${GOOGLE_WORKSPACE_CLI_CREDENTIALS_FILE}
+}
+
 # this will populate the necessary environment variables and fire up claude to
 # use the deepseek models (v4 as of this writing)
 function claude-deepseek() {
