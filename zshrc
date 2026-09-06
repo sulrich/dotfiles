@@ -194,7 +194,7 @@ function get-1pass-api-token() {
   op get item "$1" --fields credential
 }
 
-function gsw-freshen() {
+function gws-freshen() {
   gws auth login
   gws auth export --unmasked > ${GOOGLE_WORKSPACE_CLI_CREDENTIALS_FILE}
 }

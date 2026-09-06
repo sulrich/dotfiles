@@ -97,6 +97,18 @@ setpath() {
     CARGO_PATH=""
   fi
 
+  
+  # 20260901(sulrich): the following is predicated the guidance from gcloud-cli
+  # cask.  however the cask seems to add the necessary symlinks to the
+  # /opt/homebrew/bin/* utilities.  to that end i'm going to leave this out.
+  # # pull in the gcloud sdk tools
+  # if [ -f "/opt/homebrew/share/google-cloud-sdk/bin" ]
+  # then
+  #   GCLOUD_PATH="/opt/homebrew/share/google-cloud-sdk/bin"
+  # else
+  #   GCLOUD_PATH=""
+  # fi
+
   # set path to address OS/arch  specific binaries within home directory
   # OSPATH=`uname -ms | sed 's| |/|g'`
   export PATH="${CARGO_PATH}${LOCAL_PATH}:${HOME}/bin:${PATH}:."
@@ -111,11 +123,6 @@ setpath() {
   # export MIBDIRS="/usr/share/snmp/mibs:${HOME}/.snmp/mibs/cisco:${HOME}/.snmp/mibs/juniper"
   # export MIBDIRS="${MIBDIRS}:${HOME}/.snmp/mibs/std:${HOME}/.snmp/mibs/misc:."
 
-  # pull in the gcloud sdk tools
-  if [ -f "${HOME}/src/google-cloud-sdk/path.zsh.inc" ]
-  then
-    source "${HOME}/src/google-cloud-sdk/path.zsh.inc"
-  fi
 } # end setpath()
 
 
