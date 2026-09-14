@@ -31,6 +31,19 @@ the `playbooks/` directory contains the following automation:
   each tool group is tagged so it can be installed/updated on its own without a
   full run. see [updating individual tools](#updating-individual-tools) below.
 
+### claude skills
+
+- `setup-claude-skills.yml` - installs personal claude skills from the private
+  `claude-skills` repo into `~/.claude/skills`:
+  - clones/updates `~/src/personal/claude-skills` over ssh
+  - symlinks each skill directory into `~/.claude/skills`
+
+  this is a separate playbook on purpose. `setup-env-user-only.yml` clones every
+  repo over https and rewrites the remote afterward so it never needs an
+  ssh-agent. `claude-skills` is private, so it has to be cloned over ssh via the
+  `github-sulrich` alias, which needs a key in the agent. run it after the
+  user-only setup has deployed the ssh configuration.
+
 ### server setup
 
 - `server-acct-setup.yml` - sets up the baseline account configuration on a
@@ -100,6 +113,16 @@ ansible-playbook -i "hostname.example.com," playbooks/package-management.yml
 # run against a single host with lite packages
 ansible-playbook -i "hostname.example.com," playbooks/package-management.yml -e "lite_packages=true"
 ```
+
+for claude skills (requires a loaded ssh-agent key and the ssh config already
+deployed by `setup-env-user-only.yml`):
+
+```shell
+ssh-add -l                        # confirm a key is available
+ansible-playbook -i "hostname.example.com," playbooks/setup-claude-skills.yml
+```
+
+re-run it any time to freshen the skills - it pulls the repo and relinks.
 
 when we only want to run a playbook from a specific task onward, use the
 `--start-at-task` flag.
