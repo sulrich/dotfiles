@@ -878,3 +878,5 @@
           1. start tmux and press "c-t + i" to install tmux plugins
           2. copy any needed credentials to ~/.credentials
           3. a neovim python environment has been set up with pynvim, ruff, and basedpyright installed
+          4. run setup-claude-skills.yml to install personal claude skills
+             (needs an ssh-agent key - see ansible/README.md)

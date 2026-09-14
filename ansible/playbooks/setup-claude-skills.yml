@@ -1,0 +1,92 @@
+---
+# setup-claude-skills.yml - install personal claude skills from the private
+# claude-skills repo into ~/.claude/skills
+#
+# this is deliberately NOT part of setup-env-user-only.yml. that playbook clones
+# everything over https and rewrites remotes afterward specifically so it never
+# needs an ssh-agent. claude-skills is private, so it must be cloned over ssh
+# using the github-sulrich alias, which requires a key in the agent.
+#
+# run this AFTER setup-env-user-only.yml has deployed ~/.ssh/config and the
+# ~/.ssh/conf.d symlink, and with agent forwarding available:
+#
+#   ssh-add -l                     # confirm a key is loaded locally
+#   ansible-playbook -i "hostname," playbooks/setup-claude-skills.yml
+
+- name: install personal claude skills
+  hosts: all
+  vars:
+    home_dir: "{{ ansible_env.HOME }}"
+    skills_repo: "github-sulrich:/sulrich/claude-skills.git"
+    skills_src: "{{ ansible_env.HOME }}/src/personal/claude-skills"
+    skills_dest: "{{ ansible_env.HOME }}/.claude/skills"
+
+  tasks:
+    # fail early with an actionable message rather than letting git emit a
+    # generic "permission denied (publickey)" from inside the clone task.
+    - name: check ssh config is deployed
+      stat:
+        path: "{{ home_dir }}/.ssh/conf.d"
+      register: ssh_confd
+
+    - name: fail if ssh config is missing
+      fail:
+        msg: >-
+          {{ home_dir }}/.ssh/conf.d is missing. run setup-env-user-only.yml
+          first so the github-sulrich host alias is available.
+      when: not ssh_confd.stat.exists
+
+    # github always exits 1 for a -T session, so key off the greeting text.
+    # BatchMode keeps this from hanging on a host key or password prompt.
+    - name: verify ssh authentication to github-sulrich
+      shell: ssh -o BatchMode=yes -o StrictHostKeyChecking=accept-new -T github-sulrich 2>&1
+      register: github_auth
+      changed_when: false
+      failed_when: "'successfully authenticated' not in github_auth.stdout"
+
+    - name: create claude skills directory
+      file:
+        path: "{{ skills_dest }}"
+        state: directory
+        mode: 0755
+
+    # unlike the repos in setup-env-user-only.yml this one is pulled on every
+    # run - skills change often and freshening them is the point of this play.
+    - name: clone or update claude-skills repo
+      git:
+        repo: "{{ skills_repo }}"
+        dest: "{{ skills_src }}"
+        version: main
+        update: true
+        accept_newhostkey: true
+      register: skills_clone
+
+    # a skill is any top-level directory containing a SKILL.md. -maxdepth keeps
+    # nested reference material from being mistaken for a skill, and -exec
+    # dirname is used instead of -printf for bsd/gnu find portability.
+    - name: discover skills in the repo
+      shell: find {{ skills_src }} -mindepth 2 -maxdepth 2 -name SKILL.md -exec dirname {} \;
+      register: skill_dirs
+      changed_when: false
+
+    - name: fail if no skills were found
+      fail:
+        msg: "no SKILL.md files found under {{ skills_src }} - is the repo empty?"
+      when: skill_dirs.stdout_lines | length == 0
+
+    - name: symlink skills into ~/.claude/skills
+      file:
+        src: "{{ item }}"
+        dest: "{{ skills_dest }}/{{ item | basename }}"
+        state: link
+        force: true
+      loop: "{{ skill_dirs.stdout_lines }}"
+      loop_control:
+        label: "{{ item | basename }}"
+
+    - name: display installed skills
+      debug:
+        msg: |
+          claude skills installed from {{ skills_repo }}
+          repo:   {{ skills_src }}
+          linked: {{ skill_dirs.stdout_lines | map('basename') | join(', ') }}
