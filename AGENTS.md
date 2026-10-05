@@ -39,6 +39,10 @@ end time: [completion time for the task]
 - update status as you progress
 - include a log of the commits at the bottom of the file.
 - append the `IMPLEMENTATION-PLAN.md` file to the `WORKLOG.md` file at the root of the project.
+- `IMPLEMENTATION-PLAN.md` and `WORKLOG.md` are local working files. never commit them.
+  add both to the repo's `.git/info/exclude` (local-only, so no `.gitignore` change to
+  commit) before creating them. if either is already tracked, stop and ask before
+  removing it from the index.
 
 ### 2. implementation flow
 
