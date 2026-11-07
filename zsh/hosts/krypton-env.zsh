@@ -6,3 +6,6 @@ export HUGO_DIR="${HOME}/src/personal/botwerks-site"
 
 # amazon AWS vars
 export AWS_DEFAULT_PROFILE="sulrich@botwerks.org"
+
+# obsidian shit
+export OBSIDIAN_HOME="${HOME}/src/obsidian/personal"
