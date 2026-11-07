@@ -9,3 +9,6 @@ export AWS_DEFAULT_PROFILE="sulrich@botwerks.org"
 
 # to be used on select macos hosts
 export SSH_AUTH_SOCK="${HOME}/.1password/agent.sock"
+
+# obsidian shit
+export OBSIDIAN_HOME="${HOME}/src/obsidian/personal"
