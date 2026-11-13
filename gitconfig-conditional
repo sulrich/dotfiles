@@ -4,7 +4,7 @@
 [includeIf "gitdir:/work/sulrich/src/nexthop/"]
   path = ~/.gitconfig-work
 
-[includeIf "gitdir:~/src/facebook/"]
+[includeIf "gitdir:~/src/meta/"]
   path = ~/.gitconfig-work
 
 [includeIf "gitdir:~/src/sonic/"]
