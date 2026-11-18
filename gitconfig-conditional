@@ -1,9 +1,6 @@
 [includeIf "gitdir:~/src/nexthop/"]
   path = ~/.gitconfig-work
 
-[includeIf "gitdir:/work/sulrich/src/nexthop/"]
-  path = ~/.gitconfig-work
-
 [includeIf "gitdir:~/src/meta/"]
   path = ~/.gitconfig-work
 
@@ -13,8 +10,10 @@
 [includeIf "gitdir:~/src/personal/"]
   path = ~/.gitconfig-personal
 
-[includeIf "gitdir:/work/sulrich/src/personal/"]
-  path = ~/.gitconfig-personal
-
 [includeIf "gitdir:~/prod/"]
   path = ~/.gitconfig-personal
+
+[includeIf "gitdir:~/dack/"]
+  path = ~/.gitconfig-personal
+
+
